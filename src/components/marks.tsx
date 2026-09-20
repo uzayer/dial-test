@@ -289,10 +289,33 @@ const FACT_MARKS: Record<string, string[]> = {
   "Years of research": ["M4 7h24v20H4zM4 13h24", "M10 4v5M22 4v5", "M13 18h6"],
   Projects: ["M4 9h10l2 3h12v14H4z"],
   People: ["M6 26c0-5 4-8 10-8s10 3 10 8", "M16 5a5 5 0 1 1 0 10 5 5 0 0 1 0-10z"],
+  // A pennant planted on a pole.
+  Founded: ["M8 28V5", "M8 6h16l-4 5 4 5H8"],
+  // A clock face, for "since" and "active since".
+  Since: ["M16 4a12 12 0 1 1 0 24 12 12 0 0 1 0-24z", "M16 10v6l4 3"],
+  // A mortarboard.
+  "Alumni placed": ["M16 6L3 12l13 6 13-6z", "M8 15v6c0 2 4 4 8 4s8-2 8-4v-6", "M29 12v8"],
+  // A circling arrow: still going.
+  Ongoing: ["M26 16a10 10 0 1 1-3-7", "M24 4v6h-6"],
+  // A coin with a stroke through it.
+  Grants: [
+    "M16 4a12 12 0 1 1 0 24 12 12 0 0 1 0-24z",
+    "M16 9v14",
+    "M20 12c-1-1.5-7-2-7 1.5s7 2.5 7 6-6 3-7 1.5",
+  ],
+};
+
+// Labels that read as one of the marks above.
+const FACT_MARK_ALIASES: Record<string, string> = {
+  Years: "Years of research",
+  "Best paper": "Awards",
+  "Researchers mentored": "People",
+  "Ongoing projects": "Projects",
+  "Active since": "Since",
 };
 
 export const FactMark = ({ label, className }: { label: string; className?: string }) => {
-  const paths = FACT_MARKS[label];
+  const paths = FACT_MARKS[FACT_MARK_ALIASES[label] ?? label];
   if (!paths) return null;
   return (
     <svg aria-hidden viewBox="0 0 32 32" className={cn("size-6 text-ink", className)}>

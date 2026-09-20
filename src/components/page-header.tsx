@@ -129,25 +129,38 @@ const PageHeader = ({
             </p>
           )}
           {facts && facts.length > 0 && (
-            // Capped short of the margin the art bleeds into, so a fourth
-            // figure wraps rather than running under it.
+            // A ruled ledger strip: hairlines above and below, one column per
+            // figure. Capped short of the margin the art bleeds into.
             <dl
               {...step(4)}
               className={cn(
-                "relative z-10 flex flex-wrap gap-x-12 gap-y-8 lg:max-w-2xl",
+                "relative z-10 flex w-fit max-w-full flex-wrap border-y border-ink/40 lg:max-w-2xl",
                 step(4).className,
               )}
             >
-              {facts.map((fact) => (
-                <div key={fact.label} className="flex flex-col gap-2.5">
-                  {/* The slot is held open whether or not this figure's label
-                      has a mark drawn for it, so a marked figure and an
-                      unmarked one still sit on the same baseline. */}
-                  <span aria-hidden className="block h-7">
-                    <FactMark label={fact.label} className="ink-mark size-7" />
-                  </span>
-                  <dd className="font-display text-4xl leading-none tabular-nums">{fact.value}</dd>
-                  <dt className="text-sm text-muted-foreground">{fact.label}</dt>
+              {facts.map((fact, i) => (
+                <div
+                  key={fact.label}
+                  className={cn(
+                    "flex flex-col gap-2 py-4 pr-8",
+                    i > 0 && "border-l border-ink/25 pl-6",
+                  )}
+                >
+                  {/* Caption row: the figure number on the left, the mark stamped
+                      on the right. The slot is held open when a label has no
+                      mark, so the numerals below stay on one baseline. */}
+                  <div className="flex h-5 items-center justify-between gap-6">
+                    <span
+                      aria-hidden
+                      className="font-mono text-[10px] tracking-[0.2em] text-ink uppercase"
+                    >
+                      Fig. {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <FactMark label={fact.label} className="ink-mark size-5 shrink-0" />
+                  </div>
+                  <dd className="font-display text-5xl leading-none tabular-nums">{fact.value}</dd>
+                  {/* Lettered by hand, like a note in the margin of the plate. */}
+                  <dt className="pt-1 font-hand text-xl leading-none text-ink">{fact.label}</dt>
                 </div>
               ))}
             </dl>
