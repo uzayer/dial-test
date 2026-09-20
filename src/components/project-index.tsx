@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { SegmentedControl } from "@/components/segmented-control";
@@ -273,7 +274,7 @@ const ProjectRow = ({ project, index }: { project: ProjectEntry; index: number }
   ].filter(Boolean);
 
   return (
-    <a
+    <Link
       href={`/projects/${project.slug}`}
       className={cn(
         "group -mx-4 grid grid-cols-[3.5rem_1fr_auto] items-start gap-x-4 gap-y-3 rounded-lg px-4 py-8",
@@ -343,7 +344,7 @@ const ProjectRow = ({ project, index }: { project: ProjectEntry; index: number }
       </dl>
 
       <ArrowRight className="mt-3 hidden size-4 text-muted-foreground arrow-ne group-hover:text-foreground md:block" />
-    </a>
+    </Link>
   );
 };
 

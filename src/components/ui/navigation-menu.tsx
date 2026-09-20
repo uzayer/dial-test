@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cva } from "class-variance-authority";
+import Link from "next/link";
 import { NavigationMenu as NavigationMenuPrimitive } from "radix-ui";
 
 import { cn } from "@/lib/utils";
@@ -115,17 +116,26 @@ function NavigationMenuViewport({
 
 function NavigationMenuLink({
   className,
-  ...props
-}: React.ComponentProps<typeof NavigationMenuPrimitive.Link>) {
+  href,
+  children,
+}: {
+  className?: string;
+  href: string;
+  children: React.ReactNode;
+}) {
   return (
-    <NavigationMenuPrimitive.Link
-      data-slot="navigation-menu-link"
-      className={cn(
-        "flex items-center gap-2 rounded-lg p-2 text-sm transition-all outline-none hover:bg-muted focus:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-1 in-data-[slot=navigation-menu-content]:rounded-md data-active:bg-muted/50 data-active:hover:bg-muted data-active:focus:bg-muted [&_svg:not([class*='size-'])]:size-4",
-        className,
-      )}
-      {...props}
-    />
+    <NavigationMenuPrimitive.Link asChild>
+      <Link
+        href={href}
+        data-slot="navigation-menu-link"
+        className={cn(
+          "flex items-center gap-2 rounded-lg p-2 text-sm transition-all outline-none hover:bg-muted focus:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-1 in-data-[slot=navigation-menu-content]:rounded-md data-active:bg-muted/50 data-active:hover:bg-muted data-active:focus:bg-muted [&_svg:not([class*='size-'])]:size-4",
+          className,
+        )}
+      >
+        {children}
+      </Link>
+    </NavigationMenuPrimitive.Link>
   );
 }
 

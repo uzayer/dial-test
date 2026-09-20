@@ -181,7 +181,7 @@ const PromoCard = ({
   body: string;
   className?: string;
 }) => (
-  <a
+  <Link
     href={href}
     className={cn(
       "group relative flex h-full flex-col justify-between overflow-hidden rounded-md border border-border bg-muted/40 p-6",
@@ -210,7 +210,7 @@ const PromoCard = ({
       Open
       <ArrowRight className="arrow-ne size-4" />
     </span>
-  </a>
+  </Link>
 );
 
 // ── Menu components ────────────────────────────────────────────────────────
@@ -640,6 +640,8 @@ const Navbar4 = ({ nav, className }: Navbar4Props) => {
             <Link href="/" className="flex items-center gap-3">
               <img
                 src="/dial-logo.svg"
+                width={844}
+                height={264}
                 className="w-28 max-w-none dark:invert sm:w-32"
                 alt="DIAL"
               />
@@ -712,7 +714,14 @@ const Navbar4 = ({ nav, className }: Navbar4Props) => {
           {/* The menu unrolls down from the nav bar with a CSS clip-path, so
               the shared layout does not need to ship Motion on every route. */}
           {open ? (
-            <div className="mobile-menu-enter fixed inset-0 top-[77px] container flex h-[calc(100vh-77px)] w-full flex-col overflow-auto border-t border-border bg-background lg:hidden">
+            <div
+              className="mobile-menu-enter fixed inset-0 top-[77px] container flex h-[calc(100vh-77px)] w-full flex-col overflow-auto border-t border-border bg-background lg:hidden"
+              onClick={(event) => {
+                if (!(event.target instanceof Element) || !event.target.closest("a")) return;
+                setOpen(false);
+                setSubmenu(null);
+              }}
+            >
               {submenu && (
                 <div className="mt-3">
                   <Button

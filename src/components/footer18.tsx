@@ -84,7 +84,13 @@ const Footer18 = ({ className }: Footer18Props) => {
         <nav className="flex flex-col gap-9 lg:flex-row">
           <div className="flex w-full flex-col gap-9 lg:w-1/4">
             <Link href="/">
-              <img src="/dial-logo.svg" alt="DIAL" className="w-40 max-w-none dark:invert" />
+              <img
+                src="/dial-logo.svg"
+                width={844}
+                height={264}
+                alt="DIAL"
+                className="w-40 max-w-none dark:invert"
+              />
             </Link>
             <StampRing className="my-2 size-28" />
             <p className="text-sm leading-relaxed text-muted-foreground">
@@ -112,12 +118,12 @@ const Footer18 = ({ className }: Footer18Props) => {
                 </li>
                 {section.links.map((link) => (
                   <li key={link.name}>
-                    <a
+                    <Link
                       href={link.href}
                       className="text-sm leading-normal text-muted-foreground transition-colors hover:text-foreground"
                     >
                       {link.name}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
