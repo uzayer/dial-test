@@ -10,6 +10,7 @@ import { useEffect } from "react";
  */
 export function RevealObserver() {
   useEffect(() => {
+    const selector = "[data-reveal]:not([data-revealed])";
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -20,14 +21,23 @@ export function RevealObserver() {
       },
       { rootMargin: "0px 0px -100px 0px" },
     );
-    const scan = () =>
-      document
-        .querySelectorAll("[data-reveal]:not([data-revealed])")
-        .forEach((el) => observer.observe(el));
-    scan();
+
+    const observeTree = (root: ParentNode) => {
+      if (root instanceof Element && root.matches(selector)) observer.observe(root);
+      root.querySelectorAll(selector).forEach((element) => observer.observe(element));
+    };
+
+    observeTree(document);
     // Sections that mount later (Suspense boundaries, client-only branches)
-    // would otherwise stay hidden, so watch for them too.
-    const mutations = new MutationObserver(scan);
+    // would otherwise stay hidden. Inspect only the inserted subtrees rather
+    // than rescanning the whole document for every DOM insertion.
+    const mutations = new MutationObserver((records) => {
+      for (const record of records) {
+        for (const node of record.addedNodes) {
+          if (node instanceof Element) observeTree(node);
+        }
+      }
+    });
     mutations.observe(document.body, { childList: true, subtree: true });
     return () => {
       observer.disconnect();
