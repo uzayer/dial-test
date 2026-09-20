@@ -196,6 +196,25 @@ export const publicationsByTheme = (themeId: string): Publication[] =>
 export const featuredPublications = (): Publication[] =>
   publicationsByYear().filter((pub) => pub.featured);
 
+/**
+ * Other papers to read after this one: everything filed under a shared Research
+ * Theme first, then everything from the same Venue. Both are real links in the
+ * record — nothing here is a similarity score.
+ */
+export function relatedPublications(pub: Publication, limit = 4): Publication[] {
+  const sameTheme = publicationThemeIds(pub).flatMap((id) => publicationsByTheme(id));
+  const sameVenue = pub.venue ? publicationsByYear().filter((p) => p.venue === pub.venue) : [];
+  const seen = new Set([pub.id]);
+  const out: Publication[] = [];
+  for (const candidate of [...sameTheme, ...sameVenue]) {
+    if (seen.has(candidate.id)) continue;
+    seen.add(candidate.id);
+    out.push(candidate);
+    if (out.length === limit) break;
+  }
+  return out;
+}
+
 // ─── Awards ─────────────────────────────────────────────────────────────────
 
 function normalizeTitle(title: string): string {

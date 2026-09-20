@@ -98,7 +98,11 @@ export function PeopleRoster({ groups, className }: { groups: RosterGroup[]; cla
 function RosterEntry({ member }: { member: TeamMember }) {
   return (
     <div className="flex h-full gap-4 py-5">
-      <InitialTile name={member.name} seed={member.slug} className="mt-1 group-hover:rotate-0" />
+      <InitialTile
+        name={member.name}
+        seed={member.slug}
+        className="mt-1 group-hover:-rotate-[1.75deg]"
+      />
       <div className="flex min-w-0 flex-col gap-1">
         <Link
           href={`/people/${member.slug}`}

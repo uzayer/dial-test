@@ -60,7 +60,7 @@ export function PhotoSlot({
             src={src}
             alt={alt}
             overlay={taped ? <span aria-hidden className="tape -top-2.5 left-6 z-10" /> : null}
-            frameClassName={cn("w-full rounded-md", aspect, taped && "-rotate-1")}
+            frameClassName={cn("w-full rounded-md", aspect)}
             className="h-full w-full object-cover"
             fallback={art_}
           />

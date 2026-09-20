@@ -185,34 +185,9 @@
    viewport under a nav that is visible from the first paint. */
 body:has([data-hero-root]) [data-site-nav] {
   position: fixed;
-  /* The dark panel is also z-20 and comes later in the DOM, so without this the
+  /* The panel is also z-20 and comes later in the DOM, so without this the
      nav is painted over for the whole length of the band. */
   z-index: 40;
-  transition: background-color 200ms ease;
-}
-
-/* While the band is still below, the nav sits on the opening stage and needs no
-   bar of its own; once the band has passed, it takes its background back (the
-   child combinator keeps this off the clipped copy). */
-body:has([data-hero-root]) [data-site-nav-scope]:not([data-nav-solid]) > [data-site-nav] {
-  background-color: transparent;
-}
-
-/* The clipped copy. Hidden everywhere but the hero page, and hidden there too
-   until the band reaches the nav strip; the hero writes its clip-path. */
-[data-nav-overlay] {
-  display: none;
-}
-body:has([data-hero-root]) [data-nav-overlay] {
-  display: block;
-  position: fixed;
-  inset-inline: 0;
-  top: 0;
-  z-index: 41;
-  clip-path: inset(100% 0 0 0);
-}
-body:has([data-hero-root]) [data-nav-overlay] [data-site-nav] {
-  position: static;
 }
 
 /* Taking the nav out of flow shortens the document by the nav's own height.
@@ -326,13 +301,14 @@ body:is(.dark)::after {
   background-position: 0 0;
 }
 
-/* Stuck-on, not laid out: a few degrees of rotation, straightened on hover. */
+/* Printed marks rest squarely on the page. Interactive owners can add a small
+   rotation on hover, but the resting state must never look misaligned. */
 @utility sticker {
-  rotate: -1.75deg;
+  rotate: 0deg;
   transition: rotate 200ms var(--ease-snappy);
 }
 @utility sticker-alt {
-  rotate: 1.5deg;
+  rotate: 0deg;
   transition: rotate 200ms var(--ease-snappy);
 }
 
@@ -343,7 +319,7 @@ body:is(.dark)::after {
   height: 1.4rem;
   background: color-mix(in oklab, var(--ink) 22%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 10%, transparent);
-  rotate: -6deg;
+  rotate: 0deg;
 }
 
 /* A page prints in one ink. `--header-ink` is the second ink everywhere by
@@ -430,6 +406,19 @@ body:is(.dark)::after {
 .js [data-reveal]:not([data-revealed]) .ink-squiggle-draw {
   clip-path: inset(0 100% 0 0);
 }
+/* Held undrawn until a scroll-driven section says go (the home band sets
+   `data-ink-go`; see ResearchScrollHero). The underline goes first and the
+   circle follows it, so the eye is led from the line to the word. */
+.js [data-ink-hold]:not([data-ink-go]) .ink-draw {
+  stroke-dashoffset: var(--ink-len, 400);
+}
+.js [data-ink-hold]:not([data-ink-go]) .ink-squiggle-draw {
+  clip-path: inset(0 100% 0 0);
+}
+[data-ink-hold] .ink-draw {
+  transition-delay: 700ms;
+}
+
 @keyframes ink-squiggle-draw {
   from {
     clip-path: inset(0 100% 0 0);
@@ -452,6 +441,62 @@ body:is(.dark)::after {
 a:hover > .ink-squiggle-hover,
 a:focus-visible > .ink-squiggle-hover {
   clip-path: inset(0 0 0 0);
+}
+
+/* Per-line hover underline, for text that can wrap. The block squiggle above
+   is one strip under the box, so a title that wraps got a line the width of its
+   widest row, sitting under the last row only. Here the strip is the background
+   of a see-through copy of the text (`SquiggleText`), and `box-decoration-break:
+   clone` paints it once per line fragment: every row is underlined, each exactly
+   as wide as its own words.
+
+   The shape is a single mask layer (the wave); the wipe is a hard-stopped
+   gradient in the background whose stop is animated, so it runs per fragment
+   and every row draws at once. It used to be two mask layers intersected, but
+   compositing masks across fragments let the second row's fragment wipe out
+   the first row's stroke wherever their boxes overlapped. */
+@property --squiggle-wipe {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+.ink-squiggle-text {
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(
+    90deg,
+    currentColor var(--squiggle-wipe),
+    transparent var(--squiggle-wipe)
+  );
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  /* Taller than the wave's tile on purpose: both are bottom-aligned on
+     fractional line heights, and when the two were the same height the paint
+     rounded a pixel short of the mask and shaved the crests flat. The mask
+     alone sets the shape. */
+  background-size: 100% 1.25rem;
+  padding-bottom: 0.3em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  -webkit-mask-image: var(--squiggle-wave);
+  mask-image: var(--squiggle-wave);
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+  -webkit-mask-position: left bottom;
+  mask-position: left bottom;
+  -webkit-mask-size: 2.75rem 0.625rem;
+  mask-size: 2.75rem 0.625rem;
+  transition: --squiggle-wipe 450ms var(--ease-snappy);
+}
+.group:hover .ink-squiggle-text,
+.group:focus-visible .ink-squiggle-text,
+a:hover .ink-squiggle-text,
+a:focus-visible .ink-squiggle-text {
+  --squiggle-wipe: 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ink-squiggle-text {
+    transition-duration: 1ms;
+  }
 }
 
 /* A right-pointing arrow turns north-east when its link is hovered, so the

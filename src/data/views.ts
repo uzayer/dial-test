@@ -11,9 +11,11 @@ import type { MemberProfileData, Social } from "@/components/member-profile";
 import type { MemberPublication } from "@/components/member-publications";
 import type { NavData } from "@/components/navbar4";
 import type { NewsEntry } from "@/components/news-feed";
+import type { Person } from "@/components/person-chip";
 import type { PIProfileData } from "@/components/pi-profile";
 import type { ProjectData } from "@/components/project-post";
 import type { ProjectEntry } from "@/components/project-index";
+import type { PublicationPostData } from "@/components/publication-post";
 import type { Publication as PublicationView, PublicationYear } from "@/components/publications1";
 import type { SpotlightProject } from "@/components/research-sections";
 import type { TeamMember as TeamGridMember } from "@/components/team5-9";
@@ -32,6 +34,7 @@ import {
   getOrganization,
   getResearchTheme,
   getTeamMember,
+  getVenue,
   grantEndYear,
   grantFunderName,
   grantRoleFor,
@@ -46,14 +49,19 @@ import {
   projects,
   projectsByTheme,
   projectsForPublication,
+  publicationsForProject,
+  relatedPublications,
   publicTeam,
   publicationAuthorNames,
+  publicationTeamIds,
   publicationThemeIds,
   researchThemes,
   resolveIds,
+  teamIdForName,
   venueLabel,
 } from "./index";
 import type { Award, Grant, News, Project, Publication, ResearchTheme, Team } from "./types";
+import { generateBibTeX } from "@/lib/citation";
 
 const PLACEHOLDER_IMAGE =
   "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-1.svg";
@@ -66,6 +74,18 @@ export const highlightAuthors = (): string[] => {
   return pi ? [pi.name] : [];
 };
 
+/**
+ * The Lab's own people among a publication's authors, in author order, for the
+ * row's faces. Only Team Members the site may show: an unreviewed imported
+ * person has no business appearing on a public page.
+ */
+function publicationFaces(pub: Publication): Person[] {
+  return publicationTeamIds(pub)
+    .map((id) => getTeamMember(id))
+    .filter((m): m is Team => m !== undefined && m.displayInWebsite !== false)
+    .map((m) => ({ name: m.name, seed: m.slug, photo: m.photo, href: `/people/${m.slug}` }));
+}
+
 /** Short award label for a publication badge, e.g. "Best Paper". */
 function publicationAwardLabel(pub: Publication): string | null {
   const [award] = awardsForPublication(pub);
@@ -77,7 +97,9 @@ export function toPublicationView(pub: Publication): PublicationView {
   return {
     id: pub.id,
     title: pub.title,
+    href: `/publications/${pub.id}`,
     authors: publicationAuthorNames(pub).join(", "),
+    authorFaces: publicationFaces(pub),
     venue: venueLabel(pub),
     award: publicationAwardLabel(pub),
     pdfLink: pub.pdf?.link ?? null,
@@ -104,6 +126,99 @@ export function toPublicationYears(pubs: Publication[]): PublicationYear[] {
   return [...byYear.entries()]
     .sort(([a], [b]) => b - a)
     .map(([year, publications]) => ({ year, publications }));
+}
+
+const TYPE_LABELS: Record<string, string> = {
+  conference: "Conference Paper",
+  journal: "Journal Article",
+  workshop: "Workshop Paper",
+  preprint: "Preprint",
+  "extended-abstract": "Extended Abstract",
+  "study-protocol": "Study Protocol",
+  "book-chapter": "Book Chapter",
+};
+
+/** Printed only where it is not the plain case; "published" needs no saying. */
+const STATUS_LABELS: Record<string, string> = {
+  "accepted-in-press": "Accepted, in press",
+  submitted: "Under review",
+  preprint: "Preprint",
+};
+
+/** The Team Member an author entry names, when the record safely matches one. */
+function authorTeamMember(author: Publication["authors"][number]): Team | undefined {
+  const id = author.teamMember ?? teamIdForName(author.customAuthor?.name);
+  return id ? getTeamMember(id) : undefined;
+}
+
+/** One paper's own page: the record, plus the links out of it. */
+export function toPublicationPost(pub: Publication): PublicationPostData {
+  const venue = pub.venue ? getVenue(pub.venue) : undefined;
+  const authorNames = publicationAuthorNames(pub);
+
+  return {
+    title: pub.title,
+    year: pub.year,
+    typeLabel: pub.type ? (TYPE_LABELS[pub.type] ?? null) : null,
+    statusLabel: STATUS_LABELS[pub.status] ?? null,
+    authors: pub.authors.map((author, i) => {
+      const member = authorTeamMember(author);
+      // Only people the site actually shows get a link; a hidden or
+      // collaborator-only record is still just a name in the byline.
+      const linked = member && member.displayInWebsite !== false && !isCollaborator(member);
+      return {
+        id: member?.id ?? `${pub.id}-author-${i}`,
+        name: member?.name ?? author.customAuthor?.name ?? "",
+        href: linked ? `/people/${member.slug}` : null,
+        role: linked ? teamRoleLabel(member) : null,
+        photo: linked ? (member.photo ?? null) : null,
+      };
+    }),
+    venue: venue
+      ? { name: venue.name, shortName: venue.shortName ?? null, url: venue.url ?? null }
+      : pub.venueLabel
+        ? { name: pub.venueLabel }
+        : null,
+    abstract: pub.abstract ?? null,
+    citationText: pub.citationText ?? null,
+    bibtex: generateBibTeX(
+      {
+        title: pub.title,
+        authors: authorNames.join(", "),
+        venue: venueLabel(pub),
+        type: pub.type ?? null,
+      },
+      pub.year,
+    ),
+    doi: pub.doi ?? null,
+    externalUrl: pub.externalUrl ?? null,
+    pdfLink: pub.pdf?.link ?? null,
+    isOpenAccess: pub.isOpenAccess ?? false,
+    themes: publicationThemeIds(pub)
+      .map(getResearchTheme)
+      .filter((theme): theme is ResearchTheme => Boolean(theme))
+      .map((theme) => ({
+        id: theme.id,
+        slug: theme.slug,
+        title: theme.title,
+        href: `/research/${theme.slug}`,
+      })),
+    projects: projectsForPublication(pub.id).map((project) => ({
+      id: project.id,
+      slug: project.slug,
+      title: project.title,
+      href: `/projects/${project.slug}`,
+    })),
+    awards: awardsForPublication(pub).map((award) => ({
+      id: award.id,
+      title: awardName(award),
+      year: award.year,
+      organization:
+        award.organizationLabel ??
+        (award.organization ? (getOrganization(award.organization)?.name ?? null) : null),
+    })),
+    related: toPublicationYears(relatedPublications(pub)),
+  };
 }
 
 export function toMemberPublication(pub: Publication): MemberPublication {
@@ -218,6 +333,9 @@ export function toProjectPost(project: Project): ProjectData {
       name: m.name,
       role: teamRoleLabel(m),
       avatarUrl: m.photo ?? undefined,
+      slug: m.slug,
+      // Every Team Member the site may show has a profile page.
+      href: `/people/${m.slug}`,
     })),
     themes: resolveIds(project.themes, getResearchTheme).map((t) => ({
       id: t.id,
@@ -226,6 +344,7 @@ export function toProjectPost(project: Project): ProjectData {
       href: `/research/${t.slug}`,
     })),
     awards: awardsForProject(project).map((a) => ({ id: a.id, title: awardName(a), year: a.year })),
+    publications: toPublicationYears(publicationsForProject(project)),
     content: [
       { heading: "Overview", body: project.abstract ?? "" },
       ...contentSections(project.content),

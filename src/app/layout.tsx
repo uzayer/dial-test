@@ -81,16 +81,8 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="min-h-full flex flex-col">
-        {/* Two copies of the nav: the real one, and a purely visual copy in the
-            opposite theme that ResearchScrollHero clips to exactly the strip
-            the rising band covers, so the nav fills with the band's colour as
-            the edge passes instead of flipping at once. The copy is inert and
-            hidden from assistive tech; off the hero page CSS hides it. */}
         <div data-site-nav-scope className="text-foreground">
           <Navbar4 nav={getNavData()} className="sticky" />
-          <div data-nav-overlay aria-hidden inert className="pointer-events-none">
-            <Navbar4 nav={getNavData()} className="sticky" />
-          </div>
         </div>
         <main className="flex-1">{children}</main>
         <Footer18 />

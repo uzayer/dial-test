@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { cn } from "@/lib/utils";
 
 /**
@@ -46,6 +48,65 @@ export const SquiggleUnderline = ({ className }: { className?: string }) => (
     className={cn("pointer-events-none absolute -bottom-1.5 left-0 w-full", className)}
   />
 );
+
+/**
+ * Text with the hover squiggle drawn under every line it wraps to, each exactly
+ * as wide as that line's words. Use it instead of `SquiggleUnderline` wherever
+ * the text can break: the block version underlines the box, which for wrapped
+ * text is the widest row, under the last row only.
+ *
+ * Renders the text twice — once real, once as an `aria-hidden`, transparent
+ * copy that carries the stroke (see `.ink-squiggle-text`). The copy sits in an
+ * absolutely-positioned box the same width as the real text, so it wraps at the
+ * same places. That is why it is a block: an inline box has no width of its own
+ * to copy.
+ */
+export const SquiggleText = ({
+  children,
+  className,
+  highlight,
+}: {
+  children: string;
+  className?: string;
+  /** Search term to mark inside the text. Marked only in the visible copy. */
+  highlight?: string;
+}) => (
+  <span className={cn("relative block w-fit", className)}>
+    {highlight ? <MarkedText text={children} term={highlight} /> : children}
+    {/* The stroke copy keeps the bare string: it only has to wrap identically,
+        and a <mark> in here would be stroked as well as marked. */}
+    <span aria-hidden className="pointer-events-none absolute inset-0 text-ink">
+      <span className="ink-squiggle-text">{children}</span>
+    </span>
+  </span>
+);
+
+/**
+ * Wraps every occurrence of `term` in a <mark>. The mark changes colour only —
+ * no weight, size or family — because the stroke copy above is laid out from
+ * the unmarked string and the two have to wrap on the same words.
+ */
+function MarkedText({ text, term }: { text: string; term: string }) {
+  const needle = term.trim().toLowerCase();
+  if (!needle) return <>{text}</>;
+
+  const parts: ReactNode[] = [];
+  const haystack = text.toLowerCase();
+  let at = 0;
+
+  for (let found = haystack.indexOf(needle); found !== -1; found = haystack.indexOf(needle, at)) {
+    if (found > at) parts.push(text.slice(at, found));
+    parts.push(
+      <mark key={found} className="rounded-[2px] bg-brand/20 text-inherit">
+        {text.slice(found, found + needle.length)}
+      </mark>,
+    );
+    at = found + needle.length;
+  }
+  parts.push(text.slice(at));
+
+  return <>{parts}</>;
+}
 
 /** Loop around a word: absolutely positioned over the text it circles. */
 export const CircleMark = ({ className }: { className?: string }) => (

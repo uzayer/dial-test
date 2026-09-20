@@ -38,6 +38,8 @@ interface PageHeaderProps {
   ink?: string;
   /** A large drawn mark set against the title — a Research Theme's glyph. */
   glyph?: React.ReactNode;
+  /** Let the title's drawn underline span the heading's full width. */
+  fullTitleSquiggle?: boolean;
   className?: string;
 }
 
@@ -56,6 +58,7 @@ const PageHeader = ({
   bleed = true,
   ink,
   glyph,
+  fullTitleSquiggle = false,
   className,
 }: PageHeaderProps) => {
   // Each piece takes the next step of the 60ms stagger.
@@ -108,8 +111,7 @@ const PageHeader = ({
         className={cn("relative w-fit", (eyebrow || glyph) && "mt-4", step(1).className)}
       >
         <h1 className={pageTitle}>{title}</h1>
-        {/* Drawn under the title, as wide as the last line rather than the page. */}
-        <Squiggle className="ink-mark mt-1 max-w-md" />
+        <Squiggle className={cn("ink-mark mt-1", fullTitleSquiggle ? "max-w-none" : "max-w-md")} />
       </div>
 
       {(description || facts?.length) && (

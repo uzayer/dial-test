@@ -2,7 +2,9 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
 import { CropMarks, Squiggle } from "@/components/marks";
+import { PersonChip } from "@/components/person-chip";
 import { PhotoSlot } from "@/components/photo-slot";
+import { FlatPublicationList, type PublicationYear } from "@/components/publications1";
 import { RisoArt } from "@/components/riso";
 import { themeArt, themeInkVar } from "@/components/theme-marks";
 import { enterStep } from "@/lib/motion";
@@ -18,6 +20,10 @@ type TeamMember = {
   name: string;
   role: string;
   avatarUrl?: string;
+  /** Stable identifier, so a person keeps one ink across the site. */
+  slug?: string;
+  /** Profile link, where the person has a page. */
+  href?: string;
 };
 
 type ResearchTheme = {
@@ -54,6 +60,7 @@ export type ProjectData = {
   teamMembers: TeamMember[];
   themes: ResearchTheme[];
   awards: Award[];
+  publications: PublicationYear[];
   content: ContentSection[];
   metaItems?: { label: string; value: string }[];
 };
@@ -77,18 +84,6 @@ function timeline(
 }
 
 const slugify = (heading: string) => heading.toLowerCase().replace(/\s+/g, "-");
-
-function Initials({ name }: { name: string }) {
-  return (
-    <span className="grid size-9 shrink-0 place-items-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
-      {name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .slice(0, 2)}
-    </span>
-  );
-}
 
 function Fact({ term, children }: { term: string; children: React.ReactNode }) {
   return (
@@ -134,15 +129,6 @@ export function ProjectPost({ project }: { project: ProjectData }) {
         className="relative isolate container pt-16 pb-12 md:pt-24"
       >
         <CropMarks className="ink-mark-soft top-8 md:top-10" />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 -right-5 -z-10 w-[26rem] overflow-x-clip overflow-y-visible max-lg:hidden xl:w-[32rem]"
-        >
-          <RisoArt
-            variant={themeArt(primaryTheme)}
-            className="absolute -top-10 -right-32 size-[34rem] opacity-90 xl:-right-36 xl:size-[40rem]"
-          />
-        </div>
         <p className={cn(label, "enter flex items-center gap-3")} style={enterStep(0)}>
           Project
           {project.status && (
@@ -186,9 +172,13 @@ export function ProjectPost({ project }: { project: ProjectData }) {
           </p>
 
           <dl
-            className="enter [&>div:first-child]:border-t-0 [&>div:first-child]:pt-0"
+            className="enter relative [&>div:first-child]:border-t-0 [&>div:first-child]:pt-0"
             style={enterStep(4)}
           >
+            <RisoArt
+              variant={themeArt(primaryTheme)}
+              className="pointer-events-none absolute -top-52 right-0 size-40 opacity-70 max-lg:hidden xl:-top-56 xl:size-48"
+            />
             {span && <Fact term="Timeline">{span}</Fact>}
             {project.themes.length > 0 && (
               <Fact term="Themes">
@@ -243,7 +233,9 @@ export function ProjectPost({ project }: { project: ProjectData }) {
       </header>
 
       {/* Body */}
-      {(sections.length > 0 || project.teamMembers.length > 0) && (
+      {(sections.length > 0 ||
+        project.publications.length > 0 ||
+        project.teamMembers.length > 0) && (
         <div className="container grid gap-16 pb-24 lg:grid-cols-[1fr_22rem]">
           <div className="max-w-prose">
             {sections.map((section) => (
@@ -259,28 +251,35 @@ export function ProjectPost({ project }: { project: ProjectData }) {
                 </p>
               </section>
             ))}
+            {project.publications.length > 0 && (
+              <section className="border-t border-border pt-6 pb-10">
+                <h2 className="font-display text-2xl md:text-3xl">Related publications</h2>
+                <p className="mt-3 text-pretty text-muted-foreground">
+                  Research outputs connected to this project.
+                </p>
+                <FlatPublicationList yearGroups={project.publications} className="mt-6" />
+              </section>
+            )}
           </div>
 
           {project.teamMembers.length > 0 && (
             <aside className="h-fit lg:sticky lg:top-24">
               <h2 className={cn(label, "border-t border-border pt-6")}>Project team</h2>
-              <ul className="mt-5 flex flex-col gap-4">
+              {/* A margin reference to people, not a roster: each person is one
+                  chip, with the role beside it. The roster page keeps the
+                  fuller treatment. */}
+              <ul className="mt-5 flex flex-col gap-3">
                 {project.teamMembers.map((member) => (
-                  <li key={member.id} className="flex items-center gap-3">
-                    {member.avatarUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element -- local placeholder media
-                      <img
-                        src={member.avatarUrl}
-                        alt=""
-                        className="size-9 rounded-full object-cover"
-                      />
-                    ) : (
-                      <Initials name={member.name} />
-                    )}
-                    <div>
-                      <p className="text-sm font-medium">{member.name}</p>
-                      <p className="text-xs text-muted-foreground">{member.role}</p>
-                    </div>
+                  <li key={member.id} className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                    <PersonChip
+                      name={member.name}
+                      seed={member.slug}
+                      photo={member.avatarUrl}
+                      href={member.href}
+                    />
+                    {/* Alongside the chip, not under it: the pill is the person
+                        and the role is an annotation on the same line. */}
+                    <span className="text-xs text-muted-foreground">{member.role}</span>
                   </li>
                 ))}
               </ul>

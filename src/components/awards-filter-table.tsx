@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { SegmentedControl } from "@/components/editorial";
+import { SegmentedControl } from "@/components/segmented-control";
 import { displaySectionTitle } from "@/lib/typography";
 
 export type AwardCategory =

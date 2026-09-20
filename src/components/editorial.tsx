@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
-import { DashedPath, SquiggleUnderline, TickMark } from "@/components/marks";
+import { DashedPath, SquiggleText, SquiggleUnderline, TickMark } from "@/components/marks";
 import { ThemeGlyph, themeInk } from "@/components/theme-marks";
 import { displaySectionTitle, label as labelClass } from "@/lib/typography";
 import { cn } from "@/lib/utils";
@@ -184,10 +184,9 @@ export const ThemeIndex = ({
               <span className="opacity-70">{String(i + 1).padStart(2, "0")}</span>
               <ThemeGlyph slug={theme.slug} className="size-14 shrink-0 max-md:hidden" />
             </span>
-            <span className="relative w-fit font-display text-xl leading-snug md:text-2xl">
+            <SquiggleText className="font-display text-xl leading-snug md:text-2xl">
               {theme.title}
-              <SquiggleUnderline />
-            </span>
+            </SquiggleText>
             <ArrowRight className="size-4 self-center text-muted-foreground arrow-ne group-hover:text-foreground md:hidden" />
             {theme.description && (
               <span className="col-start-2 text-sm text-pretty text-muted-foreground md:col-start-auto">
@@ -320,55 +319,3 @@ export const NameLine = ({
       ))}
     </p>
   ) : null;
-
-// ─── Segmented control ───────────────────────────────────────────────────────
-
-/**
- * The site's one filter control: a pill group where the active option is
- * filled. Counts are optional. Stateless; the parent owns the value.
- */
-export function SegmentedControl<T extends string>({
-  label,
-  options,
-  value,
-  onChange,
-  className,
-}: {
-  label: string;
-  options: { value: T; label: string; count?: number }[];
-  value: T;
-  onChange: (value: T) => void;
-  className?: string;
-}) {
-  return (
-    <div
-      role="radiogroup"
-      aria-label={label}
-      className={cn(
-        "flex w-fit max-w-full overflow-x-auto rounded-full border border-border p-0.5 text-sm [scrollbar-width:none]",
-        className,
-      )}
-    >
-      {options.map((option) => (
-        <button
-          key={option.value}
-          type="button"
-          role="radio"
-          aria-checked={value === option.value}
-          onClick={() => onChange(option.value)}
-          className={cn(
-            "shrink-0 rounded-full px-3 py-1 whitespace-nowrap transition-colors duration-150 ease-snappy",
-            value === option.value
-              ? "bg-foreground text-background"
-              : "text-muted-foreground hover:text-foreground",
-          )}
-        >
-          {option.label}
-          {option.count !== undefined && (
-            <span className="ml-1.5 tabular-nums opacity-60">{option.count}</span>
-          )}
-        </button>
-      ))}
-    </div>
-  );
-}

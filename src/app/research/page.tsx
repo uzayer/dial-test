@@ -58,6 +58,7 @@ export default function ResearchPage() {
         eyebrow="Research"
         art="orbit"
         title="Research at the margins"
+        fullTitleSquiggle
         description="DIAL studies access, inclusion, safety, wellbeing, and development in low-resource settings, then builds and evaluates technology with the people expected to use it."
         facts={[
           { value: String(stats.ongoingProjects), label: "Ongoing projects" },

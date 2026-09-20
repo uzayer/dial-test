@@ -4,9 +4,9 @@ import { useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 
-import { SegmentedControl } from "@/components/editorial";
+import { SegmentedControl } from "@/components/segmented-control";
 import { FadeScroller } from "@/components/fade-scroller";
-import { AsteriskMark, EmptySketch, SquiggleUnderline } from "@/components/marks";
+import { AsteriskMark, EmptySketch, SquiggleText } from "@/components/marks";
 import { listEnter, listStagger } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -215,12 +215,12 @@ function firstLetter(text: string): string {
 }
 
 const ProjectMark = ({ project, className }: { project: ProjectEntry; className?: string }) => (
-  // A printed block: halftone dots behind the letter, one ink per state, and a
-  // few degrees of rotation so it reads as stuck on rather than placed.
+  // A printed block: halftone dots behind the letter and one ink per state.
+  // It rests squarely; the letter supplies the small hover response below.
   <div
     aria-hidden
     className={cn(
-      "sticker relative grid shrink-0 place-items-center overflow-hidden rounded-[0.7rem] group-hover:rotate-0",
+      "sticker relative grid shrink-0 place-items-center overflow-hidden rounded-[0.7rem]",
       project.award
         ? "bg-ink/12 text-ink"
         : project.status === "ongoing"
@@ -288,9 +288,8 @@ const ProjectRow = ({ project, index }: { project: ProjectEntry; index: number }
       <ProjectMark project={project} className="size-14 text-4xl md:size-28 md:text-8xl" />
 
       <div className="min-w-0">
-        <h3 className="relative w-fit font-display text-2xl leading-tight md:text-3xl">
-          {project.localName ?? project.title}
-          <SquiggleUnderline />
+        <h3 className="font-display text-2xl leading-tight md:text-3xl">
+          <SquiggleText>{project.localName ?? project.title}</SquiggleText>
         </h3>
         {project.localName && (
           <p className="mt-0.5 text-sm text-muted-foreground">{project.title}</p>
@@ -334,7 +333,7 @@ const ProjectRow = ({ project, index }: { project: ProjectEntry; index: number }
           <div>
             <dt className="sr-only">Award</dt>
             <dd>
-              <span className="sticker-alt inline-flex items-center gap-1.5 rounded-[0.8rem] border border-ink/35 bg-ink/8 px-2.5 py-1 text-xs text-ink group-hover:rotate-0">
+              <span className="sticker-alt inline-flex items-center gap-1.5 rounded-[0.8rem] border border-ink/35 bg-ink/8 px-2.5 py-1 text-xs text-ink group-hover:rotate-[1.5deg]">
                 <AsteriskMark className="size-3" />
                 {project.award.title}
               </span>

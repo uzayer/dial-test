@@ -3,7 +3,8 @@
 import { useMemo, useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 
-import { SectionHeader, SegmentedControl } from "@/components/editorial";
+import { SectionHeader } from "@/components/editorial";
+import { SegmentedControl } from "@/components/segmented-control";
 import { OptionalImage } from "@/components/optional-image";
 import { listEnter, listStagger } from "@/lib/motion";
 import { displaySectionTitle } from "@/lib/typography";

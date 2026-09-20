@@ -27,6 +27,18 @@ function inkFor(seed: string) {
   return n % INKS.length;
 }
 
+/**
+ * The ink a person prints in, as class names. Shared so every place that draws
+ * a person — the roster tile, the chip — reaches for the same colour from the
+ * same seed. Pass the stable identifier (a slug) where there is one; the name
+ * is only a fallback, since two records for the same person should not print
+ * in different inks.
+ */
+export function personInk(seed: string): { ink: string; tint: string } {
+  const i = inkFor(seed);
+  return { ink: INKS[i], tint: TINTS[i] };
+}
+
 export function InitialTile({
   name,
   seed,
@@ -37,14 +49,14 @@ export function InitialTile({
   seed?: string;
   className?: string;
 }) {
-  const i = inkFor(seed ?? name);
+  const { ink, tint } = personInk(seed ?? name);
   return (
     <span
       aria-hidden
       className={cn(
         "sticker relative grid size-10 shrink-0 place-items-center overflow-hidden rounded-[0.6rem] font-display text-lg",
-        INKS[i],
-        TINTS[i],
+        ink,
+        tint,
         className,
       )}
     >

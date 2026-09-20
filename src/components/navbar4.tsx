@@ -310,7 +310,7 @@ const ProjectsMenu = ({ nav }: MenuProps) => (
               >
                 <span
                   aria-hidden
-                  className="sticker font-display relative grid size-11 shrink-0 place-items-center overflow-hidden rounded-[0.6rem] bg-muted text-xl leading-none text-foreground/70 group-hover:rotate-0"
+                  className="sticker font-display relative grid size-11 shrink-0 place-items-center overflow-hidden rounded-[0.6rem] bg-muted text-xl leading-none text-foreground/70 group-hover:-rotate-[1.75deg]"
                 >
                   <span aria-hidden className="halftone absolute inset-0 opacity-25" />
                   <span className="relative">{[...project.title][0]}</span>
@@ -413,7 +413,7 @@ const PeopleMenu = ({ nav }: MenuProps) => (
                   src={nav.pi.photo}
                   alt={`Dr. ${nav.pi.name}`}
                   overlay={<span aria-hidden className="tape -top-2.5 left-6 z-10" />}
-                  frameClassName="aspect-4/3 w-full -rotate-1 rounded-sm"
+                  frameClassName="aspect-4/3 w-full rounded-sm"
                   className="h-full w-full object-cover object-top"
                   fallback={<RisoArt variant="bloom" className="mx-auto size-40" />}
                 />

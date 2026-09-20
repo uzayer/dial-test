@@ -9,7 +9,7 @@ import {
   useSpring,
   useTransform,
 } from "motion/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -18,8 +18,10 @@ import { cn } from "@/lib/utils";
  *
  * A pinned "DIAL research prioritises" holds a one-line reveal window while
  * DIAL's research commitments step through it, one whole line at a time. Once
- * the list finishes, the headline scales down and blurs as the dark panel
- * rises over it and takes the screen.
+ * the list finishes, the headline scales down and blurs as the panel rises
+ * over it like a sheet lifting onto the page. The panel is the same paper as
+ * the page (there is no theme flip), so it is separated by a rising shadow and
+ * a dimming of the stage beneath it rather than by colour.
  *
  * The scroll track is a fixed multiple of the viewport and the list is moved by
  * a percentage of its own height, so the timing holds no matter how many items
@@ -61,11 +63,6 @@ interface ResearchScrollHeroProps {
 const ResearchScrollHero = ({ className, children }: ResearchScrollHeroProps) => {
   const trackRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLElement>(null);
-  const navRef = useRef<HTMLElement | null>(null);
-  const overlayRef = useRef<HTMLElement | null>(null);
-  const scopeRef = useRef<HTMLElement | null>(null);
-  const panelRadius = useRef<string>("0px");
-  const [siteIsDark, setSiteIsDark] = useState(false);
   const reduceMotion = useReducedMotion();
 
   // Progress runs 0 -> 1 across the pinned portion of the track.
@@ -73,9 +70,6 @@ const ResearchScrollHero = ({ className, children }: ResearchScrollHeroProps) =>
     target: trackRef,
     offset: ["start start", "end end"],
   });
-  // Raw scroll, because `scrollYProgress` clamps to 1 once the track ends and
-  // the band runs far past it. Driving nav state off the track would freeze it.
-  const { scrollY } = useScroll();
 
   // Snap to whole lines, then spring between them, so the slot never rests on
   // two half-cut words.
@@ -88,6 +82,9 @@ const ResearchScrollHero = ({ className, children }: ResearchScrollHeroProps) =>
   const stageScale = useTransform(scrollYProgress, [0.5, 0.85], [1, 0.5]);
   const stageBlur = useTransform(scrollYProgress, [0.5, 0.8], [0, 8]);
   const panelScale = useTransform(scrollYProgress, [0.5, 0.68], [0.98, 1]);
+  // The stage dims as the sheet comes over it, which is what makes a panel the
+  // same colour as the page read as a separate layer.
+  const stageScrim = useTransform(scrollYProgress, [0.5, 0.85], [0, 0.08]);
 
   // Full transform strings rather than Motion's `y`/`scale` shorthands, which
   // are not hardware-accelerated and drop frames while the page is loading.
@@ -96,76 +93,25 @@ const ResearchScrollHero = ({ className, children }: ResearchScrollHeroProps) =>
   const panelTransform = useMotionTemplate`scale(${panelScale})`;
   const stageBackdrop = useMotionTemplate`blur(${stageBlur}px)`;
 
-  // The band is always the opposing theme, so the transition reads either way.
-  const bandScope = siteIsDark ? "light" : "dark";
-
   /**
-   * Paints the nav from the band's own edges: the clipped copy shows exactly
-   * the slice of the nav strip the band currently covers, with the panel's own
-   * corner radius, so the colour arrives with the moving edge rather than in
-   * one flip. Writes `clip-path` straight onto the element — no React state, so
-   * scrolling never re-renders the tree.
+   * Lets the band's hand-drawn strokes (the underline and the circle) draw
+   * themselves. They are held undrawn by `data-ink-hold` until the sheet has
+   * settled, so they draw on arrival rather than while the band is still
+   * sliding in from below. One-shot: scrolling back up does not re-draw them.
    */
-  const paintNav = useCallback(() => {
+  const releaseInk = useCallback((progress: number) => {
     const panel = panelRef.current;
-    const scope = (scopeRef.current ??= document.querySelector("[data-site-nav-scope]"));
-    if (!panel || !scope) return;
-    const nav = (navRef.current ??= scope.querySelector(":scope > [data-site-nav]"));
-    const overlay = (overlayRef.current ??= scope.querySelector("[data-nav-overlay]"));
-    if (!nav || !overlay) return;
-
-    const navHeight = nav.getBoundingClientRect().height;
-    const rect = panel.getBoundingClientRect();
-    const top = Math.min(Math.max(rect.top, 0), navHeight);
-    const bottom = Math.min(Math.max(rect.bottom, 0), navHeight);
-    // Only round while the band's own top edge is inside the strip; past that
-    // the slice is a plain rectangle.
-    const round = rect.top > 0 ? ` round ${panelRadius.current} ${panelRadius.current} 0 0` : "";
-    overlay.style.clipPath = `inset(${top}px 0 ${navHeight - bottom}px 0${round})`;
-    // Once the band's bottom edge has climbed past the strip, the page behind
-    // the nav is ordinary content again, so the real nav takes its bar back.
-    scope.toggleAttribute("data-nav-solid", rect.bottom < navHeight);
+    if (panel && progress >= 0.66) panel.setAttribute("data-ink-go", "");
   }, []);
 
-  useMotionValueEvent(scrollY, "change", paintNav);
+  useMotionValueEvent(scrollYProgress, "change", releaseInk);
 
-  // Follow the site theme so the band can always be its opposite.
+  // A reload part-way down the page starts with progress already past the
+  // threshold and no change event to announce it, so check once on mount.
   useEffect(() => {
-    const html = document.documentElement;
-    const read = () => setSiteIsDark(html.classList.contains("dark"));
-    read();
-    const observer = new MutationObserver(read);
-    observer.observe(html, { attributes: true, attributeFilter: ["class"] });
-    return () => observer.disconnect();
-  }, []);
-
-  // The copy carries the band's theme. The class, not just a token override:
-  // descendants need the inherited colour and the `dark:` variants (the logo
-  // inverts through one) to follow.
-  useEffect(() => {
-    const overlay = (overlayRef.current ??= document.querySelector("[data-nav-overlay]"));
-    if (!overlay) return;
-    overlay.classList.toggle("dark", bandScope === "dark");
-    overlay.classList.toggle("light", bandScope === "light");
-  }, [bandScope]);
-
-  // Paint once on mount and whenever the strip's geometry can change; the
-  // panel's radius is read once, since it comes from a token.
-  useEffect(() => {
-    if (panelRef.current) {
-      panelRadius.current = getComputedStyle(panelRef.current).borderTopLeftRadius || "0px";
-    }
-    paintNav();
-    window.addEventListener("resize", paintNav);
-    const scope = scopeRef.current;
-    return () => {
-      window.removeEventListener("resize", paintNav);
-      // Leave the shared nav exactly as it was found.
-      scope?.removeAttribute("data-nav-solid");
-      overlayRef.current?.style.removeProperty("clip-path");
-      overlayRef.current?.classList.remove("dark", "light");
-    };
-  }, [paintNav]);
+    if (reduceMotion) panelRef.current?.setAttribute("data-ink-go", "");
+    else releaseInk(scrollYProgress.get());
+  }, [releaseInk, reduceMotion, scrollYProgress]);
 
   return (
     // `data-hero-root` ships in the server-rendered HTML, so the CSS that takes
@@ -229,24 +175,29 @@ const ResearchScrollHero = ({ className, children }: ResearchScrollHeroProps) =>
               style={{ backdropFilter: stageBackdrop }}
               className="pointer-events-none absolute inset-0 z-20 bg-background/10"
             />
+            <motion.div
+              aria-hidden
+              style={{ opacity: stageScrim }}
+              className="pointer-events-none absolute inset-0 z-20 bg-foreground"
+            />
           </div>
         </div>
       )}
 
-      {/* Pulled up so it rises over the pinned stage rather than after it.
-          The scope class re-scopes the theme tokens, so everything inside
-          renders in the opposite theme to the rest of the page. */}
+      {/* Pulled up so it rises over the pinned stage rather than after it. */}
       <motion.section
         ref={panelRef}
+        data-ink-hold
         style={reduceMotion ? undefined : { transform: panelTransform }}
         className={cn(
-          bandScope,
           // The band has to be a full viewport tall for its rise to finish, so
           // its contents are centred in it rather than parked at the top with
           // the remainder left as dead space under them. pt clears the fixed
           // nav plus breathing room, so the second hero does not arrive tight
           // under it, and is a floor on the centring rather than a gap.
-          "relative z-20 flex min-h-screen w-full flex-col justify-center overflow-hidden rounded-4xl bg-background pt-28 pb-16 text-foreground md:pt-32 md:pb-20",
+          "relative z-20 flex min-h-screen w-full flex-col justify-center overflow-hidden rounded-4xl border-t border-border bg-background pt-28 pb-16 text-foreground md:pt-32 md:pb-20",
+          // Lifts off the page: a shadow thrown upward onto the stage.
+          "shadow-[0_-32px_64px_-24px_oklch(0.19_0.012_60/0.22)] dark:shadow-[0_-32px_64px_-24px_oklch(0_0_0/0.6)]",
           !reduceMotion && "-mt-[100vh]",
         )}
       >

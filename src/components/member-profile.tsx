@@ -101,7 +101,7 @@ const MemberProfile = ({ member, className }: MemberProfileProps) => {
               src={member.photo}
               alt={member.name}
               overlay={<span aria-hidden className="tape -top-2.5 left-6 z-10" />}
-              frameClassName="aspect-[4/5] w-full -rotate-1 rounded-sm"
+              frameClassName="aspect-[4/5] w-full rounded-sm"
               className="h-full w-full object-cover object-top"
               fallback={
                 <InitialTile
