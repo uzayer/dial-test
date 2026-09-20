@@ -1,13 +1,7 @@
 "use client";
 
-import {
-  Accessibility,
-  ArrowRight,
-  Brain,
-  Globe,
-  Heart,
-  Users,
-} from "lucide-react";
+import { Accessibility, ArrowRight, Brain, Globe, Heart, Users } from "lucide-react";
+import Link from "next/link";
 import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -64,7 +58,7 @@ const Feature122 = ({ className }: Feature122Props) => {
               Explore our research
             </h3>
             <Button asChild className="w-full sm:w-auto" size="lg">
-              <a href="/research">View all</a>
+              <Link href="/research">View all</Link>
             </Button>
           </div>
           <img
@@ -80,12 +74,7 @@ const Feature122 = ({ className }: Feature122Props) => {
 
 export { Feature122 };
 
-const DataBlock: React.FC<DataBlockProps> = ({
-  title,
-  description,
-  icon,
-  href,
-}) => {
+const DataBlock: React.FC<DataBlockProps> = ({ title, description, icon, href }) => {
   const [isBlockHover, setBlockHover] = useState<boolean>(false);
 
   return (
@@ -100,9 +89,7 @@ const DataBlock: React.FC<DataBlockProps> = ({
       >
         {title}
       </h3>
-      <p className="mb-5 text-sm text-muted-foreground/90 lg:text-base">
-        {description}
-      </p>
+      <p className="mb-5 text-sm text-muted-foreground/90 lg:text-base">{description}</p>
       <div className="mt-auto flex items-end justify-between">
         <div>{icon}</div>
         <ArrowRight

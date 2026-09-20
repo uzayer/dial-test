@@ -79,19 +79,12 @@ const ResearchScrollHero = ({ className, children }: ResearchScrollHeroProps) =>
 
   // Snap to whole lines, then spring between them, so the slot never rests on
   // two half-cut words.
-  const lineIndex = useTransform(
-    scrollYProgress,
-    [0, 0.45],
-    [0, focusAreas.length - 1],
-  );
+  const lineIndex = useTransform(scrollYProgress, [0, 0.45], [0, focusAreas.length - 1]);
   const snappedLine = useSpring(useTransform(lineIndex, Math.round), {
     stiffness: 400,
     damping: 40,
   });
-  const listOffset = useTransform(
-    snappedLine,
-    (line) => -(line / focusAreas.length) * 100,
-  );
+  const listOffset = useTransform(snappedLine, (line) => -(line / focusAreas.length) * 100);
   const stageScale = useTransform(scrollYProgress, [0.5, 0.85], [1, 0.5]);
   const stageBlur = useTransform(scrollYProgress, [0.5, 0.8], [0, 8]);
   const panelScale = useTransform(scrollYProgress, [0.5, 0.68], [0.98, 1]);
@@ -179,10 +172,7 @@ const ResearchScrollHero = ({ className, children }: ResearchScrollHeroProps) =>
     // the nav out of flow applies on the very first paint, with no JS.
     <div
       data-hero-root
-      className={cn(
-        "relative w-full overflow-x-clip bg-background text-foreground",
-        className,
-      )}
+      className={cn("relative w-full overflow-x-clip bg-background text-foreground", className)}
     >
       {reduceMotion ? (
         <div className="flex min-h-[70vh] flex-col items-center justify-center gap-6 px-6 pt-24 text-center">
@@ -207,9 +197,7 @@ const ResearchScrollHero = ({ className, children }: ResearchScrollHeroProps) =>
               {/* Stacked below xl: side by side needs ~1100px, so anything
                   narrower clipped the list at the viewport edge. */}
               <div className="flex flex-col px-6 font-display text-4xl tracking-tight md:text-6xl xl:flex-row xl:gap-4 xl:px-0">
-                <p className="leading-[1.4] whitespace-nowrap">
-                  DIAL research prioritises
-                </p>
+                <p className="leading-[1.4] whitespace-nowrap">DIAL research prioritises</p>
                 <div className="relative h-[1.4em] overflow-hidden xl:overflow-visible">
                   <span aria-hidden className="invisible block leading-[1.4] font-light italic">
                     {widestArea}

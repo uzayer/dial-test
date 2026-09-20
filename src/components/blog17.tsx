@@ -117,10 +117,7 @@ interface Blog17Props {
 const Blog17 = ({ className }: Blog17Props) => {
   const [selectedCategory, setSelectedCategory] = useState("All Articles");
 
-  const categories = [
-    "All Articles",
-    ...Array.from(new Set(data.map((item) => item.category))),
-  ];
+  const categories = ["All Articles", ...Array.from(new Set(data.map((item) => item.category)))];
 
   const filteredData =
     selectedCategory === "All Articles"
@@ -132,13 +129,10 @@ const Blog17 = ({ className }: Blog17Props) => {
       <div className="container">
         <div className="flex flex-col items-center gap-6 text-center">
           <Badge variant="secondary">Blog</Badge>
-          <h1 className="text-4xl font-bold lg:text-7xl">
-            Latest Insights & Updates
-          </h1>
+          <h1 className="text-4xl font-bold lg:text-7xl">Latest Insights & Updates</h1>
           <p className="text-balance lg:text-xl">
-            Stay up to date with the latest trends, tutorials, and best
-            practices in software development. Our experts share their knowledge
-            to help you build better applications.
+            Stay up to date with the latest trends, tutorials, and best practices in software
+            development. Our experts share their knowledge to help you build better applications.
           </p>
         </div>
         <div className="mx-auto mt-20 grid max-w-7xl grid-cols-1 gap-20 lg:grid-cols-4">
@@ -162,18 +156,12 @@ const Blog17 = ({ className }: Blog17Props) => {
             {filteredData.map((item) => (
               <React.Fragment key={item.id}>
                 <a href={item.link} className="flex flex-col gap-3">
-                  <p className="text-sm font-semibold text-muted-foreground">
-                    {item.category}
-                  </p>
-                  <h3 className="text-2xl font-semibold text-balance lg:text-3xl">
-                    {item.title}
-                  </h3>
+                  <p className="text-sm font-semibold text-muted-foreground">{item.category}</p>
+                  <h3 className="text-2xl font-semibold text-balance lg:text-3xl">{item.title}</h3>
                   <p className="text-muted-foreground">{item.description}</p>
                   <div className="mt-3 flex items-center gap-2 text-sm">
                     <span className="font-medium">{item.author}</span>
-                    <span className="text-muted-foreground">
-                      on {item.date}
-                    </span>
+                    <span className="text-muted-foreground">on {item.date}</span>
                   </div>
                 </a>
                 <Separator className="my-8" />

@@ -64,15 +64,10 @@ const Gallery33 = ({
       <div className="container w-full">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {cardData.map((card, index) => (
-            <div
-              key={index}
-              className="relative flex flex-col rounded-4xl bg-muted/60 p-2"
-            >
+            <div key={index} className="relative flex flex-col rounded-4xl bg-muted/60 p-2">
               <Lens
                 hovering={hoveredCard === index}
-                setHovering={(hovering) =>
-                  setHoveredCard(hovering ? index : null)
-                }
+                setHovering={(hovering) => setHoveredCard(hovering ? index : null)}
               >
                 <img
                   onMouseEnter={() => setHoveredCard(index)}
@@ -84,12 +79,8 @@ const Gallery33 = ({
               </Lens>
               <div className="mt-3 flex items-center justify-between gap-3 px-2 pb-3">
                 <div>
-                  <p className="text-sm tracking-tighter text-muted-foreground">
-                    {card.title}
-                  </p>
-                  <h3 className="text-2xl font-semibold tracking-tight">
-                    {card.price}
-                  </h3>
+                  <p className="text-sm tracking-tighter text-muted-foreground">{card.title}</p>
+                  <h3 className="text-2xl font-semibold tracking-tight">{card.price}</h3>
                 </div>
                 <a
                   href={card.link}

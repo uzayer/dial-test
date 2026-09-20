@@ -41,9 +41,7 @@ const Feature280 = ({ className }: Feature280Props) => {
             {features.map((feature) => (
               <li key={feature} className="flex gap-2 lg:items-center">
                 <BadgeCheck className="size-4 text-muted-foreground/80" />
-                <p className="tracking-tight text-muted-foreground/80">
-                  {feature}
-                </p>
+                <p className="tracking-tight text-muted-foreground/80">{feature}</p>
               </li>
             ))}
           </ul>
@@ -85,8 +83,8 @@ const CARDS = [
     content: (
       <p>
         I joined with no formal research experience. Within a semester I was{" "}
-        <Highlight>co-authoring a paper for CHI</Highlight>. The mentorship here
-        is unlike anything else at NSU.
+        <Highlight>co-authoring a paper for CHI</Highlight>. The mentorship here is unlike anything
+        else at NSU.
       </p>
     ),
   },
@@ -97,8 +95,8 @@ const CARDS = [
     content: (
       <p>
         Field research changed how I think about technology.{" "}
-        <Highlight>We work with real communities</Highlight> in Bangladesh — not
-        hypothetical users in a lab.
+        <Highlight>We work with real communities</Highlight> in Bangladesh — not hypothetical users
+        in a lab.
       </p>
     ),
   },
@@ -109,8 +107,7 @@ const CARDS = [
     content: (
       <p>
         DIAL is a small lab so you are never lost in the crowd.{" "}
-        <Highlight>Nova gives you real feedback</Highlight> and real
-        responsibility from day one.
+        <Highlight>Nova gives you real feedback</Highlight> and real responsibility from day one.
       </p>
     ),
   },

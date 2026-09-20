@@ -1,4 +1,4 @@
-import type { Organization } from './types'
+import type { Organization } from "./types";
 
 /**
  * Fixture organizations: a small, hand-picked subset chosen to cover edge cases
@@ -15,8 +15,9 @@ export const organizations: Organization[] = [
     url: "http://www.northsouth.edu/",
     provenance: {
       source: "scrape",
-      sourceNote: "nsu-hci-current-website/contact-us.md — \"Design Inclusion and Access Lab (DIAL)\"; URL from nova-ahmed-personal-site/home.md"
-    }
+      sourceNote:
+        'nsu-hci-current-website/contact-us.md — "Design Inclusion and Access Lab (DIAL)"; URL from nova-ahmed-personal-site/home.md',
+    },
   },
   {
     id: "gates-foundation",
@@ -25,8 +26,9 @@ export const organizations: Organization[] = [
     type: "funding-agency",
     provenance: {
       source: "scrape",
-      sourceNote: "DIAL Proposal.md — \"Funding Information\"; nsu-hci-current-website/awards.md — \"Research Grants, Funding, and Awards\""
-    }
+      sourceNote:
+        'DIAL Proposal.md — "Funding Information"; nsu-hci-current-website/awards.md — "Research Grants, Funding, and Awards"',
+    },
   },
   {
     id: "google",
@@ -35,8 +37,9 @@ export const organizations: Organization[] = [
     type: "company",
     provenance: {
       source: "scrape",
-      sourceNote: "DIAL Proposal.md — \"Collaborator List\"; nsu-hci-current-website/awards.md — \"Research Grants, Funding, and Awards\""
-    }
+      sourceNote:
+        'DIAL Proposal.md — "Collaborator List"; nsu-hci-current-website/awards.md — "Research Grants, Funding, and Awards"',
+    },
   },
   {
     id: "bracu",
@@ -46,8 +49,8 @@ export const organizations: Organization[] = [
     type: "university",
     provenance: {
       source: "scrape",
-      sourceNote: "DIAL Proposal.md — \"Collaborator List\" (\"National Level Collaboration\")"
-    }
+      sourceNote: 'DIAL Proposal.md — "Collaborator List" ("National Level Collaboration")',
+    },
   },
   {
     id: "bdosn",
@@ -57,8 +60,8 @@ export const organizations: Organization[] = [
     type: "other",
     provenance: {
       source: "scrape",
-      sourceNote: "DIAL Proposal.md — \"Collaborator List\" (\"National Level Collaboration\")"
-    }
+      sourceNote: 'DIAL Proposal.md — "Collaborator List" ("National Level Collaboration")',
+    },
   },
   {
     id: "cardiff-university",
@@ -67,8 +70,8 @@ export const organizations: Organization[] = [
     type: "university",
     provenance: {
       source: "scrape",
-      sourceNote: "DIAL Proposal.md — \"Collaborator List\" (\"International Collaboration\")"
-    }
+      sourceNote: 'DIAL Proposal.md — "Collaborator List" ("International Collaboration")',
+    },
   },
   {
     id: "university-of-leeds",
@@ -77,8 +80,8 @@ export const organizations: Organization[] = [
     type: "university",
     provenance: {
       source: "scrape",
-      sourceNote: "DIAL Proposal.md — \"Collaborator List\" (\"International Collaboration\")"
-    }
+      sourceNote: 'DIAL Proposal.md — "Collaborator List" ("International Collaboration")',
+    },
   },
   {
     id: "birmingham-university",
@@ -87,8 +90,8 @@ export const organizations: Organization[] = [
     type: "university",
     provenance: {
       source: "scrape",
-      sourceNote: "DIAL Proposal.md — \"Collaborator List\" (\"International Collaboration\")"
-    }
+      sourceNote: 'DIAL Proposal.md — "Collaborator List" ("International Collaboration")',
+    },
   },
   {
     id: "western-washington-university",
@@ -98,8 +101,8 @@ export const organizations: Organization[] = [
     type: "university",
     provenance: {
       source: "scrape",
-      sourceNote: "DIAL Proposal.md — \"Collaborator List\" (\"International Collaboration\")"
-    }
+      sourceNote: 'DIAL Proposal.md — "Collaborator List" ("International Collaboration")',
+    },
   },
   {
     id: "nsf",
@@ -109,8 +112,8 @@ export const organizations: Organization[] = [
     type: "funding-agency",
     provenance: {
       source: "scrape",
-      sourceNote: "DIAL Proposal.md — \"Collaborator List\" (\"International Collaboration\")"
-    }
+      sourceNote: 'DIAL Proposal.md — "Collaborator List" ("International Collaboration")',
+    },
   },
   {
     id: "acm-sigchi",
@@ -119,8 +122,8 @@ export const organizations: Organization[] = [
     type: "other",
     provenance: {
       source: "scrape",
-      sourceNote: "DIAL Proposal.md — \"Collaborator List\" (\"International Collaboration\")"
-    }
+      sourceNote: 'DIAL Proposal.md — "Collaborator List" ("International Collaboration")',
+    },
   },
   {
     id: "university-of-louisiana-at-lafayette",
@@ -129,10 +132,10 @@ export const organizations: Organization[] = [
     type: "university",
     provenance: {
       source: "scrape",
-      sourceNote: "nsu-hci-current-website/people.md — \"Researchers\" (Dr. Tamanna Motahar)"
-    }
-  }
-]
+      sourceNote: 'nsu-hci-current-website/people.md — "Researchers" (Dr. Tamanna Motahar)',
+    },
+  },
+];
 
 /** Drives the home page's collaborator strip. */
 export const collaboratingOrganizationIds: string[] = [
@@ -144,8 +147,8 @@ export const collaboratingOrganizationIds: string[] = [
   "nsf",
   "google",
   "bdosn",
-  "bracu"
-]
+  "bracu",
+];
 
 /** The home page's "In collaboration with" strip, in display order. */
 export const homePartnerOrganizationIds: string[] = [
@@ -154,5 +157,5 @@ export const homePartnerOrganizationIds: string[] = [
   "gates-foundation",
   "acm-sigchi",
   "cardiff-university",
-  "bracu"
-]
+  "bracu",
+];

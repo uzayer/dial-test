@@ -25,9 +25,8 @@ const Hero10 = ({ className }: Hero10Props) => {
                 This is a heading for your new project
               </h1>
               <p className="mx-auto max-w-2xl text-muted-foreground md:text-lg lg:text-xl">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Elig
-                doloremque mollitia fugiat omnis! Porro facilis quo animi
-                consequatur.
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Elig doloremque mollitia
+                fugiat omnis! Porro facilis quo animi consequatur.
               </p>
             </div>
 

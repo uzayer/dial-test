@@ -7,9 +7,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-pnpm dev       # Start dev server
-pnpm build     # Production build
-pnpm lint      # Run ESLint
+bun dev       # Start dev server
+bun build     # Production build
+bun lint      # Run Oxlint
+bun format    # Format with Oxfmt
 ```
 
 No test runner is configured yet.

@@ -25,8 +25,8 @@ const Feature10 = ({ className }: Feature10Props) => {
                 <span className="absolute -left-px hidden h-6 w-px bg-primary md:inline-block"></span>
               </h3>
               <p className="text-sm text-muted-foreground md:text-base">
-                We look for curiosity, not credentials. If you ask good
-                questions about people and technology, you belong here.
+                We look for curiosity, not credentials. If you ask good questions about people and
+                technology, you belong here.
               </p>
             </div>
           </div>
@@ -40,8 +40,8 @@ const Feature10 = ({ className }: Feature10Props) => {
                 <span className="absolute -left-px hidden h-6 w-px bg-primary md:inline-block"></span>
               </h3>
               <p className="text-sm text-muted-foreground md:text-base">
-                Our research happens in the field — with garment workers, urban
-                youth, and rural health communities across Bangladesh.
+                Our research happens in the field — with garment workers, urban youth, and rural
+                health communities across Bangladesh.
               </p>
             </div>
           </div>
@@ -55,8 +55,8 @@ const Feature10 = ({ className }: Feature10Props) => {
                 <span className="absolute -left-px hidden h-6 w-px bg-primary md:inline-block"></span>
               </h3>
               <p className="text-sm text-muted-foreground md:text-base">
-                DIAL publishes at CHI, CSCW, UIST, and JMIR. Lab members
-                co-author real papers with real international impact.
+                DIAL publishes at CHI, CSCW, UIST, and JMIR. Lab members co-author real papers with
+                real international impact.
               </p>
             </div>
           </div>
@@ -70,8 +70,8 @@ const Feature10 = ({ className }: Feature10Props) => {
                 <span className="absolute -left-px hidden h-6 w-px bg-primary md:inline-block"></span>
               </h3>
               <p className="text-sm text-muted-foreground md:text-base">
-                Small team, flat hierarchy. Nova works directly with every lab
-                member — you will never be lost in the crowd.
+                Small team, flat hierarchy. Nova works directly with every lab member — you will
+                never be lost in the crowd.
               </p>
             </div>
           </div>

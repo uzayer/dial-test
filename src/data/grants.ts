@@ -1,4 +1,4 @@
-import type { Grant } from './types'
+import type { Grant } from "./types";
 
 /**
  * Fixture grants: a small, hand-picked subset chosen to cover edge cases
@@ -9,7 +9,8 @@ export const grants: Grant[] = [
   {
     id: "nsu-uiu-xml-psychological-problems",
     slug: "nsu-uiu-xml-psychological-problems",
-    title: "A Real-Time Approach to Identify Psychological Problems Unobtrusively Through Explainable Machine Learning Model",
+    title:
+      "A Real-Time Approach to Identify Psychological Problems Unobtrusively Through Explainable Machine Learning Model",
     funder: null,
     funderLabel: "North South University and United International University",
     amountValue: 499500,
@@ -18,21 +19,19 @@ export const grants: Grant[] = [
     investigators: [
       {
         teamMember: "nova-ahmed",
-        role: "pi"
+        role: "pi",
       },
       {
         teamMember: "salekul-islam",
-        role: "co-pi"
-      }
+        role: "co-pi",
+      },
     ],
-    themes: [
-      "mental-health-wellbeing",
-      "explainable-ai-ml"
-    ],
+    themes: ["mental-health-wellbeing", "explainable-ai-ml"],
     provenance: {
       source: "scrape",
-      sourceNote: "nova-ahmed-personal-site/research-mental-health-with-mon-majhi.md — \"Fund\" (co-PI given as \"Prof. Salekul Islam, UIU\")"
-    }
+      sourceNote:
+        'nova-ahmed-personal-site/research-mental-health-with-mon-majhi.md — "Fund" (co-PI given as "Prof. Salekul Islam, UIU")',
+    },
   },
   {
     id: "ctrg-autism-tech-development",
@@ -47,16 +46,14 @@ export const grants: Grant[] = [
     investigators: [
       {
         teamMember: "nova-ahmed",
-        role: "pi"
-      }
+        role: "pi",
+      },
     ],
-    themes: [
-      "accessibility-inclusion"
-    ],
+    themes: ["accessibility-inclusion"],
     provenance: {
       source: "scrape",
-      sourceNote: "DIAL Proposal.md — \"Funding Information\""
-    }
+      sourceNote: 'DIAL Proposal.md — "Funding Information"',
+    },
   },
   {
     id: "ctrg-22-seps-01-autism-parent-teacher",
@@ -71,20 +68,18 @@ export const grants: Grant[] = [
     investigators: [
       {
         teamMember: "nova-ahmed",
-        role: "pi"
+        role: "pi",
       },
       {
         teamMember: "shameem-ahmed",
-        role: "co-pi"
-      }
+        role: "co-pi",
+      },
     ],
-    themes: [
-      "accessibility-inclusion"
-    ],
+    themes: ["accessibility-inclusion"],
     provenance: {
       source: "scrape",
-      sourceNote: "DIAL Proposal.md — \"Funding Information\""
-    }
+      sourceNote: 'DIAL Proposal.md — "Funding Information"',
+    },
   },
   {
     id: "nsu-bap-re-bap-seed",
@@ -96,18 +91,17 @@ export const grants: Grant[] = [
       {
         customInvestigator: {
           name: "Mirza Md. Lutfe Elahi",
-          affiliation: "nsu"
+          affiliation: "nsu",
         },
-        role: "pi"
-      }
+        role: "pi",
+      },
     ],
-    themes: [
-      "iot-low-cost-hardware"
-    ],
+    themes: ["iot-low-cost-hardware"],
     provenance: {
       source: "scrape",
-      sourceNote: "nova-ahmed-personal-site/research-bap-re-bap.md — \"Bap re Bap\" (no amount or date)"
-    }
+      sourceNote:
+        'nova-ahmed-personal-site/research-bap-re-bap.md — "Bap re Bap" (no amount or date)',
+    },
   },
   {
     id: "gates-fintech-barriers",
@@ -123,18 +117,16 @@ export const grants: Grant[] = [
     investigators: [
       {
         teamMember: "nova-ahmed",
-        role: "pi"
-      }
+        role: "pi",
+      },
     ],
-    themes: [
-      "gender-feminist-hci",
-      "ictd"
-    ],
+    themes: ["gender-feminist-hci", "ictd"],
     featured: true,
     provenance: {
       source: "scrape",
-      sourceNote: "DIAL Proposal.md — \"Funding Information\"; amount confirmed by nova-ahmed-personal-site/awards.md — \"Funding\""
-    }
+      sourceNote:
+        'DIAL Proposal.md — "Funding Information"; amount confirmed by nova-ahmed-personal-site/awards.md — "Funding"',
+    },
   },
   {
     id: "bdosn-technology-for-women",
@@ -149,16 +141,13 @@ export const grants: Grant[] = [
     investigators: [
       {
         teamMember: "rahat-jahangir-rony",
-        role: "pi"
-      }
+        role: "pi",
+      },
     ],
-    themes: [
-      "gender-feminist-hci",
-      "computing-education-community"
-    ],
+    themes: ["gender-feminist-hci", "computing-education-community"],
     provenance: {
       source: "scrape",
-      sourceNote: "DIAL Proposal.md — \"Funding Information\""
-    }
-  }
-]
+      sourceNote: 'DIAL Proposal.md — "Funding Information"',
+    },
+  },
+];

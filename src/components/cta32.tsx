@@ -70,14 +70,9 @@ const Cta32 = ({
 
         <div className="grid border-t-2 border-dashed border-muted md:border-t-0 md:border-l-2">
           {stats.map((stat, index) => (
-            <div
-              key={index}
-              className="border-b-2 border-dashed border-muted p-6 last:border-0"
-            >
+            <div key={index} className="border-b-2 border-dashed border-muted p-6 last:border-0">
               <p className="text-2xl font-bold text-primary">{stat.label}</p>
-              <p className="text-sm text-muted-foreground">
-                {stat.description}
-              </p>
+              <p className="text-sm text-muted-foreground">{stat.description}</p>
             </div>
           ))}
         </div>

@@ -1,35 +1,35 @@
-'use client'
+"use client";
 
-import { Fragment, useState } from 'react'
-import { ArrowUpRight, Copy, FileText, Quote, Trophy } from 'lucide-react'
+import { Fragment, useState } from "react";
+import { ArrowUpRight, Copy, FileText, Quote, Trophy } from "lucide-react";
 
-import { Button } from '@/components/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Separator } from '@/components/ui/separator'
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 
 export type MemberPublication = {
-  id: string
-  title: string
-  authors: string
-  venue: string
-  year: number
-  award?: string
-  pdfLink?: string
-  projectLink?: string
-  citationText?: string
-}
+  id: string;
+  title: string;
+  authors: string;
+  venue: string;
+  year: number;
+  award?: string;
+  pdfLink?: string;
+  projectLink?: string;
+  citationText?: string;
+};
 
 interface MemberPublicationsProps {
-  memberName: string
-  publications: MemberPublication[]
-  scholarUrl?: string
+  memberName: string;
+  publications: MemberPublication[];
+  scholarUrl?: string;
 }
 
-const YEAR_PAGE_SIZE = 5
+const YEAR_PAGE_SIZE = 5;
 
 function BoldName({ authors, name }: { authors: string; name: string }) {
-  const parts = authors.split(name)
-  if (parts.length === 1) return <span>{authors}</span>
+  const parts = authors.split(name);
+  if (parts.length === 1) return <span>{authors}</span>;
   return (
     <>
       {parts.map((part, i) => (
@@ -39,21 +39,21 @@ function BoldName({ authors, name }: { authors: string; name: string }) {
         </Fragment>
       ))}
     </>
-  )
+  );
 }
 
 function PubActions({ pub }: { pub: MemberPublication }) {
   const copyToClipboard = async (text: string) => {
     try {
       if (navigator?.clipboard?.writeText) {
-        await navigator.clipboard.writeText(text)
-        return
+        await navigator.clipboard.writeText(text);
+        return;
       }
-      window.prompt('Copy this citation text:', text)
+      window.prompt("Copy this citation text:", text);
     } catch {
       // silent
     }
-  }
+  };
 
   return (
     <div className="flex flex-wrap gap-2">
@@ -96,7 +96,7 @@ function PubActions({ pub }: { pub: MemberPublication }) {
         </Button>
       )}
     </div>
-  )
+  );
 }
 
 function YearGroup({
@@ -104,13 +104,13 @@ function YearGroup({
   pubs,
   memberName,
 }: {
-  year: number
-  pubs: MemberPublication[]
-  memberName: string
+  year: number;
+  pubs: MemberPublication[];
+  memberName: string;
 }) {
-  const [expanded, setExpanded] = useState(false)
-  const visible = expanded ? pubs : pubs.slice(0, YEAR_PAGE_SIZE)
-  const hasMore = pubs.length > YEAR_PAGE_SIZE
+  const [expanded, setExpanded] = useState(false);
+  const visible = expanded ? pubs : pubs.slice(0, YEAR_PAGE_SIZE);
+  const hasMore = pubs.length > YEAR_PAGE_SIZE;
 
   return (
     <div className="py-14 md:py-20">
@@ -195,7 +195,7 @@ function YearGroup({
               <Separator />
               <div className="pt-4">
                 <Button variant="ghost" size="sm" onClick={() => setExpanded(!expanded)}>
-                  {expanded ? 'Show fewer' : `Show ${pubs.length - YEAR_PAGE_SIZE} more`}
+                  {expanded ? "Show fewer" : `Show ${pubs.length - YEAR_PAGE_SIZE} more`}
                 </Button>
               </div>
             </>
@@ -204,27 +204,27 @@ function YearGroup({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 const MemberPublications = ({ memberName, publications, scholarUrl }: MemberPublicationsProps) => {
   const byYear = publications.reduce<Record<number, MemberPublication[]>>((acc, pub) => {
-    if (!acc[pub.year]) acc[pub.year] = []
-    acc[pub.year].push(pub)
-    return acc
-  }, {})
+    if (!acc[pub.year]) acc[pub.year] = [];
+    acc[pub.year].push(pub);
+    return acc;
+  }, {});
 
   const years = Object.keys(byYear)
     .map(Number)
-    .sort((a, b) => b - a)
+    .sort((a, b) => b - a);
 
   // Pin award-winning papers to top within each year group
   for (const year of years) {
     byYear[year].sort((a, b) => {
-      if (a.award && !b.award) return -1
-      if (!a.award && b.award) return 1
-      return 0
-    })
+      if (a.award && !b.award) return -1;
+      if (!a.award && b.award) return 1;
+      return 0;
+    });
   }
 
   return (
@@ -256,7 +256,7 @@ const MemberPublications = ({ memberName, publications, scholarUrl }: MemberPubl
         )}
       </div>
     </section>
-  )
-}
+  );
+};
 
-export { MemberPublications }
+export { MemberPublications };

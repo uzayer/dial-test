@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { SegmentedControl } from "@/components/editorial";
 import { displaySectionTitle } from "@/lib/typography";
-import { cn } from "@/lib/utils";
 
 export type AwardCategory =
   | "best-paper"
@@ -49,13 +48,9 @@ interface AwardsFilterTableProps {
 export function AwardsFilterTable({ awards, yearRange }: AwardsFilterTableProps) {
   const [activeCategory, setActiveCategory] = useState<AwardCategory | null>(null);
 
-  const uniqueCategories = [
-    ...new Set(awards.map((a) => a.category)),
-  ] as AwardCategory[];
+  const uniqueCategories = [...new Set(awards.map((a) => a.category))] as AwardCategory[];
 
-  const filtered = activeCategory
-    ? awards.filter((a) => a.category === activeCategory)
-    : awards;
+  const filtered = activeCategory ? awards.filter((a) => a.category === activeCategory) : awards;
 
   const byYear = filtered.reduce<Record<string, Award[]>>((acc, award) => {
     const y = award.year.toString();
@@ -86,16 +81,10 @@ export function AwardsFilterTable({ awards, yearRange }: AwardsFilterTableProps)
         <table className="w-full border-collapse">
           <thead>
             <tr className="h-10 border-b text-left text-sm text-muted-foreground">
-              <th className="hidden min-w-28 pr-4 font-normal lg:table-cell">
-                Organization
-              </th>
+              <th className="hidden min-w-28 pr-4 font-normal lg:table-cell">Organization</th>
               <th className="pr-4 font-normal">Award</th>
-              <th className="hidden pr-4 font-normal md:table-cell">
-                Publication
-              </th>
-              <th className="hidden text-right font-normal sm:table-cell">
-                Category
-              </th>
+              <th className="hidden pr-4 font-normal md:table-cell">Publication</th>
+              <th className="hidden text-right font-normal sm:table-cell">Category</th>
             </tr>
           </thead>
           {sortedYears.map((year) => (
@@ -109,10 +98,7 @@ export function AwardsFilterTable({ awards, yearRange }: AwardsFilterTableProps)
                 </td>
               </tr>
               {byYear[year].map((award, i) => (
-                <tr
-                  key={i}
-                  className="border-b"
-                >
+                <tr key={i} className="border-b">
                   <td className="hidden py-5 pr-6 align-top text-sm text-muted-foreground lg:table-cell">
                     {award.organization}
                   </td>
@@ -123,9 +109,7 @@ export function AwardsFilterTable({ awards, yearRange }: AwardsFilterTableProps)
                     </span>
                   </td>
                   <td className="hidden py-5 pr-6 align-top text-sm text-pretty text-muted-foreground md:table-cell">
-                    {award.linkedPublication
-                      ? `"${award.linkedPublication}"`
-                      : "—"}
+                    {award.linkedPublication ? `"${award.linkedPublication}"` : "—"}
                   </td>
                   <td className="hidden py-5 text-right align-top text-sm whitespace-nowrap text-muted-foreground sm:table-cell">
                     {categoryLabels[award.category]}

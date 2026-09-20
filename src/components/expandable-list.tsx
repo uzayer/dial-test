@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { ChevronDown } from 'lucide-react'
+import { useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { ChevronDown } from "lucide-react";
 
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
 
 export interface ExpandableItem {
-  title: string
-  body: string
+  title: string;
+  body: string;
 }
 
 /**
@@ -23,22 +23,22 @@ export function ExpandableList({
   defaultOpen = 0,
   className,
 }: {
-  items: ExpandableItem[]
+  items: ExpandableItem[];
   /** Index open on arrival, or null for all closed. */
-  defaultOpen?: number | null
-  className?: string
+  defaultOpen?: number | null;
+  className?: string;
 }) {
-  const [active, setActive] = useState<number | null>(defaultOpen)
-  const reduceMotion = useReducedMotion()
+  const [active, setActive] = useState<number | null>(defaultOpen);
+  const reduceMotion = useReducedMotion();
 
   return (
-    <ul className={cn('flex flex-col', className)}>
+    <ul className={cn("flex flex-col", className)}>
       {items.map((item, i) => {
-        const open = active === i
+        const open = active === i;
         // The open card and its neighbours round off, so the stack reads as
         // cards rather than one ruled block.
-        const roundTop = i === 0 || open || (active !== null && i === active + 1)
-        const roundBottom = i === items.length - 1 || open || (active !== null && i === active - 1)
+        const roundTop = i === 0 || open || (active !== null && i === active + 1);
+        const roundBottom = i === items.length - 1 || open || (active !== null && i === active - 1);
         return (
           <motion.li
             key={item.title}
@@ -50,9 +50,7 @@ export function ExpandableList({
               borderBottomRightRadius: roundBottom ? 18 : 2,
             }}
             transition={
-              reduceMotion
-                ? { duration: 0.15 }
-                : { type: 'spring', duration: 0.5, bounce: 0.18 }
+              reduceMotion ? { duration: 0.15 } : { type: "spring", duration: 0.5, bounce: 0.18 }
             }
             className="overflow-hidden border border-paper-line bg-card"
           >
@@ -67,8 +65,8 @@ export function ExpandableList({
               <ChevronDown
                 aria-hidden
                 className={cn(
-                  'size-4 shrink-0 text-muted-foreground transition-transform duration-200 ease-snappy',
-                  open && 'rotate-180',
+                  "size-4 shrink-0 text-muted-foreground transition-transform duration-200 ease-snappy",
+                  open && "rotate-180",
                 )}
               />
             </button>
@@ -77,11 +75,13 @@ export function ExpandableList({
               {open && (
                 <motion.div
                   key="body"
-                  initial={{ height: 0, opacity: 0, filter: 'blur(2px)' }}
-                  animate={{ height: 'auto', opacity: 1, filter: 'blur(0px)' }}
-                  exit={{ height: 0, opacity: 0, filter: 'blur(2px)' }}
+                  initial={{ height: 0, opacity: 0, filter: "blur(2px)" }}
+                  animate={{ height: "auto", opacity: 1, filter: "blur(0px)" }}
+                  exit={{ height: 0, opacity: 0, filter: "blur(2px)" }}
                   transition={
-                    reduceMotion ? { duration: 0.15 } : { type: 'spring', duration: 0.45, bounce: 0 }
+                    reduceMotion
+                      ? { duration: 0.15 }
+                      : { type: "spring", duration: 0.45, bounce: 0 }
                   }
                 >
                   <p className="px-5 pb-5 pl-14 text-pretty text-muted-foreground">{item.body}</p>
@@ -89,8 +89,8 @@ export function ExpandableList({
               )}
             </AnimatePresence>
           </motion.li>
-        )
+        );
       })}
     </ul>
-  )
+  );
 }

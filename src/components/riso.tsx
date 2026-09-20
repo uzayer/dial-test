@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
 
 /**
  * Large abstract compositions in the two inks: overlapping shapes, halftone
@@ -13,20 +13,20 @@ import { cn } from '@/lib/utils'
  * the same on every visit.
  */
 
-type Variant = 'orbit' | 'strata' | 'signal' | 'field' | 'bloom'
+type Variant = "orbit" | "strata" | "signal" | "field" | "bloom";
 
 const stroke = {
-  fill: 'none',
-  strokeLinecap: 'round',
-  strokeLinejoin: 'round',
-} as const
+  fill: "none",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+} as const;
 
 function Halftone({ id, size = 7 }: { id: string; size?: number }) {
   return (
     <pattern id={id} width={size} height={size} patternUnits="userSpaceOnUse">
       <circle cx={size / 2} cy={size / 2} r={size / 5} fill="currentColor" />
     </pattern>
-  )
+  );
 }
 
 /** Concentric rings crossed by an off-register disc: reach and overlap. */
@@ -46,7 +46,7 @@ const Orbit = ({ id }: { id: string }) => (
       <path d="M28 150c44 22 104 20 152-8" opacity={0.8} />
     </g>
   </>
-)
+);
 
 /** Stacked contour lines, like a hand-drawn elevation map. */
 const Strata = ({ id }: { id: string }) => (
@@ -68,7 +68,7 @@ const Strata = ({ id }: { id: string }) => (
       <path d="M16 32c34-22 68-20 100 4s62 26 72 2" className="text-ink-yellow" />
     </g>
   </>
-)
+);
 
 /** Arcs radiating from a low point: a signal leaving somewhere small. */
 const Signal = ({ id }: { id: string }) => (
@@ -89,7 +89,7 @@ const Signal = ({ id }: { id: string }) => (
       <path d="M22 176h180" opacity={0.5} />
     </g>
   </>
-)
+);
 
 /** A dotted plot with one marked reading: data, drawn by hand. */
 const Field = ({ id }: { id: string }) => (
@@ -107,7 +107,7 @@ const Field = ({ id }: { id: string }) => (
       <circle cx="122" cy="120" r="8" className="text-brand" />
     </g>
   </>
-)
+);
 
 /** Petals of overlapping ink: the two colours meeting where they overlap. */
 const Bloom = ({ id }: { id: string }) => (
@@ -128,7 +128,7 @@ const Bloom = ({ id }: { id: string }) => (
       <circle cx="130" cy="120" r="54" opacity={0.55} />
     </g>
   </>
-)
+);
 
 const VARIANTS: Record<Variant, (props: { id: string }) => React.ReactElement> = {
   orbit: Orbit,
@@ -136,23 +136,23 @@ const VARIANTS: Record<Variant, (props: { id: string }) => React.ReactElement> =
   signal: Signal,
   field: Field,
   bloom: Bloom,
-}
+};
 
 export function RisoArt({
-  variant = 'orbit',
+  variant = "orbit",
   className,
 }: {
-  variant?: Variant
-  className?: string
+  variant?: Variant;
+  className?: string;
 }) {
-  const Composition = VARIANTS[variant]
+  const Composition = VARIANTS[variant];
   // Pattern ids must be unique per variant, since several can share a page.
-  const id = `riso-${variant}`
+  const id = `riso-${variant}`;
   return (
-    <svg aria-hidden viewBox="0 0 208 208" className={cn('size-64 text-ink', className)}>
+    <svg aria-hidden viewBox="0 0 208 208" className={cn("size-64 text-ink", className)}>
       <Composition id={id} />
     </svg>
-  )
+  );
 }
 
-export type RisoVariant = Variant
+export type RisoVariant = Variant;

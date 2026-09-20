@@ -7,22 +7,14 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
 const contactFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email"),
+  email: z.string().min(1, "Email is required").email("Please enter a valid email"),
   message: z.string().min(1, "Message is required"),
 });
 
@@ -108,9 +100,7 @@ const Contact22 = ({
   className,
   onSubmit,
 }: Contact22Props) => {
-  const [selectedLocation, setSelectedLocation] = useState<Location>(
-    locations[0],
-  );
+  const [selectedLocation, setSelectedLocation] = useState<Location>(locations[0]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -150,12 +140,8 @@ const Contact22 = ({
       <div className="container">
         <div className="mx-auto max-w-5xl">
           <div className="mb-16 text-center">
-            <h1 className="mb-4 text-4xl font-medium tracking-tight md:text-5xl">
-              {title}
-            </h1>
-            <p className="mx-auto max-w-2xl text-muted-foreground">
-              {description}
-            </p>
+            <h1 className="mb-4 text-4xl font-medium tracking-tight md:text-5xl">{title}</h1>
+            <p className="mx-auto max-w-2xl text-muted-foreground">{description}</p>
           </div>
 
           <div className="grid gap-12 lg:grid-cols-5">
@@ -203,15 +189,9 @@ const Contact22 = ({
               <div className="rounded-xl bg-muted/50 p-6">
                 <div className="mb-4 flex items-start justify-between">
                   <div>
-                    <h2 className="text-lg font-medium">
-                      {selectedLocation.name}
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                      {selectedLocation.address}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {selectedLocation.city}
-                    </p>
+                    <h2 className="text-lg font-medium">{selectedLocation.name}</h2>
+                    <p className="text-sm text-muted-foreground">{selectedLocation.address}</p>
+                    <p className="text-sm text-muted-foreground">{selectedLocation.city}</p>
                   </div>
                 </div>
                 <div className="flex gap-6 border-t pt-4 text-sm">
@@ -256,10 +236,7 @@ const Contact22 = ({
                 </div>
               </div>
 
-              <form
-                onSubmit={form.handleSubmit(handleFormSubmit)}
-                className="space-y-4"
-              >
+              <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4">
                 {isSubmitted && (
                   <div
                     className={cn(
@@ -289,9 +266,7 @@ const Contact22 = ({
                             aria-invalid={fieldState.invalid}
                             placeholder="Your name"
                           />
-                          {fieldState.invalid && (
-                            <FieldError errors={[fieldState.error]} />
-                          )}
+                          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                         </Field>
                       )}
                     />
@@ -311,9 +286,7 @@ const Contact22 = ({
                             aria-invalid={fieldState.invalid}
                             placeholder="you@example.com"
                           />
-                          {fieldState.invalid && (
-                            <FieldError errors={[fieldState.error]} />
-                          )}
+                          {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                         </Field>
                       )}
                     />
@@ -334,23 +307,16 @@ const Contact22 = ({
                           placeholder="How can we help you?"
                           rows={3}
                         />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                       </Field>
                     )}
                   />
 
                   {form.formState.errors.root && (
-                    <p className="text-sm text-destructive">
-                      {form.formState.errors.root.message}
-                    </p>
+                    <p className="text-sm text-destructive">{form.formState.errors.root.message}</p>
                   )}
 
-                  <Button
-                    className="w-full"
-                    disabled={form.formState.isSubmitting}
-                  >
+                  <Button className="w-full" disabled={form.formState.isSubmitting}>
                     {form.formState.isSubmitting ? (
                       <>
                         <LoaderIcon className="mr-2 size-4 animate-spin" />

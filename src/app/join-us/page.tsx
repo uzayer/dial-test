@@ -1,4 +1,10 @@
-import { NumberedSteps, PrimaryLink, SectionHeader, TextLink, sectionSpacing } from "@/components/editorial";
+import {
+  NumberedSteps,
+  PrimaryLink,
+  SectionHeader,
+  TextLink,
+  sectionSpacing,
+} from "@/components/editorial";
 import { ExpandableList } from "@/components/expandable-list";
 import { MarginNote, SquiggleUnderline } from "@/components/marks";
 import { PageHeader } from "@/components/page-header";
@@ -51,11 +57,23 @@ const REASONS = [
 // photos exist the moments are listed as text: a stock photo captioned as a
 // DIAL event would be a fabrication (labs/dial/design-principles.md).
 const MOMENTS = [
-  { title: "Lab sessions", caption: "Weekly meetings in Dhaka where ideas become research questions." },
+  {
+    title: "Lab sessions",
+    caption: "Weekly meetings in Dhaka where ideas become research questions.",
+  },
   { title: "Fieldwork", caption: "Research happens where the people are, not in the lab." },
-  { title: "Iftar together", caption: "Every Ramadan the lab gathers. Research is also relationships." },
-  { title: "Conference trips", caption: "DIAL researchers presenting their work to a global audience." },
-  { title: "Research presentations", caption: "Every lab member presents at NSU, from their first semester." },
+  {
+    title: "Iftar together",
+    caption: "Every Ramadan the lab gathers. Research is also relationships.",
+  },
+  {
+    title: "Conference trips",
+    caption: "DIAL researchers presenting their work to a global audience.",
+  },
+  {
+    title: "Research presentations",
+    caption: "Every lab member presents at NSU, from their first semester.",
+  },
 ];
 
 const OPENINGS = [
@@ -114,13 +132,21 @@ export default function JoinUsPage() {
           <div className="flex items-end gap-3">
             <PrimaryLink href={applyHref}>Apply by email</PrimaryLink>
             {/* Marginalia: the note and arrow are decoration around a real action. */}
-            <MarginNote className="pb-1">
-              that is the whole process
-            </MarginNote>
+            <MarginNote className="pb-1">that is the whole process</MarginNote>
           </div>
           {status && (
-            <p className={cn("inline-flex items-center gap-2 text-sm", status.open ? "text-brand" : "text-muted-foreground")}>
-              <span className={cn("size-1.5 rounded-full", status.open ? "bg-brand" : "bg-muted-foreground/50")} />
+            <p
+              className={cn(
+                "inline-flex items-center gap-2 text-sm",
+                status.open ? "text-brand" : "text-muted-foreground",
+              )}
+            >
+              <span
+                className={cn(
+                  "size-1.5 rounded-full",
+                  status.open ? "bg-brand" : "bg-muted-foreground/50",
+                )}
+              />
               {status.text}
             </p>
           )}
@@ -128,7 +154,11 @@ export default function JoinUsPage() {
       </PageHeader>
 
       <section className={cn("container", sectionSpacing, "pt-0 md:pt-0")}>
-        <SectionHeader label="Why DIAL" title="Research that reaches the people who need it most" className="mb-2" />
+        <SectionHeader
+          label="Why DIAL"
+          title="Research that reaches the people who need it most"
+          className="mb-2"
+        />
         <ExpandableList items={REASONS} className="mt-6 max-w-3xl" />
       </section>
 

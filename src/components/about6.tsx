@@ -37,16 +37,14 @@ const About6 = ({ className }: About6Props) => {
               Locally appropriate, low-cost, explainable.
             </h2>
             <p className="mt-6 text-lg leading-8 text-muted-foreground">
-              DIAL, the Design Inclusion and Access Lab, builds technology for
-              inclusion and access at North South University in Dhaka.
+              DIAL, the Design Inclusion and Access Lab, builds technology for inclusion and access
+              at North South University in Dhaka.
             </p>
-            <h3 className="mt-10 text-xl font-semibold tracking-tight">
-              How the work happens
-            </h3>
+            <h3 className="mt-10 text-xl font-semibold tracking-tight">How the work happens</h3>
             <p className="mt-3 text-lg leading-8 text-muted-foreground">
-              We do research with communities, through field visits,
-              interviews, participatory design, and iterative prototyping, then
-              translate findings into tools people can actually use.
+              We do research with communities, through field visits, interviews, participatory
+              design, and iterative prototyping, then translate findings into tools people can
+              actually use.
             </p>
           </div>
           {/* A short row of three below lg, where a stacked collage would fill

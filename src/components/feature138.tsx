@@ -130,7 +130,12 @@ const Feature138 = ({ className }: Feature138Props) => {
       </div>
 
       {/* Project quick-view dialog */}
-      <Dialog open={openProject !== null} onOpenChange={(open) => { if (!open) setOpenProject(null); }}>
+      <Dialog
+        open={openProject !== null}
+        onOpenChange={(open) => {
+          if (!open) setOpenProject(null);
+        }}
+      >
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="text-base">

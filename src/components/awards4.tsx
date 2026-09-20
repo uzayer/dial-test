@@ -16,36 +16,31 @@ const Awards4 = ({ className }: Awards4Props) => {
     },
     {
       name: "Awwwards Site of the Day",
-      description:
-        "Featured for outstanding creativity and innovation in web development.",
+      description: "Featured for outstanding creativity and innovation in web development.",
       year: "2023",
       logo: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/block-2.svg",
     },
     {
       name: "Best UI/UX Design",
-      description:
-        "Awarded for exceptional user experience and interface design.",
+      description: "Awarded for exceptional user experience and interface design.",
       year: "2023",
       logo: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/block-3.svg",
     },
     {
       name: "Web Design Excellence",
-      description:
-        "Honored for superior design quality and technical implementation.",
+      description: "Honored for superior design quality and technical implementation.",
       year: "2022",
       logo: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/block-4.svg",
     },
     {
       name: "Mobile App of the Year",
-      description:
-        "Recognized for innovative mobile design and user experience.",
+      description: "Recognized for innovative mobile design and user experience.",
       year: "2022",
       logo: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/block-5.svg",
     },
     {
       name: "Digital Innovation Award",
-      description:
-        "Celebrated for breakthrough digital solutions and creative technology.",
+      description: "Celebrated for breakthrough digital solutions and creative technology.",
       year: "2021",
       logo: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/block-6.svg",
     },
@@ -55,12 +50,8 @@ const Awards4 = ({ className }: Awards4Props) => {
     <section className={cn("py-32", className)}>
       <div className="container space-y-10 lg:space-y-20">
         <div className="flex w-full items-end justify-between">
-          <h1 className="text-5xl font-semibold tracking-tighter lg:text-8xl">
-            Awards
-          </h1>
-          <h2 className="text-lg font-semibold tracking-tighter lg:text-3xl">
-            (2015-25©)
-          </h2>
+          <h1 className="text-5xl font-semibold tracking-tighter lg:text-8xl">Awards</h1>
+          <h2 className="text-lg font-semibold tracking-tighter lg:text-3xl">(2015-25©)</h2>
         </div>
 
         <table className="w-full border-collapse">
@@ -74,10 +65,7 @@ const Awards4 = ({ className }: Awards4Props) => {
           </thead>
           <tbody>
             {awards.map((award, index) => (
-              <tr
-                key={index}
-                className="h-20 border-b text-left text-foreground/40"
-              >
+              <tr key={index} className="h-20 border-b text-left text-foreground/40">
                 <td className="hidden font-medium tracking-tight text-foreground/50 lg:table-cell">
                   (00{index + 1})
                 </td>

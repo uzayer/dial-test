@@ -1,4 +1,5 @@
 import { Sparkles } from "lucide-react";
+import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,10 +36,7 @@ const Hero197 = ({ className }: Hero197Props) => {
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="max-w-2xl">
             {badge && (
-              <Badge
-                variant="outline"
-                className="mb-6 bg-background px-4 py-1.5 text-sm"
-              >
+              <Badge variant="outline" className="mb-6 bg-background px-4 py-1.5 text-sm">
                 {badge} <Sparkles className="ml-1 size-3.5" />
               </Badge>
             )}
@@ -48,9 +46,8 @@ const Hero197 = ({ className }: Hero197Props) => {
             </h1>
 
             <p className="mt-6 max-w-xl text-xl text-muted-foreground">
-              No prerequisites. If you are curious about how technology shapes
-              lives in Bangladesh — and want to do research that matters — DIAL
-              is for you.
+              No prerequisites. If you are curious about how technology shapes lives in Bangladesh —
+              and want to do research that matters — DIAL is for you.
             </p>
 
             <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-center">
@@ -58,7 +55,7 @@ const Hero197 = ({ className }: Hero197Props) => {
                 <a href={`mailto:${labInfo.email}`}>Apply now</a>
               </Button>
               <Button size="lg" variant="outline" className="w-full sm:w-auto" asChild>
-                <a href="/research">Explore our research</a>
+                <Link href="/research">Explore our research</Link>
               </Button>
             </div>
           </div>

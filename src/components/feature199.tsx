@@ -122,7 +122,6 @@ const AREA_COPY: Omit<FeatureArea, "projectCount" | "pubCount">[] = [
   },
 ];
 
-
 interface Feature199Props {
   themes: Feature199Theme[];
   className?: string;
@@ -180,9 +179,7 @@ const Feature199 = ({ themes, className }: Feature199Props) => {
   return (
     <section className={cn("py-32", className)}>
       <div className="container">
-        <h1 className="mb-6 text-4xl font-bold md:text-5xl lg:mb-8 lg:text-6xl">
-          Research Areas
-        </h1>
+        <h1 className="mb-6 text-4xl font-bold md:text-5xl lg:mb-8 lg:text-6xl">Research Areas</h1>
 
         <div className="relative gap-6 pb-72 md:grid md:grid-cols-5 md:pb-0">
           <div className="col-span-3 pb-4" ref={containerRef}>
@@ -235,7 +232,12 @@ const Feature199 = ({ themes, className }: Feature199Props) => {
       </div>
 
       {/* Area preview dialog */}
-      <Dialog open={openArea !== null} onOpenChange={(open) => { if (!open) setOpenArea(null); }}>
+      <Dialog
+        open={openArea !== null}
+        onOpenChange={(open) => {
+          if (!open) setOpenArea(null);
+        }}
+      >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-base">{stableArea?.title}</DialogTitle>

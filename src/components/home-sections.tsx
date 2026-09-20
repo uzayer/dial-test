@@ -13,10 +13,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-import {
-  FlatPublicationList,
-  type PublicationYear,
-} from "@/components/publications1";
+import { FlatPublicationList, type PublicationYear } from "@/components/publications1";
 import { Button } from "@/components/ui/button";
 import { eyebrow, sectionHeading } from "@/lib/typography";
 import { cn } from "@/lib/utils";
@@ -110,9 +107,7 @@ export function HomeImpactStats({
                   {stat.label}
                   <ArrowRight className="size-4 text-muted-foreground arrow-ne transition-colors group-hover:text-foreground" />
                 </span>
-                <span className="mt-2 text-sm leading-6 text-muted-foreground">
-                  {stat.detail}
-                </span>
+                <span className="mt-2 text-sm leading-6 text-muted-foreground">{stat.detail}</span>
               </Link>
             </li>
           ))}
@@ -159,12 +154,8 @@ export function HomeResearchAreas({
                   </span>
                   <ArrowRight className="size-5 text-muted-foreground arrow-ne transition-colors group-hover:text-foreground" />
                 </div>
-                <h3 className="text-xl font-semibold tracking-tight">
-                  {area.title}
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  {area.description}
-                </p>
+                <h3 className="text-xl font-semibold tracking-tight">{area.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">{area.description}</p>
               </Link>
             );
           })}
@@ -220,23 +211,16 @@ export function HomeLabInvitation({ className }: SectionProps) {
         <div className="grid gap-10 rounded-[2rem] border bg-card p-8 shadow-sm md:p-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:p-14">
           <div>
             <p className={eyebrow}>Work with us</p>
-            <h2 className={cn(sectionHeading, "mt-4")}>
-              Research with purpose. Join the lab.
-            </h2>
+            <h2 className={cn(sectionHeading, "mt-4")}>Research with purpose. Join the lab.</h2>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
-              DIAL welcomes people who want rigorous technology work to stay
-              accountable to real human needs.
+              DIAL welcomes people who want rigorous technology work to stay accountable to real
+              human needs.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Button asChild size="lg" className="rounded-full px-7">
                 <Link href="/join-us">Join the lab</Link>
               </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="rounded-full px-7"
-              >
+              <Button asChild size="lg" variant="outline" className="rounded-full px-7">
                 <Link href="/contact">Start a collaboration</Link>
               </Button>
             </div>
@@ -245,9 +229,7 @@ export function HomeLabInvitation({ className }: SectionProps) {
             {audiences.map((audience) => (
               <div key={audience.label} className="py-5 first:pt-0 last:pb-0">
                 <dt className="font-semibold">{audience.label}</dt>
-                <dd className="mt-1 text-sm leading-6 text-muted-foreground">
-                  {audience.text}
-                </dd>
+                <dd className="mt-1 text-sm leading-6 text-muted-foreground">{audience.text}</dd>
               </div>
             ))}
           </dl>

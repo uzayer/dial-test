@@ -1,22 +1,22 @@
-import { Suspense } from 'react'
-import { ClosingNote } from '@/components/closing-note'
-import { FaqSection } from '@/components/faq-section'
-import { PageHeader } from '@/components/page-header'
-import { ProjectDirectory, ProjectIndex } from '@/components/project-index'
-import { projects } from '@/data'
-import { projectFaqs } from '@/data/faqs'
-import { toProjectEntry } from '@/data/views'
+import { Suspense } from "react";
+import { ClosingNote } from "@/components/closing-note";
+import { FaqSection } from "@/components/faq-section";
+import { PageHeader } from "@/components/page-header";
+import { ProjectDirectory, ProjectIndex } from "@/components/project-index";
+import { projects } from "@/data";
+import { projectFaqs } from "@/data/faqs";
+import { toProjectEntry } from "@/data/views";
 
 export const metadata = {
-  title: 'Projects',
+  title: "Projects",
   description:
-    'The complete directory of research projects from the Design Inclusion and Access Lab at North South University.',
-}
+    "The complete directory of research projects from the Design Inclusion and Access Lab at North South University.",
+};
 
 // ─── derived ─────────────────────────────────────────────────────────────────
 
-const entries = projects.map(toProjectEntry)
-const ongoingCount = projects.filter((p) => p.status === 'ongoing').length
+const entries = projects.map(toProjectEntry);
+const ongoingCount = projects.filter((p) => p.status === "ongoing").length;
 
 // ─── page ────────────────────────────────────────────────────────────────────
 
@@ -29,8 +29,8 @@ export default function ProjectsPage() {
         title="Projects"
         description="Every DIAL project, from participatory fieldwork to low-cost hardware, with the people, publications, and awards behind each one."
         facts={[
-          { value: String(projects.length), label: 'Projects' },
-          { value: String(ongoingCount), label: 'Ongoing' },
+          { value: String(projects.length), label: "Projects" },
+          { value: String(ongoingCount), label: "Ongoing" },
         ]}
       />
 
@@ -42,14 +42,13 @@ export default function ProjectsPage() {
 
       <FaqSection items={projectFaqs} title="About the projects" />
 
-
       <ClosingNote
         heading="Want to work on projects like these?"
         links={[
-          { text: 'Join the lab', href: '/join-us' },
-          { text: 'Browse publications', href: '/publications' },
+          { text: "Join the lab", href: "/join-us" },
+          { text: "Browse publications", href: "/publications" },
         ]}
       />
     </>
-  )
+  );
 }

@@ -7,7 +7,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans), var(--font-bengali-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans:
+    var(--font-geist-sans), var(--font-bengali-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   /* Editorial display face for page and section titles. */
@@ -220,7 +221,6 @@ body:has([data-hero-root]) [data-nav-overlay] [data-site-nav] {
 body:has([data-hero-root]) {
   overflow-anchor: none;
 }
-
 
 /* Fraunces' SOFT axis rounds its terminals: 50 keeps the serif's authority but
    takes the edge off, which suits a lab that leads with "listening". */

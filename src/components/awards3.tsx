@@ -35,9 +35,9 @@ const Awards3 = ({ className }: Awards3Props) => {
           Awards & Recognition
         </h2>
         <p className="mb-6 max-w-3xl text-base text-muted-foreground">
-          Our commitment to excellence hasn&apos;t gone unnoticed. We are proud of
-          the work we do and the industry recognition it has received,
-          showcasing our dedication to pushing creative boundaries
+          Our commitment to excellence hasn&apos;t gone unnoticed. We are proud of the work we do
+          and the industry recognition it has received, showcasing our dedication to pushing
+          creative boundaries
         </p>
 
         {awards.map((award, index) => (

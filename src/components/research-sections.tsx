@@ -108,13 +108,9 @@ export function ResearchStats({
               key={stat.label}
               className="pt-8 first:pt-0 md:px-8 md:pt-0 md:first:pl-0 md:last:pr-0"
             >
-              <p className="text-5xl font-semibold tracking-[-0.06em] md:text-6xl">
-                {stat.value}
-              </p>
+              <p className="text-5xl font-semibold tracking-[-0.06em] md:text-6xl">{stat.value}</p>
               <h2 className="mt-4 text-lg font-semibold">{stat.label}</h2>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                {stat.detail}
-              </p>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{stat.detail}</p>
             </div>
           ))}
         </div>
@@ -147,9 +143,9 @@ export function ResearchThemesBento({
             A map of the questions DIAL returns to.
           </h2>
           <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            The grid borrows Tailark&apos;s bento rhythm, but the hierarchy is
-            academic: bigger cards indicate long-running programs with more
-            publications, projects, and collaborators.
+            The grid borrows Tailark&apos;s bento rhythm, but the hierarchy is academic: bigger
+            cards indicate long-running programs with more publications, projects, and
+            collaborators.
           </p>
         </div>
 
@@ -157,11 +153,7 @@ export function ResearchThemesBento({
           {researchThemes.map((theme) => {
             const Icon = theme.icon;
             return (
-              <Link
-                key={theme.title}
-                href={theme.href}
-                className={themeCardClass(theme.size)}
-              >
+              <Link key={theme.title} href={theme.href} className={themeCardClass(theme.size)}>
                 <div>
                   <div className="mb-8 flex items-center justify-between">
                     <span className="rounded-2xl border bg-background p-3">
@@ -169,9 +161,7 @@ export function ResearchThemesBento({
                     </span>
                     <ArrowRight className="size-5 text-muted-foreground arrow-ne group-hover:text-foreground" />
                   </div>
-                  <h3 className="text-2xl font-semibold tracking-tight">
-                    {theme.title}
-                  </h3>
+                  <h3 className="text-2xl font-semibold tracking-tight">{theme.title}</h3>
                   <p className="mt-4 text-sm leading-6 text-muted-foreground">
                     {theme.description}
                   </p>
@@ -201,9 +191,8 @@ export function ResearchMethod({ className }: SectionProps) {
               Methods shaped by field relationships.
             </h2>
             <p className="mt-6 text-lg leading-8 text-muted-foreground">
-              DIAL projects usually begin before a technical brief exists: with
-              visits, interviews, workshops, and an effort to understand local
-              constraints on their own terms.
+              DIAL projects usually begin before a technical brief exists: with visits, interviews,
+              workshops, and an effort to understand local constraints on their own terms.
             </p>
           </div>
 
@@ -211,20 +200,13 @@ export function ResearchMethod({ className }: SectionProps) {
             {methods.map((method, index) => {
               const Icon = method.icon;
               return (
-                <div
-                  key={method.title}
-                  className="rounded-[1.5rem] bg-background p-6"
-                >
+                <div key={method.title} className="rounded-[1.5rem] bg-background p-6">
                   <div className="mb-5 flex items-center gap-3">
                     <Badge variant="outline">0{index + 1}</Badge>
                     <Icon className="size-5 text-primary" strokeWidth={1.5} />
                   </div>
-                  <h3 className="text-xl font-semibold tracking-tight">
-                    {method.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                    {method.body}
-                  </p>
+                  <h3 className="text-xl font-semibold tracking-tight">{method.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">{method.body}</p>
                 </div>
               );
             })}
@@ -284,7 +266,9 @@ export function ResearchSpotlightBento({
                       {project.badge}
                     </Badge>
                     <h3 className="text-2xl font-semibold tracking-tight">
-                      {project.localName ? `${project.localName} · ${project.title}` : project.title}
+                      {project.localName
+                        ? `${project.localName} · ${project.title}`
+                        : project.title}
                     </h3>
                     <p className="mt-4 text-sm leading-6 text-muted-foreground">
                       {project.description}
@@ -303,26 +287,24 @@ export function ResearchSpotlightBento({
             <BookOpen className="size-6" strokeWidth={1.5} />
             <h3 className="mt-6 text-xl font-semibold">Scholarly record</h3>
             <p className="mt-3 text-sm leading-6 text-primary-foreground/80">
-              Projects are documented through papers, artifacts, awards, and
-              student-authored research outputs.
+              Projects are documented through papers, artifacts, awards, and student-authored
+              research outputs.
             </p>
           </div>
           <div className="rounded-[1.75rem] border bg-card p-6 shadow-sm lg:col-span-2">
             <Handshake className="size-6 text-primary" strokeWidth={1.5} />
-            <h3 className="mt-6 text-xl font-semibold">
-              Collaborative context
-            </h3>
+            <h3 className="mt-6 text-xl font-semibold">Collaborative context</h3>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">
-              Many studies involve NGOs, funders, universities, clinics, and
-              community organisations in Bangladesh and abroad.
+              Many studies involve NGOs, funders, universities, clinics, and community organisations
+              in Bangladesh and abroad.
             </p>
           </div>
           <div className="rounded-[1.75rem] border bg-card p-6 shadow-sm lg:col-span-2">
             <GraduationCap className="size-6 text-primary" strokeWidth={1.5} />
             <h3 className="mt-6 text-xl font-semibold">Student research</h3>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">
-              Undergraduate and graduate researchers contribute to fieldwork,
-              analysis, prototyping, and publication.
+              Undergraduate and graduate researchers contribute to fieldwork, analysis, prototyping,
+              and publication.
             </p>
           </div>
         </div>
@@ -343,19 +325,14 @@ export function ResearchInvitation({ className }: SectionProps) {
             Trace the work through papers, projects, and people.
           </h2>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
-            The bibliography and project directory give a fuller view of how
-            research questions develop across themes, communities, and years.
+            The bibliography and project directory give a fuller view of how research questions
+            develop across themes, communities, and years.
           </p>
           <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
             <Button asChild size="lg" className="rounded-full px-7">
               <Link href="/publications">Browse publications</Link>
             </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="rounded-full px-7"
-            >
+            <Button asChild size="lg" variant="outline" className="rounded-full px-7">
               <Link href="/contact">Start a collaboration</Link>
             </Button>
           </div>

@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { useEffect } from 'react'
+import { useEffect } from "react";
 
 /**
  * Marks `[data-reveal]` elements with `data-revealed` the first time they come
@@ -13,25 +13,27 @@ export function RevealObserver() {
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          if (!entry.isIntersecting) continue
-          ;(entry.target as HTMLElement).dataset.revealed = ''
-          observer.unobserve(entry.target)
+          if (!entry.isIntersecting) continue;
+          (entry.target as HTMLElement).dataset.revealed = "";
+          observer.unobserve(entry.target);
         }
       },
-      { rootMargin: '0px 0px -100px 0px' },
-    )
+      { rootMargin: "0px 0px -100px 0px" },
+    );
     const scan = () =>
-      document.querySelectorAll('[data-reveal]:not([data-revealed])').forEach((el) => observer.observe(el))
-    scan()
+      document
+        .querySelectorAll("[data-reveal]:not([data-revealed])")
+        .forEach((el) => observer.observe(el));
+    scan();
     // Sections that mount later (Suspense boundaries, client-only branches)
     // would otherwise stay hidden, so watch for them too.
-    const mutations = new MutationObserver(scan)
-    mutations.observe(document.body, { childList: true, subtree: true })
+    const mutations = new MutationObserver(scan);
+    mutations.observe(document.body, { childList: true, subtree: true });
     return () => {
-      observer.disconnect()
-      mutations.disconnect()
-    }
-  }, [])
+      observer.disconnect();
+      mutations.disconnect();
+    };
+  }, []);
 
-  return null
+  return null;
 }

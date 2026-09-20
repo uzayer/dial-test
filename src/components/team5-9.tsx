@@ -1,30 +1,30 @@
-'use client'
+"use client";
 
-import { useMemo, useState } from 'react'
-import { ChevronDown, GraduationCap, Globe, SearchIcon } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
-import { cn } from '@/lib/utils'
+import { useMemo, useState } from "react";
+import { ChevronDown, GraduationCap, Globe, SearchIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 export interface TeamMember {
-  name: string
-  title: string
-  affiliation: string
-  badge?: string
-  interests?: string[]
-  scholar?: string
-  site?: string
-  slug: string
+  name: string;
+  title: string;
+  affiliation: string;
+  badge?: string;
+  interests?: string[];
+  scholar?: string;
+  site?: string;
+  slug: string;
 }
 
 function initials(name: string) {
   return name
-    .split(' ')
+    .split(" ")
     .filter(Boolean)
     .slice(0, 2)
     .map((n) => n[0])
-    .join('')
-    .toUpperCase()
+    .join("")
+    .toUpperCase();
 }
 
 // Rich card — used for Faculty & Research Staff
@@ -70,7 +70,10 @@ function MemberCard({ member }: { member: TeamMember }) {
             <div className="flex justify-center gap-3">
               {member.scholar && (
                 <span
-                  onClick={(e) => { e.preventDefault(); window.open(member.scholar, '_blank') }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.open(member.scholar, "_blank");
+                  }}
                   className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <GraduationCap className="size-3.5" />
@@ -79,7 +82,10 @@ function MemberCard({ member }: { member: TeamMember }) {
               )}
               {member.site && (
                 <span
-                  onClick={(e) => { e.preventDefault(); window.open(member.site, '_blank') }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.open(member.site, "_blank");
+                  }}
                   className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <Globe className="size-3.5" />
@@ -91,7 +97,7 @@ function MemberCard({ member }: { member: TeamMember }) {
         </CardContent>
       </Card>
     </a>
-  )
+  );
 }
 
 // Compact item — used for the larger groups
@@ -107,7 +113,9 @@ function MemberItem({ member }: { member: TeamMember }) {
         <span className="mt-1 block text-sm font-medium leading-snug group-hover:text-primary transition-colors">
           {member.name}
         </span>
-        <span className="text-muted-foreground block text-xs leading-snug">{member.affiliation}</span>
+        <span className="text-muted-foreground block text-xs leading-snug">
+          {member.affiliation}
+        </span>
         {member.badge && (
           <span className="text-muted-foreground block text-xs italic">{member.badge}</span>
         )}
@@ -137,7 +145,7 @@ function MemberItem({ member }: { member: TeamMember }) {
         </div>
       )}
     </div>
-  )
+  );
 }
 
 function CompactGroup({ title, members }: { title: string; members: TeamMember[] }) {
@@ -150,15 +158,15 @@ function CompactGroup({ title, members }: { title: string; members: TeamMember[]
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 interface Team5_9Props {
-  facultyStaff: TeamMember[]
-  graduateRAs: TeamMember[]
-  undergraduateRAs: TeamMember[]
-  collaborators: TeamMember[]
-  className?: string
+  facultyStaff: TeamMember[];
+  graduateRAs: TeamMember[];
+  undergraduateRAs: TeamMember[];
+  collaborators: TeamMember[];
+  className?: string;
 }
 
 const Team5_9 = ({
@@ -168,13 +176,15 @@ const Team5_9 = ({
   collaborators,
   className,
 }: Team5_9Props) => {
-  const [query, setQuery] = useState('')
-  const [ugExpanded, setUgExpanded] = useState(false)
+  const [query, setQuery] = useState("");
+  const [ugExpanded, setUgExpanded] = useState(false);
 
-  const q = query.toLowerCase().trim()
+  const q = query.toLowerCase().trim();
 
   const filterMembers = (members: TeamMember[]) =>
-    q ? members.filter((m) => m.name.toLowerCase().includes(q) || m.title.toLowerCase().includes(q)) : members
+    q
+      ? members.filter((m) => m.name.toLowerCase().includes(q) || m.title.toLowerCase().includes(q))
+      : members;
 
   const allFiltered = useMemo(
     () =>
@@ -188,12 +198,12 @@ const Team5_9 = ({
         : null,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [q],
-  )
+  );
 
-  const displayedUGRAs = ugExpanded ? undergraduateRAs : undergraduateRAs.slice(0, 9)
+  const displayedUGRAs = ugExpanded ? undergraduateRAs : undergraduateRAs.slice(0, 9);
 
   return (
-    <section className={cn('py-16', className)}>
+    <section className={cn("py-16", className)}>
       <div className="mx-auto max-w-5xl px-6">
         <div className="relative mb-10 max-w-sm">
           <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
@@ -254,8 +264,8 @@ const Team5_9 = ({
         )}
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Team5_9
-export { Team5_9 }
+export default Team5_9;
+export { Team5_9 };

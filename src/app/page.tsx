@@ -87,9 +87,11 @@ export default function Home() {
         </PageHeader>
       </ResearchScrollHero>
 
-
       <section className={cn("container", sectionSpacing)}>
-        <div data-reveal className="relative grid gap-10 pt-6 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-24">
+        <div
+          data-reveal
+          className="relative grid gap-10 pt-6 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-24"
+        >
           <span aria-hidden className="reveal-rule absolute inset-x-0 top-0 h-px bg-border" />
           <div className="reveal-item">
             <p className={cn(label, "mb-3")}>About DIAL</p>
@@ -155,9 +157,7 @@ export default function Home() {
           and open paper, which is the only reason this reads as an interruption
           rather than as the rhythm. */}
       <InkBand>
-        <PullQuote>
-          Technology that is locally appropriate, low-cost, and explainable.
-        </PullQuote>
+        <PullQuote>Technology that is locally appropriate, low-cost, and explainable.</PullQuote>
       </InkBand>
 
       <section className={cn("container", sectionSpacing)}>
@@ -174,9 +174,7 @@ export default function Home() {
                 {audience.label}
                 {/* Restates what /join-us says in full; the note never carries
                     anything the site does not state as real text. */}
-                {audience.label === "Students" && (
-                  <MarginNote>no prerequisites</MarginNote>
-                )}
+                {audience.label === "Students" && <MarginNote>no prerequisites</MarginNote>}
               </dt>
               <dd className="mt-2 text-pretty text-muted-foreground">{audience.text}</dd>
             </div>

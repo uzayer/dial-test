@@ -3,8 +3,7 @@ import { director, labInfo } from "@/data";
 
 export const metadata = {
   title: "Contact",
-  description:
-    "Get in touch with the DIAL lab for collaboration, media, and general enquiries.",
+  description: "Get in touch with the DIAL lab for collaboration, media, and general enquiries.",
 };
 
 export default function ContactPage() {

@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import { useMemo, useState } from 'react'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { ArrowRight } from 'lucide-react'
+import { useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ArrowRight } from "lucide-react";
 
-import { SegmentedControl } from '@/components/editorial'
-import { FadeScroller } from '@/components/fade-scroller'
-import { AsteriskMark, EmptySketch, SquiggleUnderline } from '@/components/marks'
-import { listEnter, listStagger } from '@/lib/motion'
-import { cn } from '@/lib/utils'
+import { SegmentedControl } from "@/components/editorial";
+import { FadeScroller } from "@/components/fade-scroller";
+import { AsteriskMark, EmptySketch, SquiggleUnderline } from "@/components/marks";
+import { listEnter, listStagger } from "@/lib/motion";
+import { cn } from "@/lib/utils";
 
 /**
  * The one Project presentation (labs/dial/frontend.md, "Shared presentation
@@ -16,83 +16,86 @@ import { cn } from '@/lib/utils'
  * Team Member profiles.
  */
 export interface ProjectEntry {
-  id: string
-  slug: string
-  title: string
+  id: string;
+  slug: string;
+  title: string;
   /** Bengali/local name, when the source gives one. */
-  localName?: string | null
-  abstract: string
+  localName?: string | null;
+  abstract: string;
   /** Research Theme titles, primary first. */
-  themes: string[]
+  themes: string[];
   /** null when no source states the status. */
-  status: 'ongoing' | 'completed' | null
-  leadResearcher: string | null
-  award?: { title: string }
-  publicationCount: number
-  teamMemberCount: number
+  status: "ongoing" | "completed" | null;
+  leadResearcher: string | null;
+  award?: { title: string };
+  publicationCount: number;
+  teamMemberCount: number;
 }
 
-type StatusFilter = 'all' | 'ongoing' | 'completed'
+type StatusFilter = "all" | "ongoing" | "completed";
 
 const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
-  { value: 'all', label: 'All' },
-  { value: 'ongoing', label: 'Ongoing' },
-  { value: 'completed', label: 'Completed' },
-]
+  { value: "all", label: "All" },
+  { value: "ongoing", label: "Ongoing" },
+  { value: "completed", label: "Completed" },
+];
 
-const PAGE_SIZE = 12
+const PAGE_SIZE = 12;
 /** Below this, filters cost more attention than they save. */
-const FILTER_THRESHOLD = 5
+const FILTER_THRESHOLD = 5;
 
 // ─── Index ───────────────────────────────────────────────────────────────────
 
 interface ProjectIndexProps {
-  projects: ProjectEntry[]
+  projects: ProjectEntry[];
   /** Show the Research Theme filter (the directory page only). */
-  themeFilter?: boolean
-  initialTheme?: string | null
-  initialStatus?: StatusFilter
-  onFiltersChange?: (filters: { theme: string | null; status: StatusFilter }) => void
-  className?: string
+  themeFilter?: boolean;
+  initialTheme?: string | null;
+  initialStatus?: StatusFilter;
+  onFiltersChange?: (filters: { theme: string | null; status: StatusFilter }) => void;
+  className?: string;
 }
 
 const ProjectIndex = ({
   projects,
   themeFilter = false,
   initialTheme = null,
-  initialStatus = 'all',
+  initialStatus = "all",
   onFiltersChange,
   className,
 }: ProjectIndexProps) => {
-  const [theme, setTheme] = useState<string | null>(initialTheme)
-  const [status, setStatus] = useState<StatusFilter>(initialStatus)
-  const [showAll, setShowAll] = useState(false)
+  const [theme, setTheme] = useState<string | null>(initialTheme);
+  const [status, setStatus] = useState<StatusFilter>(initialStatus);
+  const [showAll, setShowAll] = useState(false);
 
-  const showFilters = projects.length >= FILTER_THRESHOLD
+  const showFilters = projects.length >= FILTER_THRESHOLD;
 
   const themeCounts = useMemo(() => {
-    const counts = new Map<string, number>()
-    for (const p of projects) for (const t of p.themes) counts.set(t, (counts.get(t) ?? 0) + 1)
-    return [...counts.entries()].sort(([a], [b]) => a.localeCompare(b))
-  }, [projects])
+    const counts = new Map<string, number>();
+    for (const p of projects) for (const t of p.themes) counts.set(t, (counts.get(t) ?? 0) + 1);
+    return [...counts.entries()].sort(([a], [b]) => a.localeCompare(b));
+  }, [projects]);
 
-  const byTheme = projects.filter((p) => theme === null || p.themes.includes(theme))
+  const byTheme = projects.filter((p) => theme === null || p.themes.includes(theme));
   const statusCount = (s: StatusFilter) =>
-    s === 'all' ? byTheme.length : byTheme.filter((p) => p.status === s).length
+    s === "all" ? byTheme.length : byTheme.filter((p) => p.status === s).length;
 
   // Ongoing work first; otherwise keep the record order.
   const sorted = byTheme
-    .filter((p) => status === 'all' || p.status === status)
-    .sort((a, b) => Number(b.status === 'ongoing') - Number(a.status === 'ongoing'))
-  const visible = showAll ? sorted : sorted.slice(0, PAGE_SIZE)
+    .filter((p) => status === "all" || p.status === status)
+    .sort((a, b) => Number(b.status === "ongoing") - Number(a.status === "ongoing"));
+  const visible = showAll ? sorted : sorted.slice(0, PAGE_SIZE);
 
   const update = (next: { theme?: string | null; status?: StatusFilter }) => {
-    const filters = { theme: next.theme !== undefined ? next.theme : theme, status: next.status ?? status }
-    setTheme(filters.theme)
-    setStatus(filters.status)
-    setShowAll(false)
-    onFiltersChange?.(filters)
-  }
+    const filters = {
+      theme: next.theme !== undefined ? next.theme : theme,
+      status: next.status ?? status,
+    };
+    setTheme(filters.theme);
+    setStatus(filters.status);
+    setShowAll(false);
+    onFiltersChange?.(filters);
+  };
 
   return (
     <div className={className}>
@@ -104,11 +107,20 @@ const ProjectIndex = ({
               contentClassName="flex gap-6"
               label="Filter by Research Theme"
             >
-              <ThemeTab active={theme === null} count={projects.length} onClick={() => update({ theme: null })}>
+              <ThemeTab
+                active={theme === null}
+                count={projects.length}
+                onClick={() => update({ theme: null })}
+              >
                 All themes
               </ThemeTab>
               {themeCounts.map(([t, count]) => (
-                <ThemeTab key={t} active={theme === t} count={count} onClick={() => update({ theme: t })}>
+                <ThemeTab
+                  key={t}
+                  active={theme === t}
+                  count={count}
+                  onClick={() => update({ theme: t })}
+                >
                   {t}
                 </ThemeTab>
               ))}
@@ -128,7 +140,7 @@ const ProjectIndex = ({
       )}
 
       {visible.length > 0 ? (
-        <ol className={cn('divide-y divide-border', !showFilters && 'border-t border-border')}>
+        <ol className={cn("divide-y divide-border", !showFilters && "border-t border-border")}>
           {visible.map((project, i) => (
             // Rows a filter brings in rise into place; rows that stay are untouched.
             <li key={project.id} className={listEnter} style={listStagger(i)}>
@@ -139,11 +151,11 @@ const ProjectIndex = ({
       ) : (
         <p className="flex flex-col items-start gap-4 py-16 text-muted-foreground">
           <EmptySketch />
-          No projects match these filters.{' '}
+          No projects match these filters.{" "}
           <button
             type="button"
             className="text-foreground underline underline-offset-4"
-            onClick={() => update({ theme: null, status: 'all' })}
+            onClick={() => update({ theme: null, status: "all" })}
           >
             Clear filters
           </button>
@@ -156,12 +168,12 @@ const ProjectIndex = ({
           onClick={() => setShowAll(!showAll)}
           className="mt-8 text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
         >
-          {showAll ? 'Show fewer' : `Show all ${sorted.length} projects`}
+          {showAll ? "Show fewer" : `Show all ${sorted.length} projects`}
         </button>
       )}
     </div>
-  )
-}
+  );
+};
 
 const ThemeTab = ({
   active,
@@ -169,27 +181,27 @@ const ThemeTab = ({
   onClick,
   children,
 }: {
-  active: boolean
-  count: number
-  onClick: () => void
-  children: React.ReactNode
+  active: boolean;
+  count: number;
+  onClick: () => void;
+  children: React.ReactNode;
 }) => (
   <button
     type="button"
     aria-pressed={active}
     onClick={onClick}
     className={cn(
-      'relative shrink-0 whitespace-nowrap pb-3 text-sm transition-colors duration-150 ease-snappy',
-      'after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:bg-brand after:transition-transform after:duration-200 after:ease-snappy',
+      "relative shrink-0 whitespace-nowrap pb-3 text-sm transition-colors duration-150 ease-snappy",
+      "after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:bg-brand after:transition-transform after:duration-200 after:ease-snappy",
       active
-        ? 'text-foreground after:scale-x-100'
-        : 'text-muted-foreground after:scale-x-0 hover:text-foreground',
+        ? "text-foreground after:scale-x-100"
+        : "text-muted-foreground after:scale-x-0 hover:text-foreground",
     )}
   >
     {children}
     <sup className="ml-0.5 tabular-nums text-[0.65rem] text-muted-foreground">{count}</sup>
   </button>
-)
+);
 
 // ─── Row ─────────────────────────────────────────────────────────────────────
 
@@ -199,7 +211,7 @@ const ThemeTab = ({
  * fits the tile.
  */
 function firstLetter(text: string): string {
-  return [...text.trim()][0] ?? ''
+  return [...text.trim()][0] ?? "";
 }
 
 const ProjectMark = ({ project, className }: { project: ProjectEntry; className?: string }) => (
@@ -208,12 +220,12 @@ const ProjectMark = ({ project, className }: { project: ProjectEntry; className?
   <div
     aria-hidden
     className={cn(
-      'sticker relative grid shrink-0 place-items-center overflow-hidden rounded-[0.7rem] group-hover:rotate-0',
+      "sticker relative grid shrink-0 place-items-center overflow-hidden rounded-[0.7rem] group-hover:rotate-0",
       project.award
-        ? 'bg-ink/12 text-ink'
-        : project.status === 'ongoing'
-          ? 'bg-brand/12 text-brand'
-          : 'bg-muted text-foreground/60',
+        ? "bg-ink/12 text-ink"
+        : project.status === "ongoing"
+          ? "bg-brand/12 text-brand"
+          : "bg-muted text-foreground/60",
       className,
     )}
   >
@@ -223,59 +235,57 @@ const ProjectMark = ({ project, className }: { project: ProjectEntry; className?
         devices that can hover, and reduced motion keeps it still. */}
     <span
       className={cn(
-        'font-display leading-none select-none',
-        'transition-transform duration-150 ease-snappy',
-        'motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:-rotate-4 motion-safe:group-hover:scale-106 motion-safe:group-hover:duration-250',
+        "font-display leading-none select-none",
+        "transition-transform duration-150 ease-snappy",
+        "motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:-rotate-4 motion-safe:group-hover:scale-106 motion-safe:group-hover:duration-250",
       )}
     >
       {firstLetter(project.localName ?? project.title)}
     </span>
   </div>
-)
+);
 
-const StatusLabel = ({ status }: { status: ProjectEntry['status'] }) =>
+const StatusLabel = ({ status }: { status: ProjectEntry["status"] }) =>
   status ? (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5',
-        status === 'ongoing' ? 'text-brand' : 'text-muted-foreground',
+        "inline-flex items-center gap-1.5",
+        status === "ongoing" ? "text-brand" : "text-muted-foreground",
       )}
     >
       <span
         className={cn(
-          'size-2 rounded-full',
-          status === 'ongoing' ? 'bg-brand ring-2 ring-brand/25' : 'bg-muted-foreground/40',
+          "size-2 rounded-full",
+          status === "ongoing" ? "bg-brand ring-2 ring-brand/25" : "bg-muted-foreground/40",
         )}
       />
-      {status === 'ongoing' ? 'Ongoing' : 'Completed'}
+      {status === "ongoing" ? "Ongoing" : "Completed"}
     </span>
-  ) : null
+  ) : null;
 
-const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 const ProjectRow = ({ project, index }: { project: ProjectEntry; index: number }) => {
   const counts = [
-    project.publicationCount > 0 && plural(project.publicationCount, 'publication'),
-    project.teamMemberCount > 0 && plural(project.teamMemberCount, 'person').replace('persons', 'people'),
-  ].filter(Boolean)
+    project.publicationCount > 0 && plural(project.publicationCount, "publication"),
+    project.teamMemberCount > 0 &&
+      plural(project.teamMemberCount, "person").replace("persons", "people"),
+  ].filter(Boolean);
 
   return (
     <a
       href={`/projects/${project.slug}`}
       className={cn(
-        'group -mx-4 grid grid-cols-[3.5rem_1fr_auto] items-start gap-x-4 gap-y-3 rounded-lg px-4 py-8',
-        'md:grid-cols-[2rem_7rem_1fr_15rem_1.25rem] md:gap-x-8 md:py-10',
-        'transition-colors duration-150 ease-snappy hover:bg-muted/50 active:bg-muted',
+        "group -mx-4 grid grid-cols-[3.5rem_1fr_auto] items-start gap-x-4 gap-y-3 rounded-lg px-4 py-8",
+        "md:grid-cols-[2rem_7rem_1fr_15rem_1.25rem] md:gap-x-8 md:py-10",
+        "transition-colors duration-150 ease-snappy hover:bg-muted/50 active:bg-muted",
       )}
     >
       <span className="hidden pt-1 font-mono text-xs tabular-nums text-muted-foreground md:block">
-        {String(index).padStart(2, '0')}
+        {String(index).padStart(2, "0")}
       </span>
 
-      <ProjectMark
-        project={project}
-        className="size-14 text-4xl md:size-28 md:text-8xl"
-      />
+      <ProjectMark project={project} className="size-14 text-4xl md:size-28 md:text-8xl" />
 
       <div className="min-w-0">
         <h3 className="relative w-fit font-display text-2xl leading-tight md:text-3xl">
@@ -305,7 +315,7 @@ const ProjectRow = ({ project, index }: { project: ProjectEntry; index: number }
         {project.themes.length > 0 && (
           <div>
             <dt className="sr-only">Research Themes</dt>
-            <dd className="text-muted-foreground">{project.themes.join(', ')}</dd>
+            <dd className="text-muted-foreground">{project.themes.join(", ")}</dd>
           </div>
         )}
         {project.leadResearcher && (
@@ -317,7 +327,7 @@ const ProjectRow = ({ project, index }: { project: ProjectEntry; index: number }
         {counts.length > 0 && (
           <div>
             <dt className="sr-only">Records</dt>
-            <dd className="text-muted-foreground tabular-nums">{counts.join(' · ')}</dd>
+            <dd className="text-muted-foreground tabular-nums">{counts.join(" · ")}</dd>
           </div>
         )}
         {project.award && (
@@ -335,8 +345,8 @@ const ProjectRow = ({ project, index }: { project: ProjectEntry; index: number }
 
       <ArrowRight className="mt-3 hidden size-4 text-muted-foreground arrow-ne group-hover:text-foreground md:block" />
     </a>
-  )
-}
+  );
+};
 
 // ─── Directory (URL-backed) ──────────────────────────────────────────────────
 
@@ -345,28 +355,31 @@ const ProjectRow = ({ project, index }: { project: ProjectEntry; index: number }
  * filtered directory can be shared. Needs a Suspense boundary for
  * useSearchParams; render a plain ProjectIndex as the fallback.
  */
-const ProjectDirectory = (props: Omit<ProjectIndexProps, 'initialTheme' | 'initialStatus' | 'onFiltersChange'>) => {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
+const ProjectDirectory = (
+  props: Omit<ProjectIndexProps, "initialTheme" | "initialStatus" | "onFiltersChange">,
+) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const rawStatus = searchParams.get('status')
-  const initialStatus: StatusFilter = rawStatus === 'ongoing' || rawStatus === 'completed' ? rawStatus : 'all'
+  const rawStatus = searchParams.get("status");
+  const initialStatus: StatusFilter =
+    rawStatus === "ongoing" || rawStatus === "completed" ? rawStatus : "all";
 
   return (
     <ProjectIndex
       {...props}
-      initialTheme={searchParams.get('theme')}
+      initialTheme={searchParams.get("theme")}
       initialStatus={initialStatus}
       onFiltersChange={({ theme, status }) => {
-        const sp = new URLSearchParams()
-        if (theme) sp.set('theme', theme)
-        if (status !== 'all') sp.set('status', status)
-        const qs = sp.toString()
-        router.replace(`${pathname}${qs ? `?${qs}` : ''}`, { scroll: false })
+        const sp = new URLSearchParams();
+        if (theme) sp.set("theme", theme);
+        if (status !== "all") sp.set("status", status);
+        const qs = sp.toString();
+        router.replace(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
       }}
     />
-  )
-}
+  );
+};
 
-export { ProjectDirectory, ProjectIndex, ProjectRow }
+export { ProjectDirectory, ProjectIndex, ProjectRow };

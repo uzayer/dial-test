@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import React, { useEffect, useRef, useState } from "react";
+import React, { type Dispatch, type SetStateAction, useEffect, useRef, useState } from "react";
 
 const timelineData = [
   {
@@ -85,11 +85,7 @@ const Skiper74 = () => {
         <div className="-mt-34">
           {/* each timeline  */}
           {timelineData.map((item) => (
-            <Template
-              key={item.date}
-              setCurrentDate={setCurrentDate}
-              data={item}
-            />
+            <Template key={item.date} setCurrentDate={setCurrentDate} data={item} />
           ))}
         </div>
       </div>
@@ -104,7 +100,7 @@ const Template = ({
   setCurrentDate,
 }: {
   data: { date: string; items: string[] };
-  setCurrentDate: any;
+  setCurrentDate: Dispatch<SetStateAction<string>>;
 }) => {
   const tempalteRef = useRef(null);
 

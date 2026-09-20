@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { FlatPublicationList, type PublicationYear } from "@/components/publications1";
 import { cn } from "@/lib/utils";
 
@@ -17,12 +19,12 @@ export function FeaturedPublications({
       <div className="container">
         <div className="mb-6 flex items-baseline justify-between">
           <h2 className="text-2xl font-semibold">Award-winning work</h2>
-          <a
+          <Link
             href="/publications"
             className="text-sm text-muted-foreground underline-offset-4 hover:underline"
           >
             All publications →
-          </a>
+          </Link>
         </div>
         {yearGroups.length > 0 ? (
           <FlatPublicationList yearGroups={yearGroups} highlightAuthors={highlightAuthors} />

@@ -1,44 +1,44 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
-import { ArrowUpRight, Trophy, User } from 'lucide-react'
+import { useState } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { ArrowUpRight, Trophy, User } from "lucide-react";
 
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { cn } from '@/lib/utils'
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 export interface ProjectEntry {
-  id: string
+  id: string;
   /** Bengali/local name, when the source gives one. */
-  localName?: string | null
-  title: string
-  abstract: string
+  localName?: string | null;
+  title: string;
+  abstract: string;
   /** Primary Research Theme title; null when the Project has none. */
-  theme: string | null
-  keywords: string[]
+  theme: string | null;
+  keywords: string[];
   /** null when no source states the status. */
-  status: 'ongoing' | 'completed' | null
-  leadResearcher: string | null
-  award?: { title: string }
-  slug: string
+  status: "ongoing" | "completed" | null;
+  leadResearcher: string | null;
+  award?: { title: string };
+  slug: string;
 }
 
 interface ProjectsGridProps {
-  projects?: ProjectEntry[]
-  themes?: string[]
-  keywords?: string[]
-  className?: string
+  projects?: ProjectEntry[];
+  themes?: string[];
+  keywords?: string[];
+  className?: string;
 }
 
-const PAGE_SIZE = 9
+const PAGE_SIZE = 9;
 
 const ProjectsGrid = ({
   projects = [],
@@ -46,83 +46,87 @@ const ProjectsGrid = ({
   keywords = [],
   className,
 }: ProjectsGridProps) => {
-  const searchParams = useSearchParams()
-  const router = useRouter()
-  const pathname = usePathname()
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const [selectedTheme, setSelectedTheme] = useState<string | null>(
-    searchParams.get('theme') || null
-  )
+    searchParams.get("theme") || null,
+  );
   const [selectedKeyword, setSelectedKeyword] = useState<string | null>(
-    searchParams.get('kw') || null
-  )
-  const [selectedStatus, setSelectedStatus] = useState(
-    searchParams.get('status') || 'all'
-  )
-  const [showAll, setShowAll] = useState(false)
+    searchParams.get("kw") || null,
+  );
+  const [selectedStatus, setSelectedStatus] = useState(searchParams.get("status") || "all");
+  const [showAll, setShowAll] = useState(false);
 
   function pushParams(updates: Record<string, string | null>) {
-    const sp = new URLSearchParams(searchParams.toString())
+    const sp = new URLSearchParams(searchParams.toString());
     for (const [k, v] of Object.entries(updates)) {
-      if (v === null) sp.delete(k)
-      else sp.set(k, v)
+      if (v === null) sp.delete(k);
+      else sp.set(k, v);
     }
-    const qs = sp.toString()
-    router.push(`${pathname}${qs ? `?${qs}` : ''}`, { scroll: false })
+    const qs = sp.toString();
+    router.push(`${pathname}${qs ? `?${qs}` : ""}`, { scroll: false });
   }
 
   const handleTheme = (t: string | null) => {
-    setSelectedTheme(t)
-    setShowAll(false)
-    pushParams({ theme: t })
-  }
+    setSelectedTheme(t);
+    setShowAll(false);
+    pushParams({ theme: t });
+  };
   const handleKeyword = (kw: string | null) => {
-    setSelectedKeyword(kw)
-    setShowAll(false)
-    pushParams({ kw })
-  }
+    setSelectedKeyword(kw);
+    setShowAll(false);
+    pushParams({ kw });
+  };
   const handleStatus = (s: string) => {
-    setSelectedStatus(s)
-    setShowAll(false)
-    pushParams({ status: s === 'all' ? null : s })
-  }
+    setSelectedStatus(s);
+    setShowAll(false);
+    pushParams({ status: s === "all" ? null : s });
+  };
 
   const filtered = projects.filter((p) => {
-    const matchesTheme = selectedTheme === null || p.theme === selectedTheme
-    const matchesKeyword = selectedKeyword === null || p.keywords.includes(selectedKeyword)
-    const matchesStatus = selectedStatus === 'all' || p.status === selectedStatus
-    return matchesTheme && matchesKeyword && matchesStatus
-  })
+    const matchesTheme = selectedTheme === null || p.theme === selectedTheme;
+    const matchesKeyword = selectedKeyword === null || p.keywords.includes(selectedKeyword);
+    const matchesStatus = selectedStatus === "all" || p.status === selectedStatus;
+    return matchesTheme && matchesKeyword && matchesStatus;
+  });
 
   const sorted = [...filtered].sort((a, b) => {
-    if (a.status === 'ongoing' && b.status !== 'ongoing') return -1
-    if (a.status !== 'ongoing' && b.status === 'ongoing') return 1
-    return 0
-  })
+    if (a.status === "ongoing" && b.status !== "ongoing") return -1;
+    if (a.status !== "ongoing" && b.status === "ongoing") return 1;
+    return 0;
+  });
 
-  const visible = showAll ? sorted : sorted.slice(0, PAGE_SIZE)
+  const visible = showAll ? sorted : sorted.slice(0, PAGE_SIZE);
 
   return (
-    <section className={cn('py-4', className)}>
+    <section className={cn("py-4", className)}>
       <div className="container">
         {/* Theme chips */}
         <div
           className="-mx-8 flex items-center gap-2 overflow-x-auto px-8 pb-4"
-          style={{ scrollbarWidth: 'none' }}
+          style={{ scrollbarWidth: "none" }}
         >
           <Badge
-            variant={selectedTheme === null ? 'default' : 'outline'}
+            variant={selectedTheme === null ? "default" : "outline"}
             onClick={() => handleTheme(null)}
-            className={cn('cursor-pointer whitespace-nowrap', selectedTheme !== null && 'bg-background')}
+            className={cn(
+              "cursor-pointer whitespace-nowrap",
+              selectedTheme !== null && "bg-background",
+            )}
           >
             All themes
           </Badge>
           {themes.map((t) => (
             <Badge
               key={t}
-              variant={selectedTheme === t ? 'default' : 'outline'}
+              variant={selectedTheme === t ? "default" : "outline"}
               onClick={() => handleTheme(t)}
-              className={cn('cursor-pointer whitespace-nowrap', selectedTheme !== t && 'bg-background')}
+              className={cn(
+                "cursor-pointer whitespace-nowrap",
+                selectedTheme !== t && "bg-background",
+              )}
             >
               {t}
             </Badge>
@@ -133,21 +137,27 @@ const ProjectsGrid = ({
         <div className="flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
           <div
             className="-mx-8 flex items-center gap-2 overflow-x-auto px-8"
-            style={{ scrollbarWidth: 'none' }}
+            style={{ scrollbarWidth: "none" }}
           >
             <Badge
-              variant={selectedKeyword === null ? 'default' : 'outline'}
+              variant={selectedKeyword === null ? "default" : "outline"}
               onClick={() => handleKeyword(null)}
-              className={cn('cursor-pointer whitespace-nowrap', selectedKeyword !== null && 'bg-background')}
+              className={cn(
+                "cursor-pointer whitespace-nowrap",
+                selectedKeyword !== null && "bg-background",
+              )}
             >
               All keywords
             </Badge>
             {keywords.map((kw) => (
               <Badge
                 key={kw}
-                variant={selectedKeyword === kw ? 'default' : 'outline'}
+                variant={selectedKeyword === kw ? "default" : "outline"}
                 onClick={() => handleKeyword(kw)}
-                className={cn('cursor-pointer whitespace-nowrap', selectedKeyword !== kw && 'bg-background')}
+                className={cn(
+                  "cursor-pointer whitespace-nowrap",
+                  selectedKeyword !== kw && "bg-background",
+                )}
               >
                 {kw}
               </Badge>
@@ -177,7 +187,7 @@ const ProjectsGrid = ({
             {sorted.length > PAGE_SIZE && (
               <div className="mt-10 flex justify-center">
                 <Button variant="outline" onClick={() => setShowAll(!showAll)}>
-                  {showAll ? 'Show fewer' : `Show all ${sorted.length} projects`}
+                  {showAll ? "Show fewer" : `Show all ${sorted.length} projects`}
                 </Button>
               </div>
             )}
@@ -189,8 +199,8 @@ const ProjectsGrid = ({
         )}
       </div>
     </section>
-  )
-}
+  );
+};
 
 const ProjectCard = ({ project }: { project: ProjectEntry }) => (
   <a
@@ -219,13 +229,13 @@ const ProjectCard = ({ project }: { project: ProjectEntry }) => (
           <Badge
             variant="outline"
             className={cn(
-              'text-xs',
-              project.status === 'ongoing'
-                ? 'border-green-500/30 bg-green-50 text-green-700 dark:bg-green-950/20 dark:text-green-400'
-                : 'bg-muted text-muted-foreground',
+              "text-xs",
+              project.status === "ongoing"
+                ? "border-green-500/30 bg-green-50 text-green-700 dark:bg-green-950/20 dark:text-green-400"
+                : "bg-muted text-muted-foreground",
             )}
           >
-            {project.status === 'ongoing' ? 'Ongoing' : 'Completed'}
+            {project.status === "ongoing" ? "Ongoing" : "Completed"}
           </Badge>
         )}
         {project.award && (
@@ -246,6 +256,6 @@ const ProjectCard = ({ project }: { project: ProjectEntry }) => (
       )}
     </div>
   </a>
-)
+);
 
-export { ProjectsGrid, ProjectCard }
+export { ProjectsGrid, ProjectCard };

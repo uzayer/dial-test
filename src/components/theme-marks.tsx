@@ -1,5 +1,5 @@
-import type { RisoVariant } from '@/components/riso'
-import { cn } from '@/lib/utils'
+import type { RisoVariant } from "@/components/riso";
+import { cn } from "@/lib/utils";
 
 /**
  * One drawn glyph per Research Theme, in the second ink. These are drawings,
@@ -11,20 +11,20 @@ import { cn } from '@/lib/utils'
  */
 
 const stroke = {
-  fill: 'none',
-  stroke: 'currentColor',
+  fill: "none",
+  stroke: "currentColor",
   strokeWidth: 1.6,
-  strokeLinecap: 'round',
-  strokeLinejoin: 'round',
-} as const
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+} as const;
 
-type GlyphProps = { className?: string }
+type GlyphProps = { className?: string };
 
 const wrap = (children: React.ReactNode, className?: string) => (
-  <svg aria-hidden viewBox="0 0 48 48" className={cn('size-10 text-ink', className)}>
+  <svg aria-hidden viewBox="0 0 48 48" className={cn("size-10 text-ink", className)}>
     <g {...stroke}>{children}</g>
   </svg>
-)
+);
 
 /** Accessibility & inclusion: a hand reaching a doorway that is propped open. */
 const AccessibilityGlyph = ({ className }: GlyphProps) =>
@@ -36,7 +36,7 @@ const AccessibilityGlyph = ({ className }: GlyphProps) =>
       <path d="M36 20c3 2 5 5 5 9s-2 7-5 9" />
     </>,
     className,
-  )
+  );
 
 /** Gender & feminist HCI: two overlapping circles, the overlap hatched. */
 const GenderGlyph = ({ className }: GlyphProps) =>
@@ -48,7 +48,7 @@ const GenderGlyph = ({ className }: GlyphProps) =>
       <path d="M22 18.5l6 4M22 25l6 4" />
     </>,
     className,
-  )
+  );
 
 /** Mental health & wellbeing: a pulse that settles into a heart's curve. */
 const WellbeingGlyph = ({ className }: GlyphProps) =>
@@ -58,7 +58,7 @@ const WellbeingGlyph = ({ className }: GlyphProps) =>
       <path d="M32 21c2-3 7-2 7 2 0 5-6 8-8 11-2-3-8-6-8-11 0-4 5-5 7-2" />
     </>,
     className,
-  )
+  );
 
 /** Explainable AI: a box opened up, with a question inside. */
 const ExplainableGlyph = ({ className }: GlyphProps) =>
@@ -70,7 +70,7 @@ const ExplainableGlyph = ({ className }: GlyphProps) =>
       <path d="M24 36.5v.2" />
     </>,
     className,
-  )
+  );
 
 /** ICT for development: a signal reaching out from a small mast. */
 const IctdGlyph = ({ className }: GlyphProps) =>
@@ -83,7 +83,7 @@ const IctdGlyph = ({ className }: GlyphProps) =>
       <circle cx="24" cy="12" r="2" />
     </>,
     className,
-  )
+  );
 
 /** Safety & security: a shield sketched twice, slightly out of register. */
 const SafetyGlyph = ({ className }: GlyphProps) =>
@@ -93,7 +93,7 @@ const SafetyGlyph = ({ className }: GlyphProps) =>
       <path d="M18 24l4 4 9-9" />
     </>,
     className,
-  )
+  );
 
 /** IoT & low-cost hardware: a board with legs and a soldered joint. */
 const HardwareGlyph = ({ className }: GlyphProps) =>
@@ -104,7 +104,7 @@ const HardwareGlyph = ({ className }: GlyphProps) =>
       <circle cx="24" cy="24" r="3" />
     </>,
     className,
-  )
+  );
 
 /** Infodemic & misinformation: two speech bubbles, one fracturing. */
 const InfodemicGlyph = ({ className }: GlyphProps) =>
@@ -115,7 +115,7 @@ const InfodemicGlyph = ({ className }: GlyphProps) =>
       <path d="M17 15l-2 5h4l-2 5" />
     </>,
     className,
-  )
+  );
 
 /** Computing education: an open notebook with a cursor blinking on the page. */
 const EducationGlyph = ({ className }: GlyphProps) =>
@@ -127,19 +127,19 @@ const EducationGlyph = ({ className }: GlyphProps) =>
       <path d="M30 27h5" />
     </>,
     className,
-  )
+  );
 
 const THEME_GLYPHS: Record<string, (props: GlyphProps) => React.ReactElement> = {
-  'accessibility-inclusion': AccessibilityGlyph,
-  'gender-feminist-hci': GenderGlyph,
-  'mental-health-wellbeing': WellbeingGlyph,
-  'explainable-ai-ml': ExplainableGlyph,
+  "accessibility-inclusion": AccessibilityGlyph,
+  "gender-feminist-hci": GenderGlyph,
+  "mental-health-wellbeing": WellbeingGlyph,
+  "explainable-ai-ml": ExplainableGlyph,
   ictd: IctdGlyph,
-  'safety-security': SafetyGlyph,
-  'iot-low-cost-hardware': HardwareGlyph,
-  'infodemic-misinformation': InfodemicGlyph,
-  'computing-education-community': EducationGlyph,
-}
+  "safety-security": SafetyGlyph,
+  "iot-low-cost-hardware": HardwareGlyph,
+  "infodemic-misinformation": InfodemicGlyph,
+  "computing-education-community": EducationGlyph,
+};
 
 /**
  * One ink per Theme, so the Research index reads as a printed set rather than
@@ -147,19 +147,19 @@ const THEME_GLYPHS: Record<string, (props: GlyphProps) => React.ReactElement> = 
  * appears. Status colour is not in this set; green always means ongoing.
  */
 const THEME_INK: Record<string, string> = {
-  'accessibility-inclusion': 'text-ink',
-  'gender-feminist-hci': 'text-ink-violet',
-  'mental-health-wellbeing': 'text-ink-violet',
-  'explainable-ai-ml': 'text-ink-blue',
-  ictd: 'text-ink-blue',
-  'safety-security': 'text-ink',
-  'iot-low-cost-hardware': 'text-ink-yellow',
-  'infodemic-misinformation': 'text-ink-yellow',
-  'computing-education-community': 'text-brand',
-}
+  "accessibility-inclusion": "text-ink",
+  "gender-feminist-hci": "text-ink-violet",
+  "mental-health-wellbeing": "text-ink-violet",
+  "explainable-ai-ml": "text-ink-blue",
+  ictd: "text-ink-blue",
+  "safety-security": "text-ink",
+  "iot-low-cost-hardware": "text-ink-yellow",
+  "infodemic-misinformation": "text-ink-yellow",
+  "computing-education-community": "text-brand",
+};
 
 /** The ink a Theme is printed in; falls back to the second ink. */
-export const themeInk = (slug: string) => THEME_INK[slug] ?? 'text-ink'
+export const themeInk = (slug: string) => THEME_INK[slug] ?? "text-ink";
 
 /**
  * The same ink as a raw CSS value, for the places a Tailwind text class cannot
@@ -167,18 +167,18 @@ export const themeInk = (slug: string) => THEME_INK[slug] ?? 'text-ink'
  * `--header-ink` so one variable re-inks a whole page.
  */
 const THEME_INK_VAR: Record<string, string> = {
-  'accessibility-inclusion': 'var(--ink)',
-  'gender-feminist-hci': 'var(--ink-violet)',
-  'mental-health-wellbeing': 'var(--ink-violet)',
-  'explainable-ai-ml': 'var(--ink-blue)',
-  ictd: 'var(--ink-blue)',
-  'safety-security': 'var(--ink)',
-  'iot-low-cost-hardware': 'var(--ink-yellow)',
-  'infodemic-misinformation': 'var(--ink-yellow)',
-  'computing-education-community': 'var(--brand)',
-}
+  "accessibility-inclusion": "var(--ink)",
+  "gender-feminist-hci": "var(--ink-violet)",
+  "mental-health-wellbeing": "var(--ink-violet)",
+  "explainable-ai-ml": "var(--ink-blue)",
+  ictd: "var(--ink-blue)",
+  "safety-security": "var(--ink)",
+  "iot-low-cost-hardware": "var(--ink-yellow)",
+  "infodemic-misinformation": "var(--ink-yellow)",
+  "computing-education-community": "var(--brand)",
+};
 
-export const themeInkVar = (slug: string) => THEME_INK_VAR[slug] ?? 'var(--ink)'
+export const themeInkVar = (slug: string) => THEME_INK_VAR[slug] ?? "var(--ink)";
 
 /**
  * One printed composition per Theme. Nine Theme pages sharing a single drawing
@@ -186,22 +186,22 @@ export const themeInkVar = (slug: string) => THEME_INK_VAR[slug] ?? 'var(--ink)'
  * composition together make each page its own plate.
  */
 const THEME_ART: Record<string, RisoVariant> = {
-  'accessibility-inclusion': 'bloom',
-  'gender-feminist-hci': 'orbit',
-  'mental-health-wellbeing': 'bloom',
-  'explainable-ai-ml': 'strata',
-  ictd: 'signal',
-  'safety-security': 'orbit',
-  'iot-low-cost-hardware': 'field',
-  'infodemic-misinformation': 'signal',
-  'computing-education-community': 'field',
-}
+  "accessibility-inclusion": "bloom",
+  "gender-feminist-hci": "orbit",
+  "mental-health-wellbeing": "bloom",
+  "explainable-ai-ml": "strata",
+  ictd: "signal",
+  "safety-security": "orbit",
+  "iot-low-cost-hardware": "field",
+  "infodemic-misinformation": "signal",
+  "computing-education-community": "field",
+};
 
-export const themeArt = (slug: string): RisoVariant => THEME_ART[slug] ?? 'strata'
+export const themeArt = (slug: string): RisoVariant => THEME_ART[slug] ?? "strata";
 
 export function ThemeGlyph({ slug, className }: { slug: string; className?: string }) {
-  const Glyph = THEME_GLYPHS[slug]
-  return Glyph ? <Glyph className={cn(themeInk(slug), className)} /> : null
+  const Glyph = THEME_GLYPHS[slug];
+  return Glyph ? <Glyph className={cn(themeInk(slug), className)} /> : null;
 }
 
-export const hasThemeGlyph = (slug: string) => slug in THEME_GLYPHS
+export const hasThemeGlyph = (slug: string) => slug in THEME_GLYPHS;

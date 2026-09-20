@@ -49,9 +49,8 @@ const Hero171 = ({ className }: Hero171Props) => {
                 Technology for communities design usually misses.
               </h1>
               <p className="mt-6 text-lg text-muted-foreground">
-                DIAL studies how people live with technology in low-resource,
-                high-stakes settings, then builds inclusive systems with the
-                communities who will use them.
+                DIAL studies how people live with technology in low-resource, high-stakes settings,
+                then builds inclusive systems with the communities who will use them.
               </p>
               <div className="mt-11 flex flex-wrap gap-5">
                 <Button
@@ -105,9 +104,7 @@ const Hero171 = ({ className }: Hero171Props) => {
                 <div className="col-[1/3] overflow-hidden rounded-3xl bg-muted">
                   <div className="p-5 xl:p-7">
                     <div className="flex gap-7">
-                      <div className="text-4xl leading-none text-foreground xl:text-7xl">
-                        CHI
-                      </div>
+                      <div className="text-4xl leading-none text-foreground xl:text-7xl">CHI</div>
                       <Signal className="h-9 w-9 stroke-foreground xl:h-14 xl:w-14" />
                     </div>
                     <p className="mt-3 text-xs text-foreground md:text-sm xl:mt-7 xl:text-xl">
@@ -158,9 +155,7 @@ const Hero171 = ({ className }: Hero171Props) => {
                         <span className="text-sm font-medium text-foreground underline-offset-4 group-hover/row:underline xl:text-base">
                           {label}
                         </span>
-                        <span className="text-xs text-muted-foreground xl:text-sm">
-                          {detail}
-                        </span>
+                        <span className="text-xs text-muted-foreground xl:text-sm">{detail}</span>
                       </span>
                     </Link>
                   ))}

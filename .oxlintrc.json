@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "error"
+  },
+  "plugins": ["unicorn", "typescript", "oxc", "react", "nextjs"],
+  "rules": {
+    "nextjs/no-html-link-for-pages": "error",
+    "nextjs/no-img-element": "off",
+    "typescript/no-explicit-any": "error"
+  },
+  "ignorePatterns": [".next", "build", "coverage", "node_modules", "out"]
+}

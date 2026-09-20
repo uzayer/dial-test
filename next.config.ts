@@ -9,9 +9,7 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ["192.168.0.180", "*.local"],
   // Placeholder photography until DIAL's own images are collected.
   images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "deifkwefumgah.cloudfront.net" },
-    ],
+    remotePatterns: [{ protocol: "https", hostname: "deifkwefumgah.cloudfront.net" }],
   },
   turbopack: {
     root: path.resolve(__dirname),

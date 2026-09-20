@@ -78,12 +78,48 @@ const TEAM_CATEGORY_ICONS: Record<string, LucideIcon> = {
 
 // Browse modes are site navigation, not records.
 const publicationsBrowse = [
-  { id: "pb-1", title: "All Publications", description: "Complete bibliography.", href: "/publications", icon: BookOpen },
-  { id: "pb-2", title: "By Year", description: "Chronological view of our output.", href: "/publications", icon: Calendar },
-  { id: "pb-3", title: "By Research Theme", description: "Publications grouped by topic.", href: "/publications?view=theme", icon: Tag },
-  { id: "pb-4", title: "By Venue", description: "Conference and journal index.", href: "/publications?view=venue", icon: Search },
-  { id: "pb-5", title: "Open Access", description: "Freely available papers.", href: "/publications?open=1", icon: Globe },
-  { id: "pb-6", title: "Collaborations", description: "Cross-institutional work.", href: "/publications?collab=1", icon: Users },
+  {
+    id: "pb-1",
+    title: "All Publications",
+    description: "Complete bibliography.",
+    href: "/publications",
+    icon: BookOpen,
+  },
+  {
+    id: "pb-2",
+    title: "By Year",
+    description: "Chronological view of our output.",
+    href: "/publications",
+    icon: Calendar,
+  },
+  {
+    id: "pb-3",
+    title: "By Research Theme",
+    description: "Publications grouped by topic.",
+    href: "/publications?view=theme",
+    icon: Tag,
+  },
+  {
+    id: "pb-4",
+    title: "By Venue",
+    description: "Conference and journal index.",
+    href: "/publications?view=venue",
+    icon: Search,
+  },
+  {
+    id: "pb-5",
+    title: "Open Access",
+    description: "Freely available papers.",
+    href: "/publications?open=1",
+    icon: Globe,
+  },
+  {
+    id: "pb-6",
+    title: "Collaborations",
+    description: "Cross-institutional work.",
+    href: "/publications?collab=1",
+    icon: Users,
+  },
 ];
 
 // The drawing for each group lives in community-marks.tsx, keyed by title.
@@ -231,10 +267,7 @@ const ResearchMenu = ({ nav }: MenuProps) => (
             <ThemeGlyph slug={theme.slug} className="size-8 shrink-0" />
             <span className="flex-1">
               <strong
-                className={cn(
-                  "font-display relative text-base font-normal",
-                  themeInk(theme.slug),
-                )}
+                className={cn("font-display relative text-base font-normal", themeInk(theme.slug))}
               >
                 {theme.title}
                 <SquiggleUnderline />
@@ -416,24 +449,24 @@ const PeopleMenu = ({ nav }: MenuProps) => (
             {nav.teamCategories.map((member) => {
               const CategoryIcon = TEAM_CATEGORY_ICONS[member.id] ?? Users;
               return (
-              <NavigationMenuLink
-                key={member.id}
-                href={member.href}
-                className="group flex flex-row items-center space-x-4 border-b border-border py-5 text-left sm:py-7 lg:border-0 lg:py-0"
-              >
-                <div className="flex aspect-square size-9 shrink-0 items-center justify-center">
-                  <CategoryIcon className="size-5" />
-                </div>
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-foreground/85 group-hover:text-foreground">
-                    {member.title}
+                <NavigationMenuLink
+                  key={member.id}
+                  href={member.href}
+                  className="group flex flex-row items-center space-x-4 border-b border-border py-5 text-left sm:py-7 lg:border-0 lg:py-0"
+                >
+                  <div className="flex aspect-square size-9 shrink-0 items-center justify-center">
+                    <CategoryIcon className="size-5" />
                   </div>
-                  <p className="mt-1 text-xs text-muted-foreground group-hover:text-foreground">
-                    {member.description}
-                  </p>
-                </div>
-                <ArrowRight className="size-4 arrow-ne lg:hidden" />
-              </NavigationMenuLink>
+                  <div className="flex-1">
+                    <div className="text-sm font-medium text-foreground/85 group-hover:text-foreground">
+                      {member.title}
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground group-hover:text-foreground">
+                      {member.description}
+                    </p>
+                  </div>
+                  <ArrowRight className="size-4 arrow-ne lg:hidden" />
+                </NavigationMenuLink>
               );
             })}
           </menu>
@@ -640,9 +673,15 @@ const Navbar4 = ({ nav, className }: Navbar4Props) => {
 
             {/* CTA + dark toggle + mobile toggle */}
             <div className="flex items-center gap-2">
-              <a href="/contact" className={cn(buttonVariants(), "hidden rounded-full px-4 transition-transform duration-150 ease-snappy active:scale-[0.97] md:inline-flex")}>
+              <Link
+                href="/contact"
+                className={cn(
+                  buttonVariants(),
+                  "hidden rounded-full px-4 transition-transform duration-150 ease-snappy active:scale-[0.97] md:inline-flex",
+                )}
+              >
                 Contact
-              </a>
+              </Link>
               <Button
                 variant="ghost"
                 size="icon"
@@ -675,65 +714,68 @@ const Navbar4 = ({ nav, className }: Navbar4Props) => {
           {/* The menu unrolls down from the nav bar (clip-path, iOS sheet
               curve) and rolls back up faster on close; reduced motion fades. */}
           <AnimatePresence>
-          {open && (
-            <motion.div
-              key="mobile-menu"
-              initial={reduceMotion ? { opacity: 0 } : { clipPath: "inset(0 0 100% 0)" }}
-              animate={reduceMotion ? { opacity: 1 } : { clipPath: "inset(0 0 0% 0)" }}
-              exit={
-                reduceMotion
-                  ? { opacity: 0, transition: { duration: 0.15 } }
-                  : { clipPath: "inset(0 0 100% 0)", transition: { duration: 0.18, ease: [0.23, 1, 0.32, 1] } }
-              }
-              transition={{ duration: reduceMotion ? 0.15 : 0.3, ease: [0.32, 0.72, 0, 1] }}
-              className="fixed inset-0 top-[77px] container flex h-[calc(100vh-77px)] w-full flex-col overflow-auto border-t border-border bg-background lg:hidden"
-            >
-              {submenu && (
-                <div className="mt-3">
-                  <Button
-                    variant="link"
-                    onClick={() => setSubmenu(null)}
-                    className="relative -left-4"
-                  >
-                    <ArrowLeft className="size-4 text-xs" />
-                    Go back
-                  </Button>
-                </div>
-              )}
-              {submenu === null && (
-                <div>
-                  {navigationMenuItems.map((item, i) => (
-                    <button
-                      key={item.key}
-                      type="button"
-                      className="enter flex w-full items-center border-b border-border py-6 text-left [animation-duration:300ms]"
-                      style={{ animationDelay: `${80 + i * 40}ms` }}
-                      onClick={() => setSubmenu(item.key)}
+            {open && (
+              <motion.div
+                key="mobile-menu"
+                initial={reduceMotion ? { opacity: 0 } : { clipPath: "inset(0 0 100% 0)" }}
+                animate={reduceMotion ? { opacity: 1 } : { clipPath: "inset(0 0 0% 0)" }}
+                exit={
+                  reduceMotion
+                    ? { opacity: 0, transition: { duration: 0.15 } }
+                    : {
+                        clipPath: "inset(0 0 100% 0)",
+                        transition: { duration: 0.18, ease: [0.23, 1, 0.32, 1] },
+                      }
+                }
+                transition={{ duration: reduceMotion ? 0.15 : 0.3, ease: [0.32, 0.72, 0, 1] }}
+                className="fixed inset-0 top-[77px] container flex h-[calc(100vh-77px)] w-full flex-col overflow-auto border-t border-border bg-background lg:hidden"
+              >
+                {submenu && (
+                  <div className="mt-3">
+                    <Button
+                      variant="link"
+                      onClick={() => setSubmenu(null)}
+                      className="relative -left-4"
                     >
-                      <span className="flex-1 text-sm font-medium">{item.label}</span>
-                      <span className="shrink-0">
-                        <ArrowRight className="size-4" />
-                      </span>
-                    </button>
-                  ))}
+                      <ArrowLeft className="size-4 text-xs" />
+                      Go back
+                    </Button>
+                  </div>
+                )}
+                {submenu === null && (
+                  <div>
+                    {navigationMenuItems.map((item, i) => (
+                      <button
+                        key={item.key}
+                        type="button"
+                        className="enter flex w-full items-center border-b border-border py-6 text-left [animation-duration:300ms]"
+                        style={{ animationDelay: `${80 + i * 40}ms` }}
+                        onClick={() => setSubmenu(item.key)}
+                      >
+                        <span className="flex-1 text-sm font-medium">{item.label}</span>
+                        <span className="shrink-0">
+                          <ArrowRight className="size-4" />
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {navigationMenuItems.map(
+                  (item) =>
+                    submenu === item.key && (
+                      <div key={item.key}>
+                        <h2 className="pt-4 pb-6 text-lg font-medium">{item.label}</h2>
+                        <item.component nav={nav} />
+                      </div>
+                    ),
+                )}
+                <div className="mx-[2rem] mt-auto flex flex-col items-center gap-8 py-24">
+                  <Link href="/contact" className={cn(buttonVariants(), "rounded-full px-5")}>
+                    Contact
+                  </Link>
                 </div>
-              )}
-              {navigationMenuItems.map(
-                (item) =>
-                  submenu === item.key && (
-                    <div key={item.key}>
-                      <h2 className="pt-4 pb-6 text-lg font-medium">{item.label}</h2>
-                      <item.component nav={nav} />
-                    </div>
-                  ),
-              )}
-              <div className="mx-[2rem] mt-auto flex flex-col items-center gap-8 py-24">
-                <a href="/contact" className={cn(buttonVariants(), "rounded-full px-5")}>
-                  Contact
-                </a>
-              </div>
-            </motion.div>
-          )}
+              </motion.div>
+            )}
           </AnimatePresence>
         </NavigationMenu>
       </div>

@@ -105,7 +105,10 @@ export default function AboutPage() {
       </PageHeader>
 
       <section className={cn("container", sectionSpacing, "pt-0 md:pt-0")}>
-        <div data-reveal className="relative grid gap-10 pt-6 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-24">
+        <div
+          data-reveal
+          className="relative grid gap-10 pt-6 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-24"
+        >
           <span aria-hidden className="reveal-rule absolute inset-x-0 top-0 h-px bg-border" />
           <div className="reveal-item lg:sticky lg:top-28 lg:self-start">
             <p className={cn(label, "mb-3")}>What we do</p>
@@ -116,16 +119,18 @@ export default function AboutPage() {
 
           <div className="reveal-item max-w-prose space-y-5 text-pretty leading-relaxed text-muted-foreground md:text-lg">
             <p>
-              <span className="text-foreground">DIAL—the Design Inclusion and Access Lab at North South University—</span>
+              <span className="text-foreground">
+                DIAL—the Design Inclusion and Access Lab at North South University—
+              </span>
               was established in {labInfo.foundedYear} by NSUHCI, the HCI research group Dr. Nova
               Ahmed and her colleagues began in {labInfo.hciResearchSince} through a collaboration
               with Google. We are based in the Department of Electrical and Computer Engineering.
             </p>
             <p>
               Our research focuses on inclusivity and access for marginalised communities, building
-              technology that is locally appropriate, low-cost, and explainable. We use participatory
-              design and long-term fieldwork to understand problems from the inside, then build and
-              evaluate technology with the people who will use it.
+              technology that is locally appropriate, low-cost, and explainable. We use
+              participatory design and long-term fieldwork to understand problems from the inside,
+              then build and evaluate technology with the people who will use it.
             </p>
             <p>
               We collaborate across universities, funders, and partners to study inclusion, safety,
@@ -163,7 +168,11 @@ export default function AboutPage() {
       </section>
 
       <section className={cn("container", sectionSpacing)}>
-        <SectionHeader label="Method" title="From field insight to usable systems" className="mb-10" />
+        <SectionHeader
+          label="Method"
+          title="From field insight to usable systems"
+          className="mb-10"
+        />
         <NumberedSteps steps={methods} />
       </section>
 
@@ -182,7 +191,6 @@ export default function AboutPage() {
           ))}
         </ol>
       </section>
-
 
       <ClosingNote
         heading="Curious about the work?"

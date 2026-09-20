@@ -1,4 +1,4 @@
-import type { Award } from './types'
+import type { Award } from "./types";
 
 /**
  * Fixture awards: a small, hand-picked subset chosen to cover edge cases
@@ -8,143 +8,147 @@ import type { Award } from './types'
 export const awards: Award[] = [
   {
     id: "compass-2023-best-paper",
-    title: "Best Paper Award — Making ethics at home in Global CS Education: Provoking stories from the Souths",
+    title:
+      "Best Paper Award — Making ethics at home in Global CS Education: Provoking stories from the Souths",
     year: 2023,
     category: "best-paper",
     scope: "lab",
     recipients: [
       {
-        teamMember: "nova-ahmed"
+        teamMember: "nova-ahmed",
       },
       {
         customRecipient: {
-          name: "Cat Kutay"
-        }
+          name: "Cat Kutay",
+        },
       },
       {
         customRecipient: {
-          name: "Shaimaa Lazem"
-        }
+          name: "Shaimaa Lazem",
+        },
       },
       {
         customRecipient: {
-          name: "Marisol Wong-Villacres"
-        }
+          name: "Marisol Wong-Villacres",
+        },
       },
       {
         customRecipient: {
-          name: "Cristina Abad"
-        }
+          name: "Cristina Abad",
+        },
       },
       {
         customRecipient: {
-          name: "Cesar Collazos"
-        }
+          name: "Cesar Collazos",
+        },
       },
       {
         customRecipient: {
-          name: "Shady Elbassuoni"
-        }
+          name: "Shady Elbassuoni",
+        },
       },
       {
-        teamMember: "lamia-iftekhar"
-      },
-      {
-        customRecipient: {
-          name: "Farzana Islam"
-        }
+        teamMember: "lamia-iftekhar",
       },
       {
         customRecipient: {
-          name: "Deepa Singh"
-        }
-      },
-      {
-        teamMember: "tahsin-mayeesha"
+          name: "Farzana Islam",
+        },
       },
       {
         customRecipient: {
-          name: "Martin Ujakpamabeifam"
-        }
+          name: "Deepa Singh",
+        },
+      },
+      {
+        teamMember: "tahsin-mayeesha",
       },
       {
         customRecipient: {
-          name: "Tariq Zaman"
-        }
+          name: "Martin Ujakpamabeifam",
+        },
       },
       {
         customRecipient: {
-          name: "Nicola Bidwell"
-        }
-      }
+          name: "Tariq Zaman",
+        },
+      },
+      {
+        customRecipient: {
+          name: "Nicola Bidwell",
+        },
+      },
     ],
     organizationLabel: "ACM COMPASS 2023 (ACM Journal on Computing and Sustainable Societies)",
     featured: true,
     provenance: {
       source: "scrape",
-      sourceNote: "nsu-hci-current-website/awards.md — \"Paper Awards\" → \"ACM Journal on Computing and Sustainable Societies (COMPASS 2023) Best Paper\"; \"Best Journal Paper Award\" in DIAL Proposal.md — \"Awards\". Tahsin Mayeesha is listed as \"Tasmiah Tahsin Mayeesha\"."
-    }
+      sourceNote:
+        'nsu-hci-current-website/awards.md — "Paper Awards" → "ACM Journal on Computing and Sustainable Societies (COMPASS 2023) Best Paper"; "Best Journal Paper Award" in DIAL Proposal.md — "Awards". Tahsin Mayeesha is listed as "Tasmiah Tahsin Mayeesha".',
+    },
   },
   {
     id: "chi-2019-best-paper",
-    title: "Best Paper Award (Best of CHI) — \"They Don’t Leave Us Alone Anywhere We Go\": Gender and Digital Abuse in South Asia",
+    title:
+      'Best Paper Award (Best of CHI) — "They Don’t Leave Us Alone Anywhere We Go": Gender and Digital Abuse in South Asia',
     year: 2019,
     category: "best-paper",
     scope: "lab",
     recipients: [
       {
-        teamMember: "nithya-sambasivan"
+        teamMember: "nithya-sambasivan",
       },
       {
         customRecipient: {
-          name: "A. Batool"
-        }
+          name: "A. Batool",
+        },
       },
       {
-        teamMember: "nova-ahmed"
-      },
-      {
-        customRecipient: {
-          name: "T. Matthews"
-        }
+        teamMember: "nova-ahmed",
       },
       {
         customRecipient: {
-          name: "K. Thomas"
-        }
+          name: "T. Matthews",
+        },
       },
       {
         customRecipient: {
-          name: "L. Gaytán-Lugo"
-        }
+          name: "K. Thomas",
+        },
       },
       {
         customRecipient: {
-          name: "D. Nemer"
-        }
+          name: "L. Gaytán-Lugo",
+        },
       },
       {
         customRecipient: {
-          name: "E. Bursztein"
-        }
+          name: "D. Nemer",
+        },
       },
       {
         customRecipient: {
-          name: "E. Churchill"
-        }
+          name: "E. Bursztein",
+        },
       },
       {
         customRecipient: {
-          name: "S. Consolvo"
-        }
-      }
+          name: "E. Churchill",
+        },
+      },
+      {
+        customRecipient: {
+          name: "S. Consolvo",
+        },
+      },
     ],
     organizationLabel: "ACM CHI 2019",
     featured: true,
     provenance: {
       source: "scrape",
-      sourceNote: "nsu-hci-current-website/awards.md — \"Paper Awards\" → \"CHI 2019 Best Paper\"; also DIAL Proposal.md — \"Awards\""
-    }
+      sourceNote:
+        'nsu-hci-current-website/awards.md — "Paper Awards" → "CHI 2019 Best Paper"; also DIAL Proposal.md — "Awards"',
+    },
   },
   {
     id: "comsnets-2019-best-poster",
@@ -154,17 +158,18 @@ export const awards: Award[] = [
     scope: "lab",
     recipients: [
       {
-        teamMember: "rahat-jahangir-rony"
+        teamMember: "rahat-jahangir-rony",
       },
       {
-        teamMember: "nova-ahmed"
-      }
+        teamMember: "nova-ahmed",
+      },
     ],
     organizationLabel: "COMSNETS 2019",
     provenance: {
       source: "scrape",
-      sourceNote: "nsu-hci-current-website/awards.md — \"Paper Awards\" → \"COMSNETS 2019 Best Short Paper\"; DIAL Proposal.md — \"Awards\"; nsu-hci-current-website/events.md — \"COMSNETS 2019\" photo caption"
-    }
+      sourceNote:
+        'nsu-hci-current-website/awards.md — "Paper Awards" → "COMSNETS 2019 Best Short Paper"; DIAL Proposal.md — "Awards"; nsu-hci-current-website/events.md — "COMSNETS 2019" photo caption',
+    },
   },
   {
     id: "soups-2024-ten-year-impact-award",
@@ -177,8 +182,9 @@ export const awards: Award[] = [
     featured: true,
     provenance: {
       source: "scrape",
-      sourceNote: "DIAL Proposal.md — \"Awards\" (\"10 years Impact Award: SOUPS Usenix Conference (2024)\")"
-    }
+      sourceNote:
+        'DIAL Proposal.md — "Awards" ("10 years Impact Award: SOUPS Usenix Conference (2024)")',
+    },
   },
   {
     id: "hcixb-2018-best-poster",
@@ -188,25 +194,26 @@ export const awards: Award[] = [
     scope: "lab",
     recipients: [
       {
-        teamMember: "nova-ahmed"
+        teamMember: "nova-ahmed",
       },
       {
-        teamMember: "tamanna-motahar"
+        teamMember: "tamanna-motahar",
       },
       {
         customRecipient: {
-          name: "Sharmin Kabir"
-        }
+          name: "Sharmin Kabir",
+        },
       },
       {
-        teamMember: "munir-hasan"
-      }
+        teamMember: "munir-hasan",
+      },
     ],
     organizationLabel: "HCI Across Borders, CHI 2018",
     provenance: {
       source: "scrape",
-      sourceNote: "nsu-hci-current-website/awards.md — \"Paper Awards\" → \"CHI HCIxB Symposium 2018 Best Poster\""
-    }
+      sourceNote:
+        'nsu-hci-current-website/awards.md — "Paper Awards" → "CHI HCIxB Symposium 2018 Best Poster"',
+    },
   },
   {
     id: "ghc-2019-faculty-scholar",
@@ -216,14 +223,14 @@ export const awards: Award[] = [
     scope: "personal",
     recipients: [
       {
-        teamMember: "nova-ahmed"
-      }
+        teamMember: "nova-ahmed",
+      },
     ],
     organizationLabel: "Grace Hopper Conference for Women in Computing",
     provenance: {
       source: "scrape",
-      sourceNote: "nova-ahmed-personal-site/awards.md — \"Awards\"; also DIAL Proposal.md — \"Awards\""
-    }
+      sourceNote: 'nova-ahmed-personal-site/awards.md — "Awards"; also DIAL Proposal.md — "Awards"',
+    },
   },
   {
     id: "gestc-2014-best-paper",
@@ -233,13 +240,13 @@ export const awards: Award[] = [
     scope: "personal",
     recipients: [
       {
-        teamMember: "nova-ahmed"
-      }
+        teamMember: "nova-ahmed",
+      },
     ],
     organizationLabel: "Global Engineering, Science and Technology Conference",
     provenance: {
       source: "scrape",
-      sourceNote: "nova-ahmed-personal-site/awards.md — \"Awards\""
-    }
-  }
-]
+      sourceNote: 'nova-ahmed-personal-site/awards.md — "Awards"',
+    },
+  },
+];

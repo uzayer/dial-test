@@ -1,17 +1,17 @@
-import { ChevronRight } from 'lucide-react'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
-import { FaqSection } from '@/components/faq-section'
-import { TickMark } from '@/components/marks'
-import { PageHeader } from '@/components/page-header'
-import { ThemeGlyph, themeArt, themeInkVar } from '@/components/theme-marks'
-import { ProjectIndex } from '@/components/project-index'
-import { InkBand, SectionHeader, sectionSpacing } from '@/components/editorial'
-import { FlatPublicationList } from '@/components/publications1'
-import { ThemeCollaborators, ThemeRelatedAreas } from '@/components/theme-page-sections'
-import { label } from '@/lib/typography'
-import { cn } from '@/lib/utils'
+import { FaqSection } from "@/components/faq-section";
+import { TickMark } from "@/components/marks";
+import { PageHeader } from "@/components/page-header";
+import { ThemeGlyph, themeArt, themeInkVar } from "@/components/theme-marks";
+import { ProjectIndex } from "@/components/project-index";
+import { InkBand, SectionHeader, sectionSpacing } from "@/components/editorial";
+import { FlatPublicationList } from "@/components/publications1";
+import { ThemeCollaborators, ThemeRelatedAreas } from "@/components/theme-page-sections";
+import { label } from "@/lib/typography";
+import { cn } from "@/lib/utils";
 import {
   getResearchThemeBySlug,
   grantFunderName,
@@ -21,23 +21,23 @@ import {
   resolveIds,
   getResearchTheme,
   themeStats,
-} from '@/data'
-import { themeFaqs } from '@/data/faqs'
+} from "@/data";
+import { themeFaqs } from "@/data/faqs";
 import {
   highlightAuthors,
   themeCollaboratorGroups,
   toPublicationYears,
   toRelatedTheme,
   toProjectEntry,
-} from '@/data/views'
+} from "@/data/views";
 
 interface ThemePageProps {
   /** The Research Theme record this route renders. */
-  slug: string
+  slug: string;
   /** Hardcoded prose for the header (research intro copy stays in code). */
-  description: string
+  description: string;
   /** Editorial "related areas" for this theme, by slug. */
-  relatedSlugs: string[]
+  relatedSlugs: string[];
 }
 
 /**
@@ -46,15 +46,15 @@ interface ThemePageProps {
  * collaborators, funders, and counts — is resolved from the records.
  */
 export function ThemePage({ slug, description, relatedSlugs }: ThemePageProps) {
-  const theme = getResearchThemeBySlug(slug)
-  if (!theme) notFound()
+  const theme = getResearchThemeBySlug(slug);
+  if (!theme) notFound();
 
-  const stats = themeStats(theme.id)
-  const projects = projectsByTheme(theme.id)
-  const themePublications = publicationsByTheme(theme.id)
-  const collaboratorGroups = themeCollaboratorGroups(theme.id)
-  const funders = [...new Set(grantsByTheme(theme.id).map(grantFunderName))]
-  const related = resolveIds(relatedSlugs, getResearchTheme).map(toRelatedTheme)
+  const stats = themeStats(theme.id);
+  const projects = projectsByTheme(theme.id);
+  const themePublications = publicationsByTheme(theme.id);
+  const collaboratorGroups = themeCollaboratorGroups(theme.id);
+  const funders = [...new Set(grantsByTheme(theme.id).map(grantFunderName))];
+  const related = resolveIds(relatedSlugs, getResearchTheme).map(toRelatedTheme);
 
   return (
     <>
@@ -80,15 +80,15 @@ export function ThemePage({ slug, description, relatedSlugs }: ThemePageProps) {
         title={theme.title}
         description={description}
         facts={[
-          { value: String(stats.projects), label: 'Projects' },
-          { value: String(stats.publications), label: 'Publications' },
-          { value: String(stats.grants), label: 'Grants' },
+          { value: String(stats.projects), label: "Projects" },
+          { value: String(stats.publications), label: "Publications" },
+          { value: String(stats.grants), label: "Grants" },
         ]}
       />
 
       {/* §2 Projects */}
       {projects.length > 0 && (
-        <section className={cn('container', sectionSpacing, 'pt-0 md:pt-0')}>
+        <section className={cn("container", sectionSpacing, "pt-0 md:pt-0")}>
           <SectionHeader title="Projects" className="mb-6" />
           <ProjectIndex projects={projects.map(toProjectEntry)} />
         </section>
@@ -96,7 +96,7 @@ export function ThemePage({ slug, description, relatedSlugs }: ThemePageProps) {
 
       {/* §3 Publications */}
       {themePublications.length > 0 && (
-        <section className={cn('container', sectionSpacing)}>
+        <section className={cn("container", sectionSpacing)}>
           <SectionHeader title="Publications" className="mb-6" />
           <FlatPublicationList
             yearGroups={toPublicationYears(themePublications)}
@@ -114,15 +114,15 @@ export function ThemePage({ slug, description, relatedSlugs }: ThemePageProps) {
           sentence is exactly the length that survives being set at this size. */}
       {funders.length > 0 && (
         <InkBand ink={themeInkVar(theme.slug)}>
-          <p className={cn(label, 'mb-6 flex items-center gap-2')}>
+          <p className={cn(label, "mb-6 flex items-center gap-2")}>
             <TickMark className="ink-mark" />
             Funding
           </p>
           <p className="max-w-4xl text-pretty font-display text-3xl leading-tight md:text-5xl">
-            This research has been supported by{' '}
+            This research has been supported by{" "}
             {funders.map((funder, i) => (
               <span key={funder}>
-                {i > 0 && (i === funders.length - 1 ? ' and ' : ', ')}
+                {i > 0 && (i === funders.length - 1 ? " and " : ", ")}
                 {funder}
               </span>
             ))}
@@ -136,5 +136,5 @@ export function ThemePage({ slug, description, relatedSlugs }: ThemePageProps) {
 
       <ThemeRelatedAreas themes={related} />
     </>
-  )
+  );
 }

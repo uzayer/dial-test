@@ -11,38 +11,32 @@ const Skiper103 = () => {
     {
       icon: <Icon1 />,
       title: "Type Shit",
-      description:
-        "Fast, accurate typing with real-time validation and helpful hints.",
+      description: "Fast, accurate typing with real-time validation and helpful hints.",
     },
     {
       icon: <Icon2 />,
       title: "Star Great",
-      description:
-        "Mark favorites and rate items with smooth micro-interactions.",
+      description: "Mark favorites and rate items with smooth micro-interactions.",
     },
     {
       icon: <Icon3 />,
       title: "Schedule",
-      description:
-        "Plan tasks with timelines, reminders, and conflict detection.",
+      description: "Plan tasks with timelines, reminders, and conflict detection.",
     },
     {
       icon: <Icon4 />,
       title: "Buy Stuff",
-      description:
-        "Streamlined checkout with secure payments and transparent pricing.",
+      description: "Streamlined checkout with secure payments and transparent pricing.",
     },
     {
       icon: <Icon5 />,
       title: "Triangle Warning",
-      description:
-        "Surface critical alerts with accessible, non-intrusive messaging.",
+      description: "Surface critical alerts with accessible, non-intrusive messaging.",
     },
     {
       icon: <Icon6 />,
       title: "Account bal",
-      description:
-        "Track balances, recent activity, and spending insights at a glance.",
+      description: "Track balances, recent activity, and spending insights at a glance.",
     },
   ];
 
@@ -109,9 +103,7 @@ const Skiper103 = () => {
           >
             <div className="flex h-fit items-center gap-2 pl-3 pt-2.5">
               <div className="scale-85">{item.icon}</div>
-              <span className="text-sm tracking-tight opacity-75">
-                {item.title}
-              </span>
+              <span className="text-sm tracking-tight opacity-75">{item.title}</span>
 
               <ChevronDown
                 className={cn(
@@ -138,11 +130,7 @@ const Skiper103 = () => {
       </ul>
       <p className="text-muted-foreground absolute bottom-4 text-xs">
         Inspired by{" "}
-        <a
-          href="https://x.com/dev_ya"
-          target="_blank"
-          className="hover:text-foreground underline"
-        >
+        <a href="https://x.com/dev_ya" target="_blank" className="hover:text-foreground underline">
           Yanis
         </a>{" "}
         Icons from{" "}
@@ -189,36 +177,15 @@ const Icon1 = (props: React.SVGProps<SVGSVGElement>) => (
         d="M20.25 5.99c0-.696 0-1.17-.032-1.53-.031-.352-.087-.51-.144-.606a1.252 1.252 0 0 0-.683-.548c-.106-.035-.272-.054-.623-.008-.358.047-.82.149-1.5.3L12.51 4.655c-.111.025-.231.053-.357.064a1.76 1.76 0 0 1-.306 0c-.126-.011-.246-.04-.357-.064L6.731 3.598c-.679-.151-1.14-.253-1.499-.3-.35-.046-.517-.027-.623.008-.286.094-.529.29-.683.548-.057.096-.113.254-.144.607-.031.36-.032.833-.032 1.528v8.445c0 .468 0 .78.019 1.022.017.233.047.35.083.433.089.208.234.389.418.521.073.053.18.108.404.175.233.07.537.139.995.24l6.146 1.366.135.029.029.005a.238.238 0 0 0 .043 0l.028-.005.135-.03 6.146-1.365c.458-.101.762-.17.995-.24.223-.067.331-.122.404-.175.184-.132.329-.313.418-.521.036-.083.066-.2.083-.433.018-.242.019-.554.019-1.022V5.989Zm.75 8.444-.003.606c-.008.533-.038.861-.16 1.145l-.057.123a2 2 0 0 1-.611.71l-.13.085c-.322.182-.763.28-1.545.454l-6.147 1.366a2.08 2.08 0 0 1-.26.049 1.009 1.009 0 0 1-.087.004l-.087-.004a1.013 1.013 0 0 1-.106-.016l-.154-.033-6.147-1.366c-.783-.174-1.223-.272-1.544-.454l-.131-.084a2.003 2.003 0 0 1-.669-.834c-.121-.284-.151-.612-.16-1.145L3 14.434V5.989c0-1.279 0-1.958.231-2.428l.05-.09c.216-.363.54-.648.925-.814l.168-.063c.523-.172 1.189-.025 2.52.271l4.76 1.058c.129.029.194.043.26.049a1 1 0 0 0 .173 0c.065-.006.13-.02.26-.05l4.758-1.057c1.332-.296 1.998-.443 2.521-.271.458.15.846.462 1.093.877C21 3.943 21 4.625 21 5.989v8.445Z"
       />
       <defs>
-        <linearGradient
-          id="a"
-          x1={12}
-          x2={12}
-          y1={7}
-          y2={22}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="a" x1={12} x2={12} y1={7} y2={22} gradientUnits="userSpaceOnUse">
           <stop stopColor="#575757" />
           <stop offset={1} stopColor="#151515" />
         </linearGradient>
-        <linearGradient
-          id="e"
-          x1={21}
-          x2={3}
-          y1={10.5}
-          y2={10.5}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="e" x1={21} x2={3} y1={10.5} y2={10.5} gradientUnits="userSpaceOnUse">
           <stop stopColor="#E3E3E5" stopOpacity={0.6} />
           <stop offset={1} stopColor="#BBBBC0" stopOpacity={0.6} />
         </linearGradient>
-        <linearGradient
-          id="f"
-          x1={12}
-          x2={12}
-          y1={2.52}
-          y2={12.05}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="f" x1={12} x2={12} y1={2.52} y2={12.05} gradientUnits="userSpaceOnUse">
           <stop stopColor="#fff" />
           <stop offset={1} stopColor="#fff" stopOpacity={0} />
         </linearGradient>
@@ -276,54 +243,26 @@ const Icon2 = (props: React.SVGProps<SVGSVGElement>) => (
         data-glass="clone"
         filter="url(#c)"
       />
-      <path
-        fill="url(#e)"
-        d="M12 1a8.5 8.5 0 1 1 0 17 8.5 8.5 0 0 1 0-17Z"
-        data-glass="blur"
-      />
+      <path fill="url(#e)" d="M12 1a8.5 8.5 0 1 1 0 17 8.5 8.5 0 0 1 0-17Z" data-glass="blur" />
       <path
         fill="url(#f)"
         d="M12 1a8.5 8.5 0 1 1 0 17 8.5 8.5 0 0 1 0-17Zm0 .75a7.75 7.75 0 1 0 0 15.5 7.75 7.75 0 0 0 0-15.5Z"
       />
       <defs>
-        <linearGradient
-          id="a"
-          x1={12}
-          x2={12}
-          y1={-0.5}
-          y2={23.126}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="a" x1={12} x2={12} y1={-0.5} y2={23.126} gradientUnits="userSpaceOnUse">
           <stop stopColor="#575757" />
           <stop offset={1} stopColor="#151515" />
         </linearGradient>
-        <linearGradient
-          id="e"
-          x1={12}
-          x2={12}
-          y1={1}
-          y2={18}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="e" x1={12} x2={12} y1={1} y2={18} gradientUnits="userSpaceOnUse">
           <stop stopColor="#E3E3E5" stopOpacity={0.6} />
           <stop offset={1} stopColor="#BBBBC0" stopOpacity={0.6} />
         </linearGradient>
-        <linearGradient
-          id="f"
-          x1={12}
-          x2={12}
-          y1={1}
-          y2={10.845}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="f" x1={12} x2={12} y1={1} y2={10.845} gradientUnits="userSpaceOnUse">
           <stop stopColor="#fff" />
           <stop offset={1} stopColor="#fff" stopOpacity={0} />
         </linearGradient>
         <clipPath id="d">
-          <path
-            fill="url(#e)"
-            d="M12 1a8.5 8.5 0 1 1 0 17 8.5 8.5 0 0 1 0-17Z"
-          />
+          <path fill="url(#e)" d="M12 1a8.5 8.5 0 1 1 0 17 8.5 8.5 0 0 1 0-17Z" />
         </clipPath>
         <filter
           id="c"
@@ -380,36 +319,15 @@ const Icon3 = (props: React.SVGProps<SVGSVGElement>) => (
         d="M15.6 7c2.24 0 3.36 0 4.216.436a4.001 4.001 0 0 1 1.748 1.748C22 10.039 22 11.16 22 13.4v2.2c0 2.24 0 3.36-.436 4.216a4.002 4.002 0 0 1-1.748 1.748C18.961 22 17.84 22 15.6 22H8.4c-2.24 0-3.36 0-4.216-.436a4.001 4.001 0 0 1-1.748-1.748C2 18.961 2 17.84 2 15.6v-2.2c0-2.24 0-3.36.436-4.216a4.001 4.001 0 0 1 1.748-1.748C5.039 7 6.16 7 8.4 7h7.2Zm-7.2.75c-1.132 0-1.937 0-2.566.052-.62.05-1.005.147-1.31.302a3.25 3.25 0 0 0-1.42 1.42c-.155.305-.252.69-.302 1.31-.052.63-.052 1.434-.052 2.566v2.2c0 1.132 0 1.936.052 2.566.05.62.147 1.005.302 1.31.311.611.809 1.109 1.42 1.42.305.155.69.252 1.31.302.63.052 1.434.052 2.566.052h7.2c1.132 0 1.936 0 2.566-.052.62-.05 1.005-.147 1.31-.302a3.254 3.254 0 0 0 1.42-1.42c.155-.305.252-.69.302-1.31.052-.63.052-1.434.052-2.566v-2.2c0-1.132 0-1.937-.052-2.566-.05-.62-.147-1.005-.303-1.31a3.25 3.25 0 0 0-1.42-1.42c-.304-.155-.688-.252-1.309-.302-.63-.052-1.434-.052-2.566-.052H8.4Z"
       />
       <defs>
-        <linearGradient
-          id="a"
-          x1={12}
-          x2={12}
-          y1={-2}
-          y2={19.495}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="a" x1={12} x2={12} y1={-2} y2={19.495} gradientUnits="userSpaceOnUse">
           <stop stopColor="#575757" />
           <stop offset={1} stopColor="#151515" />
         </linearGradient>
-        <linearGradient
-          id="e"
-          x1={12}
-          x2={12}
-          y1={7}
-          y2={22}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="e" x1={12} x2={12} y1={7} y2={22} gradientUnits="userSpaceOnUse">
           <stop stopColor="#E3E3E5" stopOpacity={0.6} />
           <stop offset={1} stopColor="#BBBBC0" stopOpacity={0.6} />
         </linearGradient>
-        <linearGradient
-          id="f"
-          x1={12}
-          x2={12}
-          y1={7}
-          y2={15.687}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="f" x1={12} x2={12} y1={7} y2={15.687} gradientUnits="userSpaceOnUse">
           <stop stopColor="#fff" />
           <stop offset={1} stopColor="#fff" stopOpacity={0} />
         </linearGradient>
@@ -490,25 +408,11 @@ const Icon4 = (props: React.SVGProps<SVGSVGElement>) => (
           <stop stopColor="#575757" />
           <stop offset={1} stopColor="#151515" />
         </linearGradient>
-        <linearGradient
-          id="e"
-          x1={5}
-          x2={5}
-          y1={19}
-          y2={23}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="e" x1={5} x2={5} y1={19} y2={23} gradientUnits="userSpaceOnUse">
           <stop stopColor="#575757" />
           <stop offset={1} stopColor="#151515" />
         </linearGradient>
-        <linearGradient
-          id="f"
-          x1={19}
-          x2={19}
-          y1={19}
-          y2={23}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="f" x1={19} x2={19} y1={19} y2={23} gradientUnits="userSpaceOnUse">
           <stop stopColor="#575757" />
           <stop offset={1} stopColor="#151515" />
         </linearGradient>
@@ -523,14 +427,7 @@ const Icon4 = (props: React.SVGProps<SVGSVGElement>) => (
           <stop stopColor="#E3E3E5" stopOpacity={0.6} />
           <stop offset={1} stopColor="#BBBBC0" stopOpacity={0.6} />
         </linearGradient>
-        <linearGradient
-          id="h"
-          x1={14}
-          x2={11.5}
-          y1={5}
-          y2={9.5}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="h" x1={14} x2={11.5} y1={5} y2={9.5} gradientUnits="userSpaceOnUse">
           <stop stopColor="#fff" />
           <stop offset={1} stopColor="#fff" stopOpacity={0} />
         </linearGradient>
@@ -598,36 +495,15 @@ const Icon5 = (props: React.SVGProps<SVGSVGElement>) => (
         d="M16.6 3c2.24 0 3.36 0 4.216.436a4.001 4.001 0 0 1 1.748 1.748C23 6.039 23 7.16 23 9.4v5.2c0 2.24 0 3.36-.436 4.216a4.002 4.002 0 0 1-1.748 1.748C19.961 21 18.84 21 16.6 21h-5.2c-2.24 0-3.36 0-4.216-.436a4.001 4.001 0 0 1-1.748-1.748C5 17.961 5 16.84 5 14.6V9.4c0-2.24 0-3.36.436-4.216a4.001 4.001 0 0 1 1.748-1.748C8.039 3 9.16 3 11.4 3h5.2Zm-5.2.75c-1.132 0-1.936 0-2.566.052-.62.05-1.005.147-1.31.302-.611.311-1.109.809-1.42 1.42-.155.305-.252.69-.302 1.31-.052.63-.052 1.434-.052 2.566v5.2c0 1.132 0 1.936.052 2.566.05.62.147 1.005.302 1.31.311.611.809 1.109 1.42 1.42.305.155.69.252 1.31.302.63.052 1.434.052 2.566.052h5.2c1.132 0 1.936 0 2.566-.052.62-.05 1.005-.147 1.31-.302a3.254 3.254 0 0 0 1.42-1.42c.155-.305.252-.69.302-1.31.052-.63.052-1.434.052-2.566V9.4c0-1.132 0-1.936-.052-2.566-.05-.62-.147-1.005-.302-1.31a3.254 3.254 0 0 0-1.42-1.42c-.305-.155-.69-.252-1.31-.302-.63-.052-1.434-.052-2.566-.052h-5.2Z"
       />
       <defs>
-        <linearGradient
-          id="a"
-          x1={11.25}
-          x2={11.25}
-          y1={3}
-          y2={21}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="a" x1={11.25} x2={11.25} y1={3} y2={21} gradientUnits="userSpaceOnUse">
           <stop stopColor="#575757" />
           <stop offset={1} stopColor="#151515" />
         </linearGradient>
-        <linearGradient
-          id="e"
-          x1={14}
-          x2={14}
-          y1={3}
-          y2={21}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="e" x1={14} x2={14} y1={3} y2={21} gradientUnits="userSpaceOnUse">
           <stop stopColor="#E3E3E5" stopOpacity={0.6} />
           <stop offset={1} stopColor="#BBBBC0" stopOpacity={0.6} />
         </linearGradient>
-        <linearGradient
-          id="f"
-          x1={14}
-          x2={14}
-          y1={3}
-          y2={13.424}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="f" x1={14} x2={14} y1={3} y2={13.424} gradientUnits="userSpaceOnUse">
           <stop stopColor="#fff" />
           <stop offset={1} stopColor="#fff" stopOpacity={0} />
         </linearGradient>
@@ -694,10 +570,7 @@ const Icon6 = (props: React.SVGProps<SVGSVGElement>) => (
         fill="url(#f)"
         d="M15.6 21.25V22H8.4v-.75h7.2Zm5.65-5.65v-4.2c0-1.132 0-1.937-.052-2.566-.05-.62-.147-1.005-.303-1.31a3.25 3.25 0 0 0-1.42-1.42c-.304-.155-.688-.252-1.309-.302-.63-.052-1.434-.052-2.566-.052H8.4c-1.132 0-1.937 0-2.566.052-.62.05-1.005.147-1.31.302a3.25 3.25 0 0 0-1.42 1.42c-.155.305-.252.69-.302 1.31-.052.63-.052 1.434-.052 2.566v4.2c0 1.132 0 1.937.052 2.566.05.62.147 1.005.302 1.31a3.25 3.25 0 0 0 1.42 1.42c.305.155.69.252 1.31.302.63.052 1.434.052 2.566.052V22l-1.484-.007c-1.192-.019-1.955-.089-2.568-.352l-.164-.076a4.002 4.002 0 0 1-1.594-1.473l-.154-.276C2 18.961 2 17.84 2 15.6v-4.2c0-2.24 0-3.36.436-4.216a4.001 4.001 0 0 1 1.748-1.748c.641-.327 1.432-.409 2.732-.43L8.4 5h7.2c2.24 0 3.36 0 4.216.436a4.001 4.001 0 0 1 1.748 1.748C22 8.039 22 9.16 22 11.4v4.2c0 2.24 0 3.36-.436 4.216l-.154.276a4.002 4.002 0 0 1-1.594 1.473l-.164.076C18.816 22 17.7 22 15.6 22v-.75c1.132 0 1.937 0 2.566-.052.62-.05 1.005-.147 1.31-.303a3.25 3.25 0 0 0 1.42-1.42c.155-.304.252-.688.302-1.309.052-.63.052-1.434.052-2.566Z"
       />
-      <path
-        fill="url(#g)"
-        d="M22 10h-3.5a3.5 3.5 0 1 0 0 7H22a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1Z"
-      />
+      <path fill="url(#g)" d="M22 10h-3.5a3.5 3.5 0 1 0 0 7H22a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1Z" />
       <defs>
         <linearGradient
           id="a"
@@ -710,36 +583,15 @@ const Icon6 = (props: React.SVGProps<SVGSVGElement>) => (
           <stop stopColor="#575757" />
           <stop offset={1} stopColor="#151515" />
         </linearGradient>
-        <linearGradient
-          id="e"
-          x1={22}
-          x2={2}
-          y1={13.5}
-          y2={13.5}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="e" x1={22} x2={2} y1={13.5} y2={13.5} gradientUnits="userSpaceOnUse">
           <stop stopColor="#E3E3E5" stopOpacity={0.6} />
           <stop offset={1} stopColor="#BBBBC0" stopOpacity={0.6} />
         </linearGradient>
-        <linearGradient
-          id="f"
-          x1={12}
-          x2={12}
-          y1={5}
-          y2={14.845}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="f" x1={12} x2={12} y1={5} y2={14.845} gradientUnits="userSpaceOnUse">
           <stop stopColor="#fff" />
           <stop offset={1} stopColor="#fff" stopOpacity={0} />
         </linearGradient>
-        <linearGradient
-          id="g"
-          x1={19}
-          x2={19}
-          y1={10}
-          y2={17}
-          gradientUnits="userSpaceOnUse"
-        >
+        <linearGradient id="g" x1={19} x2={19} y1={10} y2={17} gradientUnits="userSpaceOnUse">
           <stop stopColor="#575757" />
           <stop offset={1} stopColor="#151515" />
         </linearGradient>

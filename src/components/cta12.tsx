@@ -51,12 +51,7 @@ const Cta12 = ({
                 </Button>
               )}
               {buttons.secondary && (
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full sm:w-auto"
-                  asChild
-                >
+                <Button variant="outline" size="lg" className="w-full sm:w-auto" asChild>
                   <a href={buttons.secondary.url}>{buttons.secondary.text}</a>
                 </Button>
               )}

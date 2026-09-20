@@ -14,11 +14,11 @@ Audit of all **21 App Router routes** (`src/app/**/page.tsx`), plus **global lay
 
 Rendered from `src/app/layout.tsx` on every page:
 
-| Order | Block / component | Registry | Notes |
-|------:|-------------------|----------|-------|
-| 1 | `navbar4` | @shadcnblocks | DIAL nav labels, links, and structure; mega-menu imagery still uses block CDN assets. |
-| — | `<main>{children}</main>` | — | Page content |
-| 2 | `footer18` | @shadcnblocks | DIAL footer copy, link groups, and copyright. |
+| Order | Block / component         | Registry      | Notes                                                                                 |
+| ----: | ------------------------- | ------------- | ------------------------------------------------------------------------------------- |
+|     1 | `navbar4`                 | @shadcnblocks | DIAL nav labels, links, and structure; mega-menu imagery still uses block CDN assets. |
+|     — | `<main>{children}</main>` | —             | Page content                                                                          |
+|     2 | `footer18`                | @shadcnblocks | DIAL footer copy, link groups, and copyright.                                         |
 
 ---
 
@@ -26,61 +26,61 @@ Rendered from `src/app/layout.tsx` on every page:
 
 ### Used on site
 
-| Block ID | Component | Registry | Route count | Used on |
-|----------|-----------|----------|------------:|---------|
-| `navbar4` | `Navbar4` | @shadcnblocks | 21 (+layout) | Global |
-| `footer18` | `Footer18` | @shadcnblocks | 21 (+layout) | Global |
-| `hero262` | `Hero262` | @shadcnblocks | 12 | `/research`, `/projects`, `/awards`, all 9 `/research/*` theme pages |
-| `hero171` | `Hero171` | @shadcnblocks | 1 | `/` |
-| `hero197` | `Hero197` | @shadcnblocks | 1 | `/join-us` |
-| `about6` | `About6` | @shadcnblocks | 1 | `/` |
-| `logos12` | `Logos12` | @shadcnblocks | 1 | `/` |
-| `logos1` | `Logos1` | @shadcnblocks | 2 | `/research`, `/about` |
-| `feature199` | `Feature199` | @shadcnblocks | 1 | `/research` |
-| `feature295` | `Feature295` | @shadcnblocks | 9 | All 9 theme pages under `/research/…` |
-| `feature10` | `Feature10` | @shadcnblocks | 1 | `/join-us` |
-| `feature37` | `Feature37` | @shadcnblocks | 1 | `/join-us` |
-| `careers3` | `Careers3` | @shadcnblocks | 1 | `/join-us` |
-| `cta12` | `Cta12` | @shadcnblocks | 3 | `/about`, `/projects`, `/people/[slug]` |
-| `cta32` | `Cta32` | @shadcnblocks | 1 | `/people` |
-| `cta4` | `Cta4` | @shadcnblocks | 1 | `/join-us` |
-| `contact1` | `Contact1` | @shadcnblocks | 1 | `/contact` |
-| `team5-9` | `Team5_9` | @shadcnblocks | 1 | `/people` |
-| — | `home-sections` | Custom | 1 | `/` — `HomeImpactStats`, `HomeResearchAreas`, `HomeLabInvitation` |
-| — | `research-sections` | Custom | 1 | `/research` — stats, method, bento, invitation sections |
-| — | `publications1` | Custom | 11 | `/`, `/publications`, 9 theme pages — hand-built publication UI |
-| — | `featured-publications` | Custom | 1 | `/research` — thin wrapper → `FlatPublicationList` |
-| — | `news-feed` | Custom | 1 | `/news` |
-| — | `projects-grid` | Custom | 2 | `/projects`, `/people/[slug]` (`ProjectCard`) |
-| — | `project-post` | Custom | 1 | `/projects/[slug]` |
-| — | `theme-page-sections` | Custom | 9 | All theme pages — collaborators + related areas |
-| — | `awards-filter-table` | Custom | 1 | `/awards` |
-| — | `people-stats` | Custom | 1 | `/people` |
-| — | `pi-profile` | Custom | 1 | `/people` |
-| — | `alumni-grid` | Custom | 1 | `/people` |
-| — | `member-profile` | Custom | 1 | `/people/[slug]` |
-| — | `member-publications` | Custom | 1 | `/people/[slug]` |
+| Block ID     | Component               | Registry      |  Route count | Used on                                                              |
+| ------------ | ----------------------- | ------------- | -----------: | -------------------------------------------------------------------- |
+| `navbar4`    | `Navbar4`               | @shadcnblocks | 21 (+layout) | Global                                                               |
+| `footer18`   | `Footer18`              | @shadcnblocks | 21 (+layout) | Global                                                               |
+| `hero262`    | `Hero262`               | @shadcnblocks |           12 | `/research`, `/projects`, `/awards`, all 9 `/research/*` theme pages |
+| `hero171`    | `Hero171`               | @shadcnblocks |            1 | `/`                                                                  |
+| `hero197`    | `Hero197`               | @shadcnblocks |            1 | `/join-us`                                                           |
+| `about6`     | `About6`                | @shadcnblocks |            1 | `/`                                                                  |
+| `logos12`    | `Logos12`               | @shadcnblocks |            1 | `/`                                                                  |
+| `logos1`     | `Logos1`                | @shadcnblocks |            2 | `/research`, `/about`                                                |
+| `feature199` | `Feature199`            | @shadcnblocks |            1 | `/research`                                                          |
+| `feature295` | `Feature295`            | @shadcnblocks |            9 | All 9 theme pages under `/research/…`                                |
+| `feature10`  | `Feature10`             | @shadcnblocks |            1 | `/join-us`                                                           |
+| `feature37`  | `Feature37`             | @shadcnblocks |            1 | `/join-us`                                                           |
+| `careers3`   | `Careers3`              | @shadcnblocks |            1 | `/join-us`                                                           |
+| `cta12`      | `Cta12`                 | @shadcnblocks |            3 | `/about`, `/projects`, `/people/[slug]`                              |
+| `cta32`      | `Cta32`                 | @shadcnblocks |            1 | `/people`                                                            |
+| `cta4`       | `Cta4`                  | @shadcnblocks |            1 | `/join-us`                                                           |
+| `contact1`   | `Contact1`              | @shadcnblocks |            1 | `/contact`                                                           |
+| `team5-9`    | `Team5_9`               | @shadcnblocks |            1 | `/people`                                                            |
+| —            | `home-sections`         | Custom        |            1 | `/` — `HomeImpactStats`, `HomeResearchAreas`, `HomeLabInvitation`    |
+| —            | `research-sections`     | Custom        |            1 | `/research` — stats, method, bento, invitation sections              |
+| —            | `publications1`         | Custom        |           11 | `/`, `/publications`, 9 theme pages — hand-built publication UI      |
+| —            | `featured-publications` | Custom        |            1 | `/research` — thin wrapper → `FlatPublicationList`                   |
+| —            | `news-feed`             | Custom        |            1 | `/news`                                                              |
+| —            | `projects-grid`         | Custom        |            2 | `/projects`, `/people/[slug]` (`ProjectCard`)                        |
+| —            | `project-post`          | Custom        |            1 | `/projects/[slug]`                                                   |
+| —            | `theme-page-sections`   | Custom        |            9 | All theme pages — collaborators + related areas                      |
+| —            | `awards-filter-table`   | Custom        |            1 | `/awards`                                                            |
+| —            | `people-stats`          | Custom        |            1 | `/people`                                                            |
+| —            | `pi-profile`            | Custom        |            1 | `/people`                                                            |
+| —            | `alumni-grid`           | Custom        |            1 | `/people`                                                            |
+| —            | `member-profile`        | Custom        |            1 | `/people/[slug]`                                                     |
+| —            | `member-publications`   | Custom        |            1 | `/people/[slug]`                                                     |
 
 ### Installed but unused (orphans)
 
-| Block ID | Component | Registry | Notes |
-|----------|-----------|----------|-------|
-| `about28` | `About28` | @shadcnblocks | Not imported anywhere (new/unwired). |
-| `awards3` | `Awards3` | @shadcnblocks | `/awards` inlines this pattern in the page file instead. |
-| `awards4` | `Awards4` | @shadcnblocks | Replaced by `awards-filter-table` on `/awards`. |
-| `blog1` | `Blog1` | @shadcnblocks | — |
-| `blog17` | `Blog17` | @shadcnblocks | — |
-| `blog22` | `Blog22` | @shadcnblocks | — |
-| `changelog3` | `Changelog3` | @shadcnblocks | Shares types with `news-feed`; `/news` uses custom `NewsFeed` instead. |
-| `contact22` | `Contact22` | @shadcnblocks | `/contact` uses `contact1`. |
-| `feature101` | `Feature101` | @shadcnblocks | — |
-| `feature122` | `Feature122` | @shadcnblocks | — |
-| `feature138` | `Feature138` | @shadcnblocks | — |
-| `feature280` | `Feature280` | @shadcnblocks | Uses `ui/card-stack`; never wired to a route. |
-| `gallery33` | `Gallery33` | @shadcnblocks | — |
-| `hero10` | `Hero10` | @shadcnblocks | — |
-| `team-section` | `TeamSection` | @shadcnblocks | `/people` uses `team5-9` instead. |
-| — | `shadcnblocks/pattern-placeholder` | @shadcnblocks | Helper only; not used on routes. |
+| Block ID       | Component                          | Registry      | Notes                                                                  |
+| -------------- | ---------------------------------- | ------------- | ---------------------------------------------------------------------- |
+| `about28`      | `About28`                          | @shadcnblocks | Not imported anywhere (new/unwired).                                   |
+| `awards3`      | `Awards3`                          | @shadcnblocks | `/awards` inlines this pattern in the page file instead.               |
+| `awards4`      | `Awards4`                          | @shadcnblocks | Replaced by `awards-filter-table` on `/awards`.                        |
+| `blog1`        | `Blog1`                            | @shadcnblocks | —                                                                      |
+| `blog17`       | `Blog17`                           | @shadcnblocks | —                                                                      |
+| `blog22`       | `Blog22`                           | @shadcnblocks | —                                                                      |
+| `changelog3`   | `Changelog3`                       | @shadcnblocks | Shares types with `news-feed`; `/news` uses custom `NewsFeed` instead. |
+| `contact22`    | `Contact22`                        | @shadcnblocks | `/contact` uses `contact1`.                                            |
+| `feature101`   | `Feature101`                       | @shadcnblocks | —                                                                      |
+| `feature122`   | `Feature122`                       | @shadcnblocks | —                                                                      |
+| `feature138`   | `Feature138`                       | @shadcnblocks | —                                                                      |
+| `feature280`   | `Feature280`                       | @shadcnblocks | Uses `ui/card-stack`; never wired to a route.                          |
+| `gallery33`    | `Gallery33`                        | @shadcnblocks | —                                                                      |
+| `hero10`       | `Hero10`                           | @shadcnblocks | —                                                                      |
+| `team-section` | `TeamSection`                      | @shadcnblocks | `/people` uses `team5-9` instead.                                      |
+| —              | `shadcnblocks/pattern-placeholder` | @shadcnblocks | Helper only; not used on routes.                                       |
 
 **Dead code note:** `home-sections` exports `HomeHero` but `/` uses `Hero171` instead — `HomeHero` is never mounted.
 
@@ -90,42 +90,42 @@ Rendered from `src/app/layout.tsx` on every page:
 
 ### Most reused (site blocks only, excluding layout)
 
-| Block / component | Routes | Where |
-|-------------------|-------:|-------|
-| `hero262` | **12** | Research hub, projects, awards, 9 theme pages |
-| `publications1` | **11** | Home + publications index + 9 theme pages |
-| `theme-page-sections` | **9** | All research theme pages |
-| `feature295` | **9** | All research theme pages |
-| `cta12` | **3** | About, projects, people detail |
-| `logos1` | **2** | Research, about |
-| `projects-grid` | **2** | Projects index, people detail |
+| Block / component     | Routes | Where                                         |
+| --------------------- | -----: | --------------------------------------------- |
+| `hero262`             | **12** | Research hub, projects, awards, 9 theme pages |
+| `publications1`       | **11** | Home + publications index + 9 theme pages     |
+| `theme-page-sections` |  **9** | All research theme pages                      |
+| `feature295`          |  **9** | All research theme pages                      |
+| `cta12`               |  **3** | About, projects, people detail                |
+| `logos1`              |  **2** | Research, about                               |
+| `projects-grid`       |  **2** | Projects index, people detail                 |
 
 ### Heatmap (█ = used)
 
 Legend: `Hm` home · `Ab` about · `Rs` research · `Th` theme×9 · `Pr` projects · `Pd` project detail · `Pb` publications · `Nw` news · `Pe` people · `Pm` person · `Aw` awards · `Jn` join-us · `Co` contact · `Ly` layout
 
-| Block | Hm | Ab | Rs | Th | Pr | Pd | Pb | Nw | Pe | Pm | Aw | Jn | Co | Ly |
-|-------|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-| `navbar4` | █ | █ | █ | █ | █ | █ | █ | █ | █ | █ | █ | █ | █ | █ |
-| `footer18` | █ | █ | █ | █ | █ | █ | █ | █ | █ | █ | █ | █ | █ | █ |
-| `hero262` | | | █ | █ | █ | | | | | | █ | | | |
-| `hero171` | █ | | | | | | | | | | | | | |
-| `publications1` | █ | | | █ | | | █ | | | | | | | |
-| `feature295` | | | | █ | | | | | | | | | | |
-| `theme-page-sections` | | | | █ | | | | | | | | | | |
-| `logos1` | | █ | █ | | | | | | | | | | | |
-| `cta12` | | █ | | | █ | | | | | █ | | | | |
-| `logos12` | █ | | | | | | | | | | | | | |
-| `about6` | █ | | | | | | | | | | | | | |
-| `home-sections` | █ | | | | | | | | | | | | | |
-| `research-sections` | | | █ | | | | | | | | | | | |
-| `feature199` | | | █ | | | | | | | | | | | |
-| `news-feed` | | | | | | | | █ | | | | | | |
-| `projects-grid` | | | | | █ | | | | | █ | | | | |
-| `team5-9` | | | | | | | | | █ | | | | | |
-| `cta32` | | | | | | | | | █ | | | | | |
-| `hero197` | | | | | | | | | | | | █ | | |
-| `contact1` | | | | | | | | | | | | | █ | |
+| Block                 | Hm  | Ab  | Rs  | Th  | Pr  | Pd  | Pb  | Nw  | Pe  | Pm  | Aw  | Jn  | Co  | Ly  |
+| --------------------- | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
+| `navbar4`             |  █  |  █  |  █  |  █  |  █  |  █  |  █  |  █  |  █  |  █  |  █  |  █  |  █  |  █  |
+| `footer18`            |  █  |  █  |  █  |  █  |  █  |  █  |  █  |  █  |  █  |  █  |  █  |  █  |  █  |  █  |
+| `hero262`             |     |     |  █  |  █  |  █  |     |     |     |     |     |  █  |     |     |     |
+| `hero171`             |  █  |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| `publications1`       |  █  |     |     |  █  |     |     |  █  |     |     |     |     |     |     |     |
+| `feature295`          |     |     |     |  █  |     |     |     |     |     |     |     |     |     |     |
+| `theme-page-sections` |     |     |     |  █  |     |     |     |     |     |     |     |     |     |     |
+| `logos1`              |     |  █  |  █  |     |     |     |     |     |     |     |     |     |     |     |
+| `cta12`               |     |  █  |     |     |  █  |     |     |     |     |  █  |     |     |     |     |
+| `logos12`             |  █  |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| `about6`              |  █  |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| `home-sections`       |  █  |     |     |     |     |     |     |     |     |     |     |     |     |     |
+| `research-sections`   |     |     |  █  |     |     |     |     |     |     |     |     |     |     |     |
+| `feature199`          |     |     |  █  |     |     |     |     |     |     |     |     |     |     |     |
+| `news-feed`           |     |     |     |     |     |     |     |  █  |     |     |     |     |     |     |
+| `projects-grid`       |     |     |     |     |  █  |     |     |     |     |  █  |     |     |     |     |
+| `team5-9`             |     |     |     |     |     |     |     |     |  █  |     |     |     |     |     |
+| `cta32`               |     |     |     |     |     |     |     |     |  █  |     |     |     |     |     |
+| `hero197`             |     |     |     |     |     |     |     |     |     |     |     |  █  |     |     |
+| `contact1`            |     |     |     |     |     |     |     |     |     |     |     |     |  █  |     |
 
 ---
 
@@ -260,34 +260,34 @@ Theme pages share one template; only the slug and copy differ. Listed once as **
 
 ## Custom vs registry summary
 
-| Kind | Count | Examples |
-|------|------:|---------|
-| @shadcnblocks (used) | 18 | `hero262`, `navbar4`, `team5-9` |
-| @shadcnblocks (orphan) | 16 | `about28`, `changelog3`, `awards4` |
-| Custom compositions | 6 | `home-sections`, `research-sections`, `theme-page-sections`, `featured-publications`, `news-feed`, `awards-filter-table` |
-| Custom domain UI | 7 | `publications1`, `projects-grid`, `project-post`, `member-*`, `people-stats`, `alumni-grid`, `pi-profile` |
-| Inline-only (no component file) | 4 routes | `/about` (most sections), `/news` hero, `/awards` featured list, theme funding + breadcrumb |
+| Kind                            |    Count | Examples                                                                                                                 |
+| ------------------------------- | -------: | ------------------------------------------------------------------------------------------------------------------------ |
+| @shadcnblocks (used)            |       18 | `hero262`, `navbar4`, `team5-9`                                                                                          |
+| @shadcnblocks (orphan)          |       16 | `about28`, `changelog3`, `awards4`                                                                                       |
+| Custom compositions             |        6 | `home-sections`, `research-sections`, `theme-page-sections`, `featured-publications`, `news-feed`, `awards-filter-table` |
+| Custom domain UI                |        7 | `publications1`, `projects-grid`, `project-post`, `member-*`, `people-stats`, `alumni-grid`, `pi-profile`                |
+| Inline-only (no component file) | 4 routes | `/about` (most sections), `/news` hero, `/awards` featured list, theme funding + breadcrumb                              |
 
 ---
 
 ## Quick reference: page → top-level imports
 
-| Route | Top-level building blocks |
-|-------|---------------------------|
-| `/` | `hero171`, `home-sections`, `logos12`, `about6`, `publications1` |
-| `/about` | inline sections, `logos1`, `cta12` |
-| `/research` | `hero262`, `logos1`, `research-sections`, `feature199`, `featured-publications` |
+| Route              | Top-level building blocks                                                                          |
+| ------------------ | -------------------------------------------------------------------------------------------------- |
+| `/`                | `hero171`, `home-sections`, `logos12`, `about6`, `publications1`                                   |
+| `/about`           | inline sections, `logos1`, `cta12`                                                                 |
+| `/research`        | `hero262`, `logos1`, `research-sections`, `feature199`, `featured-publications`                    |
 | `/research/*` (×9) | inline breadcrumb, `hero262`, `feature295`, `publications1`, `theme-page-sections`, inline funding |
-| `/projects` | `hero262`, `projects-grid`, `cta12` |
-| `/projects/[slug]` | `project-post` |
-| `/publications` | `publications1` |
-| `/news` | inline hero, `news-feed` |
-| `/people` | `people-stats`, `pi-profile`, `team5-9`, `alumni-grid`, `cta32` |
-| `/people/[slug]` | `member-profile`, `member-publications`, `projects-grid`, inline grants, `cta12` |
-| `/awards` | `hero262`, inline featured, `awards-filter-table` |
-| `/join-us` | `hero197`, `feature10`, `feature37`, `careers3`, `cta4` |
-| `/contact` | `contact1` |
+| `/projects`        | `hero262`, `projects-grid`, `cta12`                                                                |
+| `/projects/[slug]` | `project-post`                                                                                     |
+| `/publications`    | `publications1`                                                                                    |
+| `/news`            | inline hero, `news-feed`                                                                           |
+| `/people`          | `people-stats`, `pi-profile`, `team5-9`, `alumni-grid`, `cta32`                                    |
+| `/people/[slug]`   | `member-profile`, `member-publications`, `projects-grid`, inline grants, `cta12`                   |
+| `/awards`          | `hero262`, inline featured, `awards-filter-table`                                                  |
+| `/join-us`         | `hero197`, `feature10`, `feature37`, `careers3`, `cta4`                                            |
+| `/contact`         | `contact1`                                                                                         |
 
 ---
 
-*Generated from static analysis of `src/app/**/page.tsx`, `src/app/layout.tsx`, and `src/components/*.tsx` (excluding `src/components/ui/`).*
+_Generated from static analysis of `src/app/**/page.tsx`, `src/app/layout.tsx`, and `src/components/*.tsx` (excluding `src/components/ui/`)._

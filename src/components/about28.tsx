@@ -84,10 +84,7 @@ const About28 = ({
       {/* Text Left - Images Right */}
       <div className="flex flex-col gap-8 lg:gap-16 xl:gap-20">
         <TextSection paragraphs={rightText.paragraphs} />
-        <ImageSection
-          images={rightImages}
-          className="hidden lg:flex xl:translate-x-10"
-        />
+        <ImageSection images={rightImages} className="hidden lg:flex xl:translate-x-10" />
       </div>
     </section>
   );
@@ -102,10 +99,7 @@ const ImageSection = ({ images, className }: ImageSectionProps) => {
   return (
     <div className={cn("flex flex-col gap-6", className)}>
       {images.map((image, index) => (
-        <div
-          key={index}
-          className="relative aspect-[2/1.5] overflow-hidden rounded-2xl"
-        >
+        <div key={index} className="relative aspect-[2/1.5] overflow-hidden rounded-2xl">
           <img
             src={image.src}
             alt={image.alt}

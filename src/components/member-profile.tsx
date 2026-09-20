@@ -1,67 +1,73 @@
-import { CropMarks, Squiggle } from '@/components/marks'
-import { InitialTile } from '@/components/initial-tile'
-import { OptionalImage } from '@/components/optional-image'
-import { RisoArt } from '@/components/riso'
-import { enterStep } from '@/lib/motion'
-import { label, pageTitle } from '@/lib/typography'
-import { cn } from '@/lib/utils'
+import { CropMarks, Squiggle } from "@/components/marks";
+import { InitialTile } from "@/components/initial-tile";
+import { OptionalImage } from "@/components/optional-image";
+import { RisoArt } from "@/components/riso";
+import { enterStep } from "@/lib/motion";
+import { label, pageTitle } from "@/lib/typography";
+import { cn } from "@/lib/utils";
 
 export type Social = {
-  platform: 'google-scholar' | 'linkedin' | 'github' | 'x' | 'nsu-faculty' | 'personal-site'
-  url: string
-}
+  platform: "google-scholar" | "linkedin" | "github" | "x" | "nsu-faculty" | "personal-site";
+  url: string;
+};
 
-export type MemberAward = { title: string }
+export type MemberAward = { title: string };
 
 export interface MemberProfileData {
-  name: string
-  title: string
-  role: 'director' | 'faculty' | 'research-staff' | 'graduate-ra' | 'undergrad-ra' | 'alumni'
-  affiliation: { name: string; url?: string }
-  photo?: string
-  bio: string
-  researchInterests: string[]
-  email?: string
-  orcid?: string
-  socials: Social[]
-  awards: MemberAward[]
+  name: string;
+  title: string;
+  role: "director" | "faculty" | "research-staff" | "graduate-ra" | "undergrad-ra" | "alumni";
+  affiliation: { name: string; url?: string };
+  photo?: string;
+  bio: string;
+  researchInterests: string[];
+  email?: string;
+  orcid?: string;
+  socials: Social[];
+  awards: MemberAward[];
 }
 
 interface MemberProfileProps {
-  member: MemberProfileData
-  className?: string
+  member: MemberProfileData;
+  className?: string;
 }
 
 const ROLE_LABELS: Record<string, string> = {
-  director: 'Director',
-  faculty: 'Faculty',
-  'research-staff': 'Research staff',
-  'graduate-ra': 'Graduate research assistant',
-  'undergrad-ra': 'Undergraduate research assistant',
-  alumni: 'Alumni',
-}
+  director: "Director",
+  faculty: "Faculty",
+  "research-staff": "Research staff",
+  "graduate-ra": "Graduate research assistant",
+  "undergrad-ra": "Undergraduate research assistant",
+  alumni: "Alumni",
+};
 
-const SOCIAL_LABELS: Record<Social['platform'], string> = {
-  'google-scholar': 'Google Scholar',
-  linkedin: 'LinkedIn',
-  github: 'GitHub',
-  x: 'X',
-  'nsu-faculty': 'NSU faculty page',
-  'personal-site': 'Website',
-}
+const SOCIAL_LABELS: Record<Social["platform"], string> = {
+  "google-scholar": "Google Scholar",
+  linkedin: "LinkedIn",
+  github: "GitHub",
+  x: "X",
+  "nsu-faculty": "NSU faculty page",
+  "personal-site": "Website",
+};
 
 const linkClass =
-  'underline decoration-border underline-offset-[6px] transition-colors hover:text-foreground hover:decoration-current'
+  "underline decoration-border underline-offset-[6px] transition-colors hover:text-foreground hover:decoration-current";
 
 /** Team Member profile header: the same shape as PageHeader, with a portrait. */
 const MemberProfile = ({ member, className }: MemberProfileProps) => {
   const links = [
-    ...member.socials.map((s) => ({ label: SOCIAL_LABELS[s.platform], href: s.url, external: true })),
-    ...(member.orcid ? [{ label: 'ORCID', href: `https://orcid.org/${member.orcid}`, external: true }] : []),
-  ]
+    ...member.socials.map((s) => ({
+      label: SOCIAL_LABELS[s.platform],
+      href: s.url,
+      external: true,
+    })),
+    ...(member.orcid
+      ? [{ label: "ORCID", href: `https://orcid.org/${member.orcid}`, external: true }]
+      : []),
+  ];
 
   return (
-    <header className={cn('relative isolate container pt-16 pb-12 md:pt-24 md:pb-16', className)}>
+    <header className={cn("relative isolate container pt-16 pb-12 md:pt-24 md:pb-16", className)}>
       <CropMarks className="ink-mark-soft top-8 md:top-10" />
       <div
         aria-hidden
@@ -72,7 +78,7 @@ const MemberProfile = ({ member, className }: MemberProfileProps) => {
           className="absolute -top-10 -right-32 size-[34rem] opacity-90 xl:-right-36 xl:size-[40rem]"
         />
       </div>
-      <p className={cn(label, 'enter')} style={enterStep(0)}>
+      <p className={cn(label, "enter")} style={enterStep(0)}>
         {ROLE_LABELS[member.role] ?? member.role}
       </p>
       <div className="enter relative mt-4 w-fit" style={enterStep(1)}>
@@ -81,7 +87,11 @@ const MemberProfile = ({ member, className }: MemberProfileProps) => {
       </div>
 
       <div className="relative mt-10 grid gap-10 pt-6 md:grid-cols-[minmax(0,16rem)_1fr] md:gap-16">
-        <span aria-hidden className="ink-rule enter-rule absolute inset-x-0 top-0 h-px" style={enterStep(2)} />
+        <span
+          aria-hidden
+          className="ink-rule enter-rule absolute inset-x-0 top-0 h-px"
+          style={enterStep(2)}
+        />
         {member.photo ? (
           <span className="enter relative block w-full max-w-64" style={enterStep(3)}>
             {/* `tape` is the strip itself, laid over the corner of a relative
@@ -93,7 +103,12 @@ const MemberProfile = ({ member, className }: MemberProfileProps) => {
               overlay={<span aria-hidden className="tape -top-2.5 left-6 z-10" />}
               frameClassName="aspect-[4/5] w-full -rotate-1 rounded-sm"
               className="h-full w-full object-cover object-top"
-              fallback={<InitialTile name={member.name} className="aspect-[4/5] h-auto w-full rounded-lg font-display text-7xl" />}
+              fallback={
+                <InitialTile
+                  name={member.name}
+                  className="aspect-[4/5] h-auto w-full rounded-lg font-display text-7xl"
+                />
+              }
             />
           </span>
         ) : (
@@ -117,13 +132,17 @@ const MemberProfile = ({ member, className }: MemberProfileProps) => {
             )}
           </p>
 
-          {member.bio && <p className="mt-6 text-pretty leading-relaxed text-muted-foreground md:text-lg">{member.bio}</p>}
+          {member.bio && (
+            <p className="mt-6 text-pretty leading-relaxed text-muted-foreground md:text-lg">
+              {member.bio}
+            </p>
+          )}
 
           <dl className="mt-8 text-sm">
             {member.researchInterests.length > 0 && (
               <div className="grid grid-cols-[7rem_1fr] gap-4 border-t border-border py-3">
                 <dt className="text-muted-foreground">Interests</dt>
-                <dd>{member.researchInterests.join(', ')}</dd>
+                <dd>{member.researchInterests.join(", ")}</dd>
               </div>
             )}
             {member.awards.length > 0 && (
@@ -148,7 +167,13 @@ const MemberProfile = ({ member, className }: MemberProfileProps) => {
                     </a>
                   )}
                   {links.map((link) => (
-                    <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={linkClass}
+                    >
                       {link.label}
                     </a>
                   ))}
@@ -159,7 +184,7 @@ const MemberProfile = ({ member, className }: MemberProfileProps) => {
         </div>
       </div>
     </header>
-  )
-}
+  );
+};
 
-export { MemberProfile }
+export { MemberProfile };

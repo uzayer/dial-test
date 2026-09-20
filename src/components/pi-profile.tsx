@@ -32,7 +32,12 @@ const PIProfile = ({ pi, className }: PIProfileProps) => (
             overlay={<span aria-hidden className="tape -top-3 left-8 z-10" />}
             frameClassName="aspect-[4/5] w-full rounded-sm shadow-[0_1px_0_0_var(--paper-line),0_12px_28px_-18px_rgba(0,0,0,0.55)]"
             className="h-full w-full object-cover object-top"
-            fallback={<InitialTile name={pi.name} className="aspect-[4/5] h-auto w-full max-w-80 rounded-lg font-display text-7xl" />}
+            fallback={
+              <InitialTile
+                name={pi.name}
+                className="aspect-[4/5] h-auto w-full max-w-80 rounded-lg font-display text-7xl"
+              />
+            }
           />
         </div>
       ) : (
@@ -47,7 +52,9 @@ const PIProfile = ({ pi, className }: PIProfileProps) => (
         <h2 className="mt-3 font-display text-4xl leading-tight md:text-5xl">Dr. {pi.name}</h2>
         <p className="mt-2 text-muted-foreground">{pi.title}</p>
 
-        {pi.bio && <p className="mt-6 max-w-prose text-pretty leading-relaxed md:text-lg">{pi.bio}</p>}
+        {pi.bio && (
+          <p className="mt-6 max-w-prose text-pretty leading-relaxed md:text-lg">{pi.bio}</p>
+        )}
 
         {pi.awards.length > 0 && (
           <ul className="mt-8 max-w-prose divide-y divide-border border-y border-border text-sm">
@@ -62,7 +69,11 @@ const PIProfile = ({ pi, className }: PIProfileProps) => (
         <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
           <TextLink href={pi.profileHref}>Full profile</TextLink>
           {pi.scholarUrl && (
-            <TextLink href={pi.scholarUrl} external className="text-muted-foreground hover:text-foreground">
+            <TextLink
+              href={pi.scholarUrl}
+              external
+              className="text-muted-foreground hover:text-foreground"
+            >
               Google Scholar
             </TextLink>
           )}

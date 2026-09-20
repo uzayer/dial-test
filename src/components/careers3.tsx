@@ -54,17 +54,9 @@ const Careers3 = ({ className }: Careers3Props) => {
                 <Badge>{jobCategory.category}</Badge>
                 <div>
                   {jobCategory.openings.map((job) => (
-                    <a
-                      href={job.link}
-                      key={job.title}
-                      className="group block border-b py-7"
-                    >
-                      <h3 className="text-xl font-semibold group-hover:underline">
-                        {job.title}
-                      </h3>
-                      <p className="mt-1 font-medium text-muted-foreground">
-                        {job.description}
-                      </p>
+                    <a href={job.link} key={job.title} className="group block border-b py-7">
+                      <h3 className="text-xl font-semibold group-hover:underline">{job.title}</h3>
+                      <p className="mt-1 font-medium text-muted-foreground">{job.description}</p>
                       <div className="mt-4 flex justify-between gap-4 text-muted-foreground">
                         <div className="flex gap-2 text-sm md:text-base">
                           <MapPin className="h-auto w-4 shrink-0" />

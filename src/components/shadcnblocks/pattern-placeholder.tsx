@@ -12,8 +12,8 @@ const PatternPlaceholder = () => {
               Modern background patterns for any section.
             </h1>
             <p className="mx-auto max-w-2xl font-light tracking-tighter text-pretty text-muted-foreground md:text-lg lg:text-xl">
-              Easily insertable background patterns that use Tailwind CSS and
-              SVGs. Copy and paste as an absolute positioned div in any section.
+              Easily insertable background patterns that use Tailwind CSS and SVGs. Copy and paste
+              as an absolute positioned div in any section.
             </p>
           </div>
 

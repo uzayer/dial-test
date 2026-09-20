@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  motion,
-  useMotionTemplate,
-  useScroll,
-  useTransform,
-} from "motion/react";
+import { motion, useMotionTemplate, useScroll, useTransform } from "motion/react";
 import React from "react";
 
 const Skiper95 = () => {
@@ -68,11 +63,10 @@ function Content() {
       </div>
       {Array.from({ length: 10 }).map((_, index) => (
         <div key={index} className="text-justify">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi alias
-          similique eveniet corrupti cupiditate, saepe magni, distinctio at
-          dolor dignissimos consequatur rerum quasi expedita soluta amet, fugiat
-          quaerat commodi accusamus enim necessitatibus facere cumque dolores
-          quisquam? Vero harum repellendus labore.
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi alias similique eveniet
+          corrupti cupiditate, saepe magni, distinctio at dolor dignissimos consequatur rerum quasi
+          expedita soluta amet, fugiat quaerat commodi accusamus enim necessitatibus facere cumque
+          dolores quisquam? Vero harum repellendus labore.
         </div>
       ))}
     </article>

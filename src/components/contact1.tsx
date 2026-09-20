@@ -7,12 +7,7 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { TextLink } from "@/components/editorial";
@@ -26,10 +21,7 @@ const linkClass =
 
 const contactFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  email: z
-    .string()
-    .min(1, "Email is required")
-    .email("Please enter a valid email"),
+  email: z.string().min(1, "Email is required").email("Please enter a valid email"),
   message: z.string().min(1, "Message is required"),
 });
 
@@ -65,9 +57,7 @@ const Contact1 = ({ email, address, scholarUrl, className, onSubmit }: Contact1P
         };
         if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY) {
           headers["cf-turnstile-token"] =
-            (document.querySelector<HTMLInputElement>(
-              "[name=cf-turnstile-response]",
-            )?.value ?? "");
+            document.querySelector<HTMLInputElement>("[name=cf-turnstile-response]")?.value ?? "";
         }
         const response = await fetch("/api/form-submissions", {
           method: "POST",
@@ -107,7 +97,11 @@ const Contact1 = ({ email, address, scholarUrl, className, onSubmit }: Contact1P
       </div>
 
       <div className="relative mt-10 grid gap-12 pt-6 lg:grid-cols-[1fr_minmax(0,30rem)] lg:gap-24">
-        <span aria-hidden className="enter-rule absolute inset-x-0 top-0 h-px bg-border" style={enterStep(2)} />
+        <span
+          aria-hidden
+          className="enter-rule absolute inset-x-0 top-0 h-px bg-border"
+          style={enterStep(2)}
+        />
         <div className="enter flex flex-col gap-10" style={enterStep(3)}>
           <p className={lede}>For collaboration, media, and general enquiries.</p>
 
@@ -128,7 +122,12 @@ const Contact1 = ({ email, address, scholarUrl, className, onSubmit }: Contact1P
               <dt className="text-muted-foreground">Elsewhere</dt>
               <dd className="flex flex-wrap gap-x-4 gap-y-1">
                 {scholarUrl && (
-                  <a href={scholarUrl} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                  <a
+                    href={scholarUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={linkClass}
+                  >
                     Google Scholar
                   </a>
                 )}
@@ -156,114 +155,106 @@ const Contact1 = ({ email, address, scholarUrl, className, onSubmit }: Contact1P
           <StampRing className="sticker ink-mark-soft mt-4 size-52 max-lg:hidden" />
         </div>
 
-            <form
-              onSubmit={form.handleSubmit(handleFormSubmit)}
-              className="enter z-10 w-full"
-              style={enterStep(4)}
-            >
-              <div className="w-full">
-                {isSubmitted && (
-                  <p
-                    role="status"
-                    className={cn(
-                      "mb-6 border-l-2 border-brand py-1 pl-3 text-sm text-brand transition-opacity duration-300",
-                      showSuccess ? "opacity-100" : "opacity-0",
-                    )}
-                  >
-                    Thank you. We&apos;ll be in touch soon.
-                  </p>
+        <form
+          onSubmit={form.handleSubmit(handleFormSubmit)}
+          className="enter z-10 w-full"
+          style={enterStep(4)}
+        >
+          <div className="w-full">
+            {isSubmitted && (
+              <p
+                role="status"
+                className={cn(
+                  "mb-6 border-l-2 border-brand py-1 pl-3 text-sm text-brand transition-opacity duration-300",
+                  showSuccess ? "opacity-100" : "opacity-0",
                 )}
+              >
+                Thank you. We&apos;ll be in touch soon.
+              </p>
+            )}
 
-                <FieldGroup className="gap-6">
-                  <Controller
-                    control={form.control}
-                    name="name"
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor={field.name}>
-                          Name <span className="text-destructive">*</span>
-                        </FieldLabel>
-                        <Input
-                          {...field}
-                          id={field.name}
-                          aria-invalid={fieldState.invalid}
-                          placeholder="Your name"
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
+            <FieldGroup className="gap-6">
+              <Controller
+                control={form.control}
+                name="name"
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>
+                      Name <span className="text-destructive">*</span>
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      id={field.name}
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Your name"
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
 
-                  <Controller
-                    control={form.control}
-                    name="email"
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor={field.name}>
-                          Email <span className="text-destructive">*</span>
-                        </FieldLabel>
-                        <Input
-                          {...field}
-                          id={field.name}
-                          type="email"
-                          aria-invalid={fieldState.invalid}
-                          placeholder="you@example.com"
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
+              <Controller
+                control={form.control}
+                name="email"
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>
+                      Email <span className="text-destructive">*</span>
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      id={field.name}
+                      type="email"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="you@example.com"
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
 
-                  <Controller
-                    control={form.control}
-                    name="message"
-                    render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor={field.name}>
-                          Message <span className="text-destructive">*</span>
-                        </FieldLabel>
-                        <Textarea
-                          {...field}
-                          id={field.name}
-                          aria-invalid={fieldState.invalid}
-                          placeholder="How can we help you?"
-                          rows={5}
-                        />
-                        {fieldState.invalid && (
-                          <FieldError errors={[fieldState.error]} />
-                        )}
-                      </Field>
-                    )}
-                  />
+              <Controller
+                control={form.control}
+                name="message"
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>
+                      Message <span className="text-destructive">*</span>
+                    </FieldLabel>
+                    <Textarea
+                      {...field}
+                      id={field.name}
+                      aria-invalid={fieldState.invalid}
+                      placeholder="How can we help you?"
+                      rows={5}
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
 
-                  {form.formState.errors.root && (
-                    <p className="text-sm text-destructive">
-                      {form.formState.errors.root.message}
-                    </p>
-                  )}
+              {form.formState.errors.root && (
+                <p className="text-sm text-destructive">{form.formState.errors.root.message}</p>
+              )}
 
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="w-fit rounded-full px-5 transition-transform duration-150 ease-snappy active:scale-[0.97]"
-                    disabled={form.formState.isSubmitting}
-                  >
-                    {form.formState.isSubmitting ? (
-                      <>
-                        <LoaderIcon className="mr-2 size-4 animate-spin" />
-                        Sending…
-                      </>
-                    ) : (
-                      "Send message"
-                    )}
-                  </Button>
-                </FieldGroup>
-              </div>
-            </form>
+              <Button
+                type="submit"
+                size="lg"
+                className="w-fit rounded-full px-5 transition-transform duration-150 ease-snappy active:scale-[0.97]"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting ? (
+                  <>
+                    <LoaderIcon className="mr-2 size-4 animate-spin" />
+                    Sending…
+                  </>
+                ) : (
+                  "Send message"
+                )}
+              </Button>
+            </FieldGroup>
+          </div>
+        </form>
       </div>
     </section>
   );

@@ -1,85 +1,85 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { ArrowUpRight, BookOpen, Trophy, Users } from 'lucide-react'
+import { useState } from "react";
+import { ArrowUpRight, BookOpen, Trophy, Users } from "lucide-react";
 
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { cn } from '@/lib/utils'
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 export interface ProjectAward {
-  title: string
+  title: string;
 }
 
 export interface ResearchProject {
-  id: string
+  id: string;
   /** Bengali/local name, when the source gives one. */
-  localName?: string | null
-  title: string
-  abstract: string
-  keywords: string[]
+  localName?: string | null;
+  title: string;
+  abstract: string;
+  keywords: string[];
   /** null when no source states the status. */
-  status: 'ongoing' | 'completed' | null
-  publicationCount: number
-  teamMemberCount: number
-  award?: ProjectAward
-  slug: string
+  status: "ongoing" | "completed" | null;
+  publicationCount: number;
+  teamMemberCount: number;
+  award?: ProjectAward;
+  slug: string;
 }
 
 interface Feature295Props {
-  projects?: ResearchProject[]
-  keywords?: string[]
-  className?: string
+  projects?: ResearchProject[];
+  keywords?: string[];
+  className?: string;
 }
 
 const Feature295 = ({ projects = [], keywords = [], className }: Feature295Props) => {
-  const [selectedKeyword, setSelectedKeyword] = useState<string | null>(null)
-  const [selectedStatus, setSelectedStatus] = useState('all')
-  const [showAll, setShowAll] = useState(false)
+  const [selectedKeyword, setSelectedKeyword] = useState<string | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [showAll, setShowAll] = useState(false);
 
   const filtered = projects.filter((p) => {
-    const matchesKeyword = selectedKeyword === null || p.keywords.includes(selectedKeyword)
-    const matchesStatus = selectedStatus === 'all' || p.status === selectedStatus
-    return matchesKeyword && matchesStatus
-  })
+    const matchesKeyword = selectedKeyword === null || p.keywords.includes(selectedKeyword);
+    const matchesStatus = selectedStatus === "all" || p.status === selectedStatus;
+    return matchesKeyword && matchesStatus;
+  });
 
   const sorted = [...filtered].sort((a, b) => {
-    if (a.status === 'ongoing' && b.status !== 'ongoing') return -1
-    if (a.status !== 'ongoing' && b.status === 'ongoing') return 1
-    return 0
-  })
+    if (a.status === "ongoing" && b.status !== "ongoing") return -1;
+    if (a.status !== "ongoing" && b.status === "ongoing") return 1;
+    return 0;
+  });
 
-  const PAGE_SIZE = 9
-  const visible = showAll ? sorted : sorted.slice(0, PAGE_SIZE)
+  const PAGE_SIZE = 9;
+  const visible = showAll ? sorted : sorted.slice(0, PAGE_SIZE);
 
   return (
-    <section className={cn('py-4', className)}>
+    <section className={cn("py-4", className)}>
       <div className="container">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div
             className="-mx-8 flex items-center gap-2 overflow-x-auto px-8"
-            style={{ scrollbarWidth: 'none' }}
+            style={{ scrollbarWidth: "none" }}
           >
             <Badge
-              variant={selectedKeyword === null ? 'default' : 'outline'}
+              variant={selectedKeyword === null ? "default" : "outline"}
               onClick={() => setSelectedKeyword(null)}
-              className={cn('cursor-pointer', selectedKeyword !== null && 'bg-background')}
+              className={cn("cursor-pointer", selectedKeyword !== null && "bg-background")}
             >
               All
             </Badge>
             {keywords.map((kw) => (
               <Badge
                 key={kw}
-                variant={selectedKeyword === kw ? 'default' : 'outline'}
+                variant={selectedKeyword === kw ? "default" : "outline"}
                 onClick={() => setSelectedKeyword(kw)}
-                className={cn('cursor-pointer', selectedKeyword !== kw && 'bg-background')}
+                className={cn("cursor-pointer", selectedKeyword !== kw && "bg-background")}
               >
                 {kw}
               </Badge>
@@ -108,7 +108,7 @@ const Feature295 = ({ projects = [], keywords = [], className }: Feature295Props
             {sorted.length > PAGE_SIZE && (
               <div className="mt-10 flex justify-center">
                 <Button variant="outline" onClick={() => setShowAll(!showAll)}>
-                  {showAll ? 'Show fewer' : `Show all ${sorted.length} projects`}
+                  {showAll ? "Show fewer" : `Show all ${sorted.length} projects`}
                 </Button>
               </div>
             )}
@@ -120,8 +120,8 @@ const Feature295 = ({ projects = [], keywords = [], className }: Feature295Props
         )}
       </div>
     </section>
-  )
-}
+  );
+};
 
 const ProjectCard = ({ project }: { project: ResearchProject }) => (
   <a
@@ -145,13 +145,13 @@ const ProjectCard = ({ project }: { project: ResearchProject }) => (
           <Badge
             variant="outline"
             className={cn(
-              'text-xs',
-              project.status === 'ongoing'
-                ? 'border-green-500/30 bg-green-50 text-green-700 dark:bg-green-950/20 dark:text-green-400'
-                : 'bg-muted text-muted-foreground',
+              "text-xs",
+              project.status === "ongoing"
+                ? "border-green-500/30 bg-green-50 text-green-700 dark:bg-green-950/20 dark:text-green-400"
+                : "bg-muted text-muted-foreground",
             )}
           >
-            {project.status === 'ongoing' ? 'Ongoing' : 'Completed'}
+            {project.status === "ongoing" ? "Ongoing" : "Completed"}
           </Badge>
         )}
         {project.award && (
@@ -176,6 +176,6 @@ const ProjectCard = ({ project }: { project: ResearchProject }) => (
       </div>
     </div>
   </a>
-)
+);
 
-export { Feature295 }
+export { Feature295 };

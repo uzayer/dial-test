@@ -1,4 +1,4 @@
-import type { ResearchTheme } from './types'
+import type { ResearchTheme } from "./types";
 
 /**
  * DIAL's nine Research Themes, one per explicit `/research/<slug>` route.
@@ -12,76 +12,75 @@ import type { ResearchTheme } from './types'
  * `featured` marks the prototype's original six home-page themes.
  */
 const PROTOTYPE_NOTE =
-  'dial-test prototype theme route; taxonomy not in any capture (DIAL Proposal.md "Research Themes" lists six different labels)'
+  'dial-test prototype theme route; taxonomy not in any capture (DIAL Proposal.md "Research Themes" lists six different labels)';
 
 export const researchThemes: ResearchTheme[] = [
   {
-    id: 'accessibility-inclusion',
-    slug: 'accessibility-inclusion',
-    title: 'Accessibility & Inclusion',
+    id: "accessibility-inclusion",
+    slug: "accessibility-inclusion",
+    title: "Accessibility & Inclusion",
     shortDescription:
-      'Interfaces for low-literacy, disabled, and resource-constrained communities.',
+      "Interfaces for low-literacy, disabled, and resource-constrained communities.",
     featured: true,
   },
   {
-    id: 'gender-feminist-hci',
-    slug: 'gender-feminist-hci',
-    title: 'Gender & Feminist HCI',
-    shortDescription: 'Participatory research on safety, dignity, agency, and digital voice.',
+    id: "gender-feminist-hci",
+    slug: "gender-feminist-hci",
+    title: "Gender & Feminist HCI",
+    shortDescription: "Participatory research on safety, dignity, agency, and digital voice.",
     featured: true,
   },
   {
-    id: 'mental-health-wellbeing',
-    slug: 'mental-health-wellbeing',
-    title: 'Mental Health & Wellbeing',
-    shortDescription: 'Tools and methods for care where clinical infrastructure is limited.',
+    id: "mental-health-wellbeing",
+    slug: "mental-health-wellbeing",
+    title: "Mental Health & Wellbeing",
+    shortDescription: "Tools and methods for care where clinical infrastructure is limited.",
     featured: true,
   },
   {
-    id: 'explainable-ai-ml',
-    slug: 'explainable-ai-ml',
-    title: 'Explainable AI & Machine Learning',
+    id: "explainable-ai-ml",
+    slug: "explainable-ai-ml",
+    title: "Explainable AI & Machine Learning",
+    shortDescription: "Making algorithmic systems legible to non-experts and affected communities.",
+    featured: true,
+  },
+  {
+    id: "ictd",
+    slug: "ictd",
+    title: "ICT for Development",
     shortDescription:
-      'Making algorithmic systems legible to non-experts and affected communities.',
+      "Technology interventions grounded in language, trust, bandwidth, and devices.",
     featured: true,
   },
   {
-    id: 'ictd',
-    slug: 'ictd',
-    title: 'ICT for Development',
-    shortDescription:
-      'Technology interventions grounded in language, trust, bandwidth, and devices.',
+    id: "safety-security",
+    slug: "safety-security",
+    title: "Safety & Security",
+    shortDescription: "Digital safety systems co-designed with people facing real-world risk.",
     featured: true,
   },
   {
-    id: 'safety-security',
-    slug: 'safety-security',
-    title: 'Safety & Security',
-    shortDescription: 'Digital safety systems co-designed with people facing real-world risk.',
-    featured: true,
-  },
-  {
-    id: 'iot-low-cost-hardware',
-    slug: 'iot-low-cost-hardware',
-    title: 'IoT & Low-cost Hardware',
-    shortDescription:
-      'Affordable sensors and devices for places with limited infrastructure.',
+    id: "iot-low-cost-hardware",
+    slug: "iot-low-cost-hardware",
+    title: "IoT & Low-cost Hardware",
+    shortDescription: "Affordable sensors and devices for places with limited infrastructure.",
     featured: false,
   },
   {
-    id: 'infodemic-misinformation',
-    slug: 'infodemic-misinformation',
-    title: 'Infodemic & Misinformation',
-    shortDescription:
-      'How health misinformation spreads, and counter-tools built on local trust.',
+    id: "infodemic-misinformation",
+    slug: "infodemic-misinformation",
+    title: "Infodemic & Misinformation",
+    shortDescription: "How health misinformation spreads, and counter-tools built on local trust.",
     featured: false,
   },
   {
-    id: 'computing-education-community',
-    slug: 'computing-education-community',
-    title: 'Computing Education & Community',
-    shortDescription:
-      'Broadening who gets to study, teach, and build computing in Bangladesh.',
+    id: "computing-education-community",
+    slug: "computing-education-community",
+    title: "Computing Education & Community",
+    shortDescription: "Broadening who gets to study, teach, and build computing in Bangladesh.",
     featured: false,
   },
-].map((theme) => ({ ...theme, provenance: { source: 'manual' as const, sourceNote: PROTOTYPE_NOTE } }))
+].map((theme) => ({
+  ...theme,
+  provenance: { source: "manual" as const, sourceNote: PROTOTYPE_NOTE },
+}));

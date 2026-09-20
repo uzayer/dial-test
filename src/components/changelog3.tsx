@@ -73,12 +73,7 @@ const Changelog3 = ({ entries, className }: Changelog3Props) => {
                   </time>
                   <div className="flex-1">
                     <div className="flex items-center gap-1.5">
-                      <span
-                        className={cn(
-                          "h-3 w-3 rounded-full",
-                          TYPE_COLORS[entry.type],
-                        )}
-                      />
+                      <span className={cn("h-3 w-3 rounded-full", TYPE_COLORS[entry.type])} />
                       <p className="text-sm font-semibold text-primary/80">
                         {TYPE_LABELS[entry.type]}
                       </p>
@@ -114,12 +109,11 @@ const Changelog3 = ({ entries, className }: Changelog3Props) => {
                   </div>
                 </article>
 
-                {i < sorted.length - 1 &&
-                  getYear(sorted[i + 1].date) === thisYear && (
-                    <div className="mx-auto mt-10 max-w-3xl">
-                      <Separator />
-                    </div>
-                  )}
+                {i < sorted.length - 1 && getYear(sorted[i + 1].date) === thisYear && (
+                  <div className="mx-auto mt-10 max-w-3xl">
+                    <Separator />
+                  </div>
+                )}
               </div>
             );
           })}

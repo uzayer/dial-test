@@ -28,9 +28,7 @@ const Logos1 = ({ venues, className }: Logos1Props) => {
         className,
       )}
     >
-      <p className="text-lg leading-[140%] tracking-[-0.32px] text-primary">
-        Published at
-      </p>
+      <p className="text-lg leading-[140%] tracking-[-0.32px] text-primary">Published at</p>
       <div className="flex flex-wrap items-center gap-x-8 gap-y-6 opacity-70 grayscale lg:gap-[60px]">
         {partners.map((partner, index) => (
           <img

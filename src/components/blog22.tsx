@@ -12,13 +12,11 @@ interface DataItem {
 const DATA: DataItem[] = [
   {
     title: "Cloud Computing",
-    content:
-      "Exploring cost-effective cloud migration patterns and multi-cloud management",
+    content: "Exploring cost-effective cloud migration patterns and multi-cloud management",
   },
   {
     title: "Cybersecurity",
-    content:
-      "Implementing adaptive security frameworks for distributed workforces",
+    content: "Implementing adaptive security frameworks for distributed workforces",
   },
   {
     title: "IoT",
@@ -26,8 +24,7 @@ const DATA: DataItem[] = [
   },
   {
     title: "Blockchain",
-    content:
-      "Enterprise applications of distributed ledger technology in supply chains",
+    content: "Enterprise applications of distributed ledger technology in supply chains",
   },
 ];
 
@@ -47,8 +44,7 @@ const Blog22 = ({ className }: Blog22Props) => {
 
           <div className="mt-4 flex justify-start">
             <span className="mt-2 block text-sm text-muted-foreground md:text-base">
-              Exploring cutting-edge technologies shaping tomorrow&apos;s digital
-              landscape
+              Exploring cutting-edge technologies shaping tomorrow&apos;s digital landscape
             </span>
             <Button
               variant="outline"
@@ -79,9 +75,7 @@ const Blog22 = ({ className }: Blog22Props) => {
               </Avatar>
               <span className="text-sm md:text-base">
                 <span className="block text-foreground">Sarah Johnson</span>
-                <span className="text-xs text-muted-foreground md:text-sm">
-                  AI Researcher
-                </span>
+                <span className="text-xs text-muted-foreground md:text-sm">AI Researcher</span>
               </span>
             </div>
           </div>
@@ -89,10 +83,7 @@ const Blog22 = ({ className }: Blog22Props) => {
           {/* Secondary Posts List */}
           <div className="space-y-6 text-foreground md:space-y-8">
             {DATA.map((post, index) => (
-              <div
-                key={index}
-                className="flex items-start gap-4 border-b pb-6 last:border-b-0"
-              >
+              <div key={index} className="flex items-start gap-4 border-b pb-6 last:border-b-0">
                 <div className="w-1/4 shrink-0 md:w-1/5">
                   <img
                     className="rounded-md"
@@ -101,9 +92,7 @@ const Blog22 = ({ className }: Blog22Props) => {
                   />
                 </div>
                 <div className="w-3/4 md:w-4/5">
-                  <p className="text-sm leading-relaxed md:text-base">
-                    {post.content}
-                  </p>
+                  <p className="text-sm leading-relaxed md:text-base">{post.content}</p>
                 </div>
               </div>
             ))}

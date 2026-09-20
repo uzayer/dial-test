@@ -1,9 +1,6 @@
 import { FaqSection } from "@/components/faq-section";
 import { PageHeader } from "@/components/page-header";
-import {
-  AwardsFilterTable,
-  type Award,
-} from "@/components/awards-filter-table";
+import { AwardsFilterTable, type Award } from "@/components/awards-filter-table";
 import { labAwards, yearRange } from "@/data";
 import { awardFaqs } from "@/data/faqs";
 import { toAwardRow } from "@/data/views";
@@ -12,16 +9,15 @@ import { cn } from "@/lib/utils";
 
 export const metadata = {
   title: "Awards",
-  description: "Awards and recognition for the Design Inclusion and Access Lab at North South University.",
+  description:
+    "Awards and recognition for the Design Inclusion and Access Lab at North South University.",
 };
 
 // Lab-scoped Awards only; personal Awards appear on the Team Member profile.
 const dialAwards: Award[] = labAwards().map(toAwardRow);
 
 const featuredAwards = dialAwards.filter((a) => a.isFeatured);
-const bestPaperCount = dialAwards.filter(
-  (a) => a.category === "best-paper",
-).length;
+const bestPaperCount = dialAwards.filter((a) => a.category === "best-paper").length;
 const range = yearRange(dialAwards.map((a) => a.year));
 const minYear = range?.min;
 const maxYear = range?.max;
@@ -56,9 +52,7 @@ export default function AwardsPage() {
 
       {/* §2 Featured awards */}
       <section className="container pb-24">
-        <h2 className={cn(displaySectionTitle, "border-t border-border pt-6")}>
-          Featured
-        </h2>
+        <h2 className={cn(displaySectionTitle, "border-t border-border pt-6")}>Featured</h2>
         <ol className="mt-6 divide-y divide-border border-t border-border">
           {featuredAwards.map((award) => (
             <li
@@ -72,9 +66,7 @@ export default function AwardsPage() {
                 </span>
               </p>
               <div>
-                <h3 className="font-display text-2xl leading-snug md:text-3xl">
-                  {award.title}
-                </h3>
+                <h3 className="font-display text-2xl leading-snug md:text-3xl">{award.title}</h3>
                 {award.linkedPublication && (
                   <p className="mt-2 max-w-prose text-pretty text-muted-foreground">
                     &ldquo;{award.linkedPublication}&rdquo;
@@ -97,10 +89,7 @@ export default function AwardsPage() {
       <FaqSection items={awardFaqs} title="How awards are counted" />
 
       {/* §3 Full awards list with category filter */}
-      <AwardsFilterTable
-        awards={dialAwards}
-        yearRange={minYear ? `${minYear}–${maxYear}` : "—"}
-      />
+      <AwardsFilterTable awards={dialAwards} yearRange={minYear ? `${minYear}–${maxYear}` : "—"} />
     </>
   );
 }

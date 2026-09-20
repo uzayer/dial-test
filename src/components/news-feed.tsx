@@ -77,7 +77,10 @@ function EntryTitle({ entry, className }: { entry: NewsEntry; className?: string
           className="decoration-border underline-offset-4 hover:underline"
         >
           {entry.title}
-          <ArrowUpRight aria-label="(external link)" className="ml-1 inline size-4 align-baseline text-muted-foreground" />
+          <ArrowUpRight
+            aria-label="(external link)"
+            className="ml-1 inline size-4 align-baseline text-muted-foreground"
+          />
         </a>
       ) : (
         entry.title
@@ -107,9 +110,9 @@ export function NewsFeed({ entries }: { entries: NewsEntry[] }) {
   const past = useMemo(() => entries.filter((e) => !isUpcoming(e.date)), [entries]);
   const archive = useMemo(
     () =>
-      [...past.filter((e) => activeType === "all" || e.type === activeType)].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-      ),
+      past
+        .filter((e) => activeType === "all" || e.type === activeType)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
     [past, activeType],
   );
 
@@ -143,7 +146,8 @@ export function NewsFeed({ entries }: { entries: NewsEntry[] }) {
             label="Filter by type"
             options={FILTERS.map((f) => ({
               ...f,
-              count: f.value === "all" ? past.length : past.filter((e) => e.type === f.value).length,
+              count:
+                f.value === "all" ? past.length : past.filter((e) => e.type === f.value).length,
             }))}
             value={activeType}
             onChange={setActiveType}
@@ -152,18 +156,25 @@ export function NewsFeed({ entries }: { entries: NewsEntry[] }) {
 
         {years.map((year) => (
           <div key={year} className={cn("mt-12 grid gap-x-8 md:grid-cols-[8rem_1fr]", listEnter)}>
-            <h3 className="font-display text-3xl tabular-nums md:sticky md:top-24 md:h-fit">{year}</h3>
+            <h3 className="font-display text-3xl tabular-nums md:sticky md:top-24 md:h-fit">
+              {year}
+            </h3>
             <ol className="divide-y divide-border">
               {archive
                 .filter((e) => getYear(e.date) === year)
                 .map((entry, i) => (
                   <li
                     key={`${entry.date}-${entry.title}`}
-                    className={cn("grid gap-x-8 gap-y-2 py-6 first:pt-2 lg:grid-cols-[9rem_1fr]", listEnter)}
+                    className={cn(
+                      "grid gap-x-8 gap-y-2 py-6 first:pt-2 lg:grid-cols-[9rem_1fr]",
+                      listEnter,
+                    )}
                     style={listStagger(i)}
                   >
                     <div className="text-sm text-muted-foreground">
-                      <time dateTime={entry.date}>{formatInYear(entry.date, entry.datePrecision)}</time>
+                      <time dateTime={entry.date}>
+                        {formatInYear(entry.date, entry.datePrecision)}
+                      </time>
                       <span className={cn("mt-1 flex items-center gap-1.5", TYPE_INK[entry.type])}>
                         <span className="size-1.5 rounded-full bg-current" />
                         {TYPE_LABELS[entry.type]}

@@ -1,44 +1,44 @@
-import { CropMarks, FactMark, Squiggle } from '@/components/marks'
-import { RisoArt, type RisoVariant } from '@/components/riso'
-import { enterStep } from '@/lib/motion'
-import { label, lede, pageTitle } from '@/lib/typography'
-import { cn } from '@/lib/utils'
+import { CropMarks, FactMark, Squiggle } from "@/components/marks";
+import { RisoArt, type RisoVariant } from "@/components/riso";
+import { enterStep } from "@/lib/motion";
+import { label, lede, pageTitle } from "@/lib/typography";
+import { cn } from "@/lib/utils";
 
 export interface PageFact {
-  value: string
-  label: string
+  value: string;
+  label: string;
 }
 
 interface PageHeaderProps {
   /** Small label above the title, e.g. the section of the site. */
-  eyebrow?: string
+  eyebrow?: string;
   /** A node, so a word can be circled or otherwise marked. */
-  title: React.ReactNode
-  description?: string
+  title: React.ReactNode;
+  description?: string;
   /** Derived counts. Keep to two or three; they sit under the description. */
-  facts?: PageFact[]
-  children?: React.ReactNode
+  facts?: PageFact[];
+  children?: React.ReactNode;
   /**
    * Stagger the header in on mount (eyebrow, title, rule, lede, facts). Off
    * where something else already stages the arrival, like Home's scroll band.
    */
-  animateIn?: boolean
+  animateIn?: boolean;
   /** Which printed composition sits in the header's open margin. */
-  art?: RisoVariant
+  art?: RisoVariant;
   /**
    * Run the composition off the right edge of the sheet instead of tucking it
    * into the margin. It is trimmed where the crop marks say the sheet ends,
    * which is what crop marks are for.
    */
-  bleed?: boolean
+  bleed?: boolean;
   /**
    * The ink this header prints in, as a CSS value (`var(--ink-violet)`). Sets
    * `--header-ink`, which the marks, the rule and any wash read from.
    */
-  ink?: string
+  ink?: string;
   /** A large drawn mark set against the title — a Research Theme's glyph. */
-  glyph?: React.ReactNode
-  className?: string
+  glyph?: React.ReactNode;
+  className?: string;
 }
 
 /**
@@ -59,13 +59,13 @@ const PageHeader = ({
   className,
 }: PageHeaderProps) => {
   // Each piece takes the next step of the 60ms stagger.
-  const step = (i: number) => (animateIn ? { className: 'enter', style: enterStep(i) } : {})
-  const rule = animateIn ? { className: 'enter-rule', style: enterStep(2) } : {}
+  const step = (i: number) => (animateIn ? { className: "enter", style: enterStep(i) } : {});
+  const rule = animateIn ? { className: "enter-rule", style: enterStep(2) } : {};
 
   return (
     <header
-      style={ink ? ({ '--header-ink': ink } as React.CSSProperties) : undefined}
-      className={cn('relative isolate container pt-20 pb-16 md:pt-32 md:pb-24', className)}
+      style={ink ? ({ "--header-ink": ink } as React.CSSProperties) : undefined}
+      className={cn("relative isolate container pt-20 pb-16 md:pt-32 md:pb-24", className)}
     >
       {/* Printer's marks and a halftone wash: the page as a printed sheet. */}
       <CropMarks className="ink-mark-soft top-8 md:top-14" />
@@ -82,10 +82,10 @@ const PageHeader = ({
           <RisoArt
             variant={art}
             className={cn(
-              'absolute opacity-90',
+              "absolute opacity-90",
               bleed
-                ? '-top-10 -right-32 size-[34rem] xl:-right-36 xl:size-[40rem]'
-                : 'top-0 right-0 size-64 xl:size-72',
+                ? "-top-10 -right-32 size-[34rem] xl:-right-36 xl:size-[40rem]"
+                : "top-0 right-0 size-64 xl:size-72",
             )}
           />
         </div>
@@ -99,13 +99,13 @@ const PageHeader = ({
           it: at icon size it reads as decoration on a heading, at this size it
           is the page's own mark. */}
       {glyph && (
-        <div {...step(1)} className={cn('relative mt-6 w-fit', step(1).className)}>
+        <div {...step(1)} className={cn("relative mt-6 w-fit", step(1).className)}>
           {glyph}
         </div>
       )}
       <div
         {...step(1)}
-        className={cn('relative w-fit', (eyebrow || glyph) && 'mt-4', step(1).className)}
+        className={cn("relative w-fit", (eyebrow || glyph) && "mt-4", step(1).className)}
       >
         <h1 className={pageTitle}>{title}</h1>
         {/* Drawn under the title, as wide as the last line rather than the page. */}
@@ -121,7 +121,7 @@ const PageHeader = ({
           <span
             aria-hidden
             {...rule}
-            className={cn('ink-rule absolute inset-x-0 top-0 h-px', rule.className)}
+            className={cn("ink-rule absolute inset-x-0 top-0 h-px", rule.className)}
           />
           {description && (
             <p {...step(3)} className={cn(lede, step(3).className)}>
@@ -134,7 +134,7 @@ const PageHeader = ({
             <dl
               {...step(4)}
               className={cn(
-                'relative z-10 flex flex-wrap gap-x-12 gap-y-8 lg:max-w-2xl',
+                "relative z-10 flex flex-wrap gap-x-12 gap-y-8 lg:max-w-2xl",
                 step(4).className,
               )}
             >
@@ -157,7 +157,7 @@ const PageHeader = ({
 
       {children && <div {...step(5)}>{children}</div>}
     </header>
-  )
-}
+  );
+};
 
-export { PageHeader }
+export { PageHeader };

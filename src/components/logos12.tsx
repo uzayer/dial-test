@@ -3,11 +3,7 @@
 import AutoScroll from "embla-carousel-auto-scroll";
 import { useEffect, useState } from "react";
 
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { eyebrow } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
@@ -68,8 +64,14 @@ const Logos12 = ({ partners, className }: Logos12Props) => {
               ))}
             </CarouselContent>
           </Carousel>
-          <div aria-hidden className="absolute inset-y-0 left-0 w-32 bg-linear-to-r from-background to-transparent"></div>
-          <div aria-hidden className="absolute inset-y-0 right-0 w-32 bg-linear-to-l from-background to-transparent"></div>
+          <div
+            aria-hidden
+            className="absolute inset-y-0 left-0 w-32 bg-linear-to-r from-background to-transparent"
+          ></div>
+          <div
+            aria-hidden
+            className="absolute inset-y-0 right-0 w-32 bg-linear-to-l from-background to-transparent"
+          ></div>
         </div>
       </div>
     </section>

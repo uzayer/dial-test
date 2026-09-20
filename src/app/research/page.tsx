@@ -50,9 +50,7 @@ export default function ResearchPage() {
   const venueNames = venuesByPublicationCount()
     .slice(0, 6)
     .map((v) => v.shortName ?? v.name);
-  const awardWinning = publicationsByYear().filter(
-    (pub) => awardsForPublication(pub).length > 0,
-  );
+  const awardWinning = publicationsByYear().filter((pub) => awardsForPublication(pub).length > 0);
 
   return (
     <>
@@ -126,7 +124,6 @@ export default function ResearchPage() {
           />
         </section>
       )}
-
 
       <ClosingNote
         heading="Research with the people it serves. Join the lab."

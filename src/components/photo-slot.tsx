@@ -1,7 +1,7 @@
-import { CropMarks } from '@/components/marks'
-import { OptionalImage } from '@/components/optional-image'
-import { RisoArt, type RisoVariant } from '@/components/riso'
-import { cn } from '@/lib/utils'
+import { CropMarks } from "@/components/marks";
+import { OptionalImage } from "@/components/optional-image";
+import { RisoArt, type RisoVariant } from "@/components/riso";
+import { cn } from "@/lib/utils";
 
 /**
  * A place where a photograph belongs.
@@ -19,25 +19,25 @@ import { cn } from '@/lib/utils'
 export function PhotoSlot({
   src,
   alt,
-  art = 'field',
+  art = "field",
   caption,
-  aspect = 'aspect-4/3',
+  aspect = "aspect-4/3",
   taped = true,
   className,
 }: {
-  src?: string | null
-  alt: string
-  art?: RisoVariant
-  caption?: string
-  aspect?: string
+  src?: string | null;
+  alt: string;
+  art?: RisoVariant;
+  caption?: string;
+  aspect?: string;
   /** Photographs are taped down; printed compositions sit flat on the page. */
-  taped?: boolean
-  className?: string
+  taped?: boolean;
+  className?: string;
 }) {
   const art_ = (
     <span
       className={cn(
-        'relative grid w-full place-items-center overflow-hidden rounded-md border border-border bg-muted/40',
+        "relative grid w-full place-items-center overflow-hidden rounded-md border border-border bg-muted/40",
         aspect,
       )}
     >
@@ -45,10 +45,10 @@ export function PhotoSlot({
       <span aria-hidden className="halftone absolute inset-0 opacity-[0.08]" />
       <RisoArt variant={art} className="size-[72%]" />
     </span>
-  )
+  );
 
   return (
-    <figure className={cn('flex flex-col gap-2', className)}>
+    <figure className={cn("flex flex-col gap-2", className)}>
       {src ? (
         <span className="relative block">
           {/* `tape` is the strip itself, absolutely placed over the corner — it
@@ -60,7 +60,7 @@ export function PhotoSlot({
             src={src}
             alt={alt}
             overlay={taped ? <span aria-hidden className="tape -top-2.5 left-6 z-10" /> : null}
-            frameClassName={cn('w-full rounded-md', aspect, taped && '-rotate-1')}
+            frameClassName={cn("w-full rounded-md", aspect, taped && "-rotate-1")}
             className="h-full w-full object-cover"
             fallback={art_}
           />
@@ -68,9 +68,7 @@ export function PhotoSlot({
       ) : (
         art_
       )}
-      {caption && (
-        <figcaption className="text-xs text-muted-foreground">{caption}</figcaption>
-      )}
+      {caption && <figcaption className="text-xs text-muted-foreground">{caption}</figcaption>}
     </figure>
-  )
+  );
 }

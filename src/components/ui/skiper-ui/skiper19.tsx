@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import React, { useRef } from "react";
 
 const Skiper19 = () => {
@@ -23,10 +23,7 @@ const Skiper19 = () => {
           Scroll down to see the effect
         </p>
 
-        <LinePath
-          className="absolute -right-[40%] top-0 z-0"
-          scrollYProgress={scrollYProgress}
-        />
+        <LinePath className="absolute -right-[40%] top-0 z-0" scrollYProgress={scrollYProgress} />
       </div>
 
       <div className="rounded-4xl font-jakarta-sans w-full translate-y-[200vh] bg-[#1F3A4B] pb-10 text-[#FAFDEE]">
@@ -64,7 +61,7 @@ const LinePath = ({
   scrollYProgress,
 }: {
   className: string;
-  scrollYProgress: any;
+  scrollYProgress: MotionValue<number>;
 }) => {
   const pathLength = useTransform(scrollYProgress, [0, 1], [0.5, 1]);
 

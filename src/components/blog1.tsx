@@ -23,8 +23,7 @@ const posts = [
       "Discover the latest design trends that are shaping the digital landscape and how you can implement them in your next project.",
     label: "Design",
     href: "#",
-    image:
-      "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-1.svg",
+    image: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-1.svg",
   },
   {
     id: "post-2",
@@ -33,8 +32,7 @@ const posts = [
       "Learn about the modern JavaScript features that are revolutionizing web development and making code more efficient.",
     label: "Technology",
     href: "#",
-    image:
-      "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-2.svg",
+    image: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-2.svg",
   },
   {
     id: "post-3",
@@ -43,8 +41,7 @@ const posts = [
       "Explore best practices for creating web applications that are accessible to all users, regardless of ability or disability.",
     label: "Development",
     href: "#",
-    image:
-      "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-3.svg",
+    image: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-3.svg",
   },
   {
     id: "post-4",
@@ -53,8 +50,7 @@ const posts = [
       "Cut through the noise and discover SEO techniques that are proven to improve your site's visibility and drive organic traffic.",
     label: "Marketing",
     href: "#",
-    image:
-      "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-4.svg",
+    image: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-4.svg",
   },
   {
     id: "post-5",
@@ -63,8 +59,7 @@ const posts = [
       "Explore how AI is transforming the way we build websites and applications, from code generation to user experience optimization.",
     label: "Technology",
     href: "#",
-    image:
-      "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-5.svg",
+    image: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-5.svg",
   },
   {
     id: "post-6",
@@ -73,8 +68,7 @@ const posts = [
       "Learn advanced techniques for creating truly responsive designs that adapt to any device or screen size with modern CSS features.",
     label: "Design",
     href: "#",
-    image:
-      "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-6.svg",
+    image: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-6.svg",
   },
 ];
 
@@ -95,10 +89,7 @@ const Blog1 = ({ className }: Blog1Props) => {
               <div key={filter.name} className="shrink-0">
                 <Select>
                   <SelectTrigger className="text-black">
-                    <SelectValue
-                      placeholder={filter.name}
-                      className="text-black"
-                    />
+                    <SelectValue placeholder={filter.name} className="text-black" />
                   </SelectTrigger>
                   <SelectContent>
                     {filter.values.map((value) => (
