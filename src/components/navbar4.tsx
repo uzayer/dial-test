@@ -20,7 +20,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useState, useSyncExternalStore, type ReactElement } from "react";
 
 import { COMMUNITY_INK, CommunityMark } from "@/components/community-marks";
@@ -619,7 +618,6 @@ const Navbar4 = ({ nav, className }: Navbar4Props) => {
   // The <head> script in layout.tsx applies the stored theme before paint;
   // this just mirrors the <html> class.
   const isDark = useSyncExternalStore(subscribeToThemeClass, readIsDark, () => false);
-  const reduceMotion = useReducedMotion();
 
   const toggleDark = () => {
     const next = !isDark;
@@ -711,72 +709,56 @@ const Navbar4 = ({ nav, className }: Navbar4Props) => {
           </div>
 
           {/* Mobile menu */}
-          {/* The menu unrolls down from the nav bar (clip-path, iOS sheet
-              curve) and rolls back up faster on close; reduced motion fades. */}
-          <AnimatePresence>
-            {open && (
-              <motion.div
-                key="mobile-menu"
-                initial={reduceMotion ? { opacity: 0 } : { clipPath: "inset(0 0 100% 0)" }}
-                animate={reduceMotion ? { opacity: 1 } : { clipPath: "inset(0 0 0% 0)" }}
-                exit={
-                  reduceMotion
-                    ? { opacity: 0, transition: { duration: 0.15 } }
-                    : {
-                        clipPath: "inset(0 0 100% 0)",
-                        transition: { duration: 0.18, ease: [0.23, 1, 0.32, 1] },
-                      }
-                }
-                transition={{ duration: reduceMotion ? 0.15 : 0.3, ease: [0.32, 0.72, 0, 1] }}
-                className="fixed inset-0 top-[77px] container flex h-[calc(100vh-77px)] w-full flex-col overflow-auto border-t border-border bg-background lg:hidden"
-              >
-                {submenu && (
-                  <div className="mt-3">
-                    <Button
-                      variant="link"
-                      onClick={() => setSubmenu(null)}
-                      className="relative -left-4"
-                    >
-                      <ArrowLeft className="size-4 text-xs" />
-                      Go back
-                    </Button>
-                  </div>
-                )}
-                {submenu === null && (
-                  <div>
-                    {navigationMenuItems.map((item, i) => (
-                      <button
-                        key={item.key}
-                        type="button"
-                        className="enter flex w-full items-center border-b border-border py-6 text-left [animation-duration:300ms]"
-                        style={{ animationDelay: `${80 + i * 40}ms` }}
-                        onClick={() => setSubmenu(item.key)}
-                      >
-                        <span className="flex-1 text-sm font-medium">{item.label}</span>
-                        <span className="shrink-0">
-                          <ArrowRight className="size-4" />
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {navigationMenuItems.map(
-                  (item) =>
-                    submenu === item.key && (
-                      <div key={item.key}>
-                        <h2 className="pt-4 pb-6 text-lg font-medium">{item.label}</h2>
-                        <item.component nav={nav} />
-                      </div>
-                    ),
-                )}
-                <div className="mx-[2rem] mt-auto flex flex-col items-center gap-8 py-24">
-                  <Link href="/contact" className={cn(buttonVariants(), "rounded-full px-5")}>
-                    Contact
-                  </Link>
+          {/* The menu unrolls down from the nav bar with a CSS clip-path, so
+              the shared layout does not need to ship Motion on every route. */}
+          {open ? (
+            <div className="mobile-menu-enter fixed inset-0 top-[77px] container flex h-[calc(100vh-77px)] w-full flex-col overflow-auto border-t border-border bg-background lg:hidden">
+              {submenu && (
+                <div className="mt-3">
+                  <Button
+                    variant="link"
+                    onClick={() => setSubmenu(null)}
+                    className="relative -left-4"
+                  >
+                    <ArrowLeft className="size-4 text-xs" />
+                    Go back
+                  </Button>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              )}
+              {submenu === null && (
+                <div>
+                  {navigationMenuItems.map((item, i) => (
+                    <button
+                      key={item.key}
+                      type="button"
+                      className="enter flex w-full items-center border-b border-border py-6 text-left [animation-duration:300ms]"
+                      style={{ animationDelay: `${80 + i * 40}ms` }}
+                      onClick={() => setSubmenu(item.key)}
+                    >
+                      <span className="flex-1 text-sm font-medium">{item.label}</span>
+                      <span className="shrink-0">
+                        <ArrowRight className="size-4" />
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+              {navigationMenuItems.map(
+                (item) =>
+                  submenu === item.key && (
+                    <div key={item.key}>
+                      <h2 className="pt-4 pb-6 text-lg font-medium">{item.label}</h2>
+                      <item.component nav={nav} />
+                    </div>
+                  ),
+              )}
+              <div className="mx-[2rem] mt-auto flex flex-col items-center gap-8 py-24">
+                <Link href="/contact" className={cn(buttonVariants(), "rounded-full px-5")}>
+                  Contact
+                </Link>
+              </div>
+            </div>
+          ) : null}
         </NavigationMenu>
       </div>
     </section>

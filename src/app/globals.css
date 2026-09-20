@@ -190,6 +190,20 @@ body:has([data-hero-root]) [data-site-nav] {
   z-index: 40;
 }
 
+@keyframes mobile-menu-enter {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+}
+.mobile-menu-enter {
+  animation: mobile-menu-enter 300ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu-enter {
+    animation: enter-fade 150ms ease-out;
+  }
+}
+
 /* Taking the nav out of flow shortens the document by the nav's own height.
    Without this, scroll anchoring "corrects" for that by scrolling down the
    same amount, so every reload started the list one item further along. */
