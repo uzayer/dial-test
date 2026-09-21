@@ -55,6 +55,12 @@ export type Organization = {
     | null;
   url?: string | null;
   ror_id?: string | null;
+  /**
+   * The organization's own mark, served from `public/`. Width and height are
+   * the artwork's intrinsic proportions, used to size marks of very different
+   * shapes to the same visual weight. A Payload `upload` field in the port.
+   */
+  logo?: { src: string; width: number; height: number } | null;
   provenance?: Provenance;
 };
 

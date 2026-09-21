@@ -13,6 +13,7 @@ export const organizations: Organization[] = [
     country: "Bangladesh",
     type: "university",
     url: "http://www.northsouth.edu/",
+    logo: { src: "/partners/nsu.svg", width: 260, height: 40 },
     provenance: {
       source: "scrape",
       sourceNote:
@@ -24,6 +25,7 @@ export const organizations: Organization[] = [
     name: "Bill and Melinda Gates Foundation",
     shortName: "Gates Foundation",
     type: "funding-agency",
+    logo: { src: "/partners/gates-foundation.svg", width: 800, height: 89 },
     provenance: {
       source: "scrape",
       sourceNote:
@@ -35,6 +37,7 @@ export const organizations: Organization[] = [
     name: "Google",
     country: "USA",
     type: "company",
+    logo: { src: "/partners/google.svg", width: 272, height: 92 },
     provenance: {
       source: "scrape",
       sourceNote:
@@ -47,6 +50,7 @@ export const organizations: Organization[] = [
     shortName: "BRACU",
     country: "Bangladesh",
     type: "university",
+    logo: { src: "/partners/bracu.svg", width: 250, height: 240 },
     provenance: {
       source: "scrape",
       sourceNote: 'DIAL Proposal.md — "Collaborator List" ("National Level Collaboration")',
@@ -68,6 +72,7 @@ export const organizations: Organization[] = [
     name: "Cardiff University",
     country: "UK",
     type: "university",
+    logo: { src: "/partners/cardiff-university.svg", width: 100, height: 96 },
     provenance: {
       source: "scrape",
       sourceNote: 'DIAL Proposal.md — "Collaborator List" ("International Collaboration")',
@@ -120,6 +125,7 @@ export const organizations: Organization[] = [
     name: "ACM SIGCHI",
     country: "USA",
     type: "other",
+    logo: { src: "/partners/acm-sigchi.svg", width: 720, height: 184 },
     provenance: {
       source: "scrape",
       sourceNote: 'DIAL Proposal.md — "Collaborator List" ("International Collaboration")',
