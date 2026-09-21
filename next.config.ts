@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   // Without this, Next blocks /_next/* dev resources when the site is opened
   // from another device on the LAN, so no JS loads and the page is inert.
-  allowedDevOrigins: ["192.168.0.180", "*.local"],
+  allowedDevOrigins: ["192.168.0.180", "192.168.0.128", "*.local"],
   // Placeholder photography until DIAL's own images are collected.
   images: {
     remotePatterns: [{ protocol: "https", hostname: "deifkwefumgah.cloudfront.net" }],
