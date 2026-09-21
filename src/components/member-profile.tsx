@@ -1,4 +1,4 @@
-import { CropMarks, Squiggle } from "@/components/marks";
+import { CropMarks, Squiggle, Tape } from "@/components/marks";
 import { InitialTile } from "@/components/initial-tile";
 import { OptionalImage } from "@/components/optional-image";
 import { RisoArt } from "@/components/riso";
@@ -100,7 +100,7 @@ const MemberProfile = ({ member, className }: MemberProfileProps) => {
             <OptionalImage
               src={member.photo}
               alt={member.name}
-              overlay={<span aria-hidden className="tape -top-2.5 left-6 z-10" />}
+              overlay={<Tape />}
               frameClassName="aspect-[4/5] w-full rounded-sm"
               className="h-full w-full object-cover object-top"
               fallback={

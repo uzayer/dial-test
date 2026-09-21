@@ -114,11 +114,7 @@ const PageHeader = ({
       )}
       <div
         {...step(1)}
-        className={cn(
-          "relative w-fit",
-          (eyebrow || glyph) && "mt-4",
-          step(1).className,
-        )}
+        className={cn("relative w-fit", (eyebrow || glyph) && "mt-4", step(1).className)}
       >
         <h1 className={pageTitle}>{title}</h1>
         <Squiggle className={cn("ink-mark mt-1", fullTitleSquiggle ? "max-w-none" : "max-w-md")} />

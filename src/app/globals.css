@@ -7,8 +7,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans:
-    var(--font-geist-sans), var(--font-bengali), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), var(--font-bengali), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
   /* Editorial display face for page and section titles. */
@@ -326,14 +325,30 @@ body:is(.dark)::after {
   transition: rotate 200ms var(--ease-snappy);
 }
 
-/* A strip of tape across a corner. */
+/* A strip of tape across a corner, the way a photo is stuck into a notebook:
+   one strip over the top-left corner and one over the bottom-right, each
+   centred on its corner and laid across the diagonal. The two angles differ by
+   a few degrees on purpose — two strips at exactly -45deg read as a stamp. */
 @utility tape {
   position: absolute;
-  width: 5.5rem;
-  height: 1.4rem;
+  z-index: 10;
+  width: 4.5rem;
+  height: 1.25rem;
   background: color-mix(in oklab, var(--ink) 22%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 10%, transparent);
-  rotate: 0deg;
+  pointer-events: none;
+}
+@utility tape-tl {
+  top: 0;
+  left: 0;
+  translate: -50% -50%;
+  rotate: -42deg;
+}
+@utility tape-br {
+  right: 0;
+  bottom: 0;
+  translate: 50% 50%;
+  rotate: -48deg;
 }
 
 /* A page prints in one ink. `--header-ink` is the second ink everywhere by

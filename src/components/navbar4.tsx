@@ -9,6 +9,7 @@ import {
   CropMarks,
   RegistrationMark,
   SquiggleUnderline,
+  Tape,
   TickMark,
 } from "@/components/marks";
 import { DialLockup, DialMark } from "@/components/dial-logo";
@@ -359,10 +360,12 @@ const PeopleMenu = ({ nav }: MenuProps) => (
         portrait standing in for a real person. */}
     <Link
       href="/people"
-      className="group relative flex flex-col overflow-hidden rounded-md border border-border bg-muted/40 p-5"
+      className="group relative flex flex-col rounded-md border border-border bg-muted/40 p-5"
     >
-      <CropMarks className="text-ink/50" />
-      <span aria-hidden className="halftone absolute inset-0 opacity-[0.07]" />
+      {/* No overflow-hidden on this card: the tape is stuck on over the edge
+          of the photo and must be free to run past the card. The halftone
+          rounds itself instead. */}
+      <span aria-hidden className="halftone absolute inset-0 rounded-[inherit] opacity-[0.07]" />
       <div className="relative">
         {nav.pi?.photo ? (
           <span className="relative block">
@@ -372,7 +375,7 @@ const PeopleMenu = ({ nav }: MenuProps) => (
             <OptionalImage
               src={nav.pi.photo}
               alt={`Dr. ${nav.pi.name}`}
-              overlay={<span aria-hidden className="tape -top-2.5 left-6 z-10" />}
+              overlay={<Tape />}
               frameClassName="aspect-3/4 w-full rounded-sm"
               className="h-full w-full object-cover object-center"
               fallback={<RisoArt variant="bloom" className="mx-auto size-40" />}
@@ -404,9 +407,7 @@ const PeopleMenu = ({ nav }: MenuProps) => (
           the PI has a photograph, so the rest arrive as their printed initial
           in their own ink — the roster's vocabulary, not a placeholder. */}
       <div>
-        <PanelLabel>
-          {nav.teamCount} In the Lab
-        </PanelLabel>
+        <PanelLabel>{nav.teamCount} In the Lab</PanelLabel>
         <div className="grid gap-6 md:grid-cols-3">
           {nav.rosterGroups.map((group) => (
             <div key={group.title}>

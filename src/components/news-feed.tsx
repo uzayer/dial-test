@@ -20,6 +20,7 @@ import {
 import { listEnter, listStagger } from "@/lib/motion";
 import { displaySectionTitle } from "@/lib/typography";
 import { cn } from "@/lib/utils";
+import { Tape } from "@/components/marks";
 
 // The vocabulary moved to @/lib/news so the entry page can share it; these
 // re-exports keep the component's existing importers working.
@@ -159,7 +160,7 @@ export function NewsFeed({ entries }: { entries: NewsEntry[] }) {
                           <OptionalImage
                             src={entry.photo}
                             alt={entry.title}
-                            overlay={<span aria-hidden className="tape -top-3 left-10 z-10" />}
+                            overlay={<Tape />}
                             frameClassName="sticker-alt rounded-sm shadow-[0_12px_28px_-20px_rgba(0,0,0,0.6)]"
                             className="aspect-video"
                           />

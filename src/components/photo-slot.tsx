@@ -1,4 +1,4 @@
-import { CropMarks } from "@/components/marks";
+import { CropMarks, Tape } from "@/components/marks";
 import { OptionalImage } from "@/components/optional-image";
 import { RisoArt, type RisoVariant } from "@/components/riso";
 import { cn } from "@/lib/utils";
@@ -59,7 +59,7 @@ export function PhotoSlot({
           <OptionalImage
             src={src}
             alt={alt}
-            overlay={taped ? <span aria-hidden className="tape -top-2.5 left-6 z-10" /> : null}
+            overlay={taped ? <Tape /> : null}
             frameClassName={cn("w-full rounded-md", aspect)}
             className="h-full w-full object-cover"
             fallback={art_}

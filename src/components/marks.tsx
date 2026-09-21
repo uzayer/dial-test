@@ -20,6 +20,19 @@ const strokeProps = {
 } as const;
 
 /**
+ * Tape holding a photograph down at two opposite corners, top-left and
+ * bottom-right, as in a notebook. Place it inside the photo's `relative`
+ * parent — usually as `OptionalImage`'s `overlay`, so a photo that fails to
+ * load takes its tape with it.
+ */
+export const Tape = () => (
+  <>
+    <span aria-hidden className="tape tape-tl" />
+    <span aria-hidden className="tape tape-br" />
+  </>
+);
+
+/**
  * Wavy underline; runs the full width of its container.
  *
  * Not one path stretched to fit but a single wave tiled at a fixed size (see
