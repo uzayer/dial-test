@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 import { DashedPath, SquiggleText, SquiggleUnderline, TickMark } from "@/components/marks";
-import { ThemeGlyph, themeInk } from "@/components/theme-marks";
+import { ThemeGlyph, themeInk, themeInkVar } from "@/components/theme-marks";
 import { displaySectionTitle, label as labelClass } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
@@ -224,10 +224,15 @@ export const ThemeIndex = ({
  * nine items at identical weight communicate no priority at all — a lab that
  * lists nine areas without ranking them reads as a lab that does everything.
  *
- * So Home leads with three and names the other six in a line of prose. Nothing
- * is hidden: every theme is still one click away, and the six are links, not a
- * teaser. What changes is that the section now makes a claim instead of
- * presenting a table of contents.
+ * So Home leads with three and lists the other six below them, each with its
+ * glyph but no description or counts. Nothing is hidden: every theme is still
+ * one click away, and the six are links, not a teaser. What changes is that
+ * the section now makes a claim instead of presenting a table of contents.
+ *
+ * Every title ends in a pencil arrow in its Theme's ink. The squiggle is a
+ * hover state and a phone has no hover, so without the arrow the six read as
+ * plain coloured text there. The squiggle takes the same ink, so a blue title
+ * is no longer underlined in red.
  */
 export const ThemeSpotlight = ({
   lead,
@@ -236,7 +241,7 @@ export const ThemeSpotlight = ({
 }: {
   /** The themes given a tile. Three fits the grid and the argument. */
   lead: ThemeIndexEntry[];
-  /** Everything else, named inline. */
+  /** Everything else, listed compactly under the tiles. */
   rest: ThemeIndexEntry[];
   className?: string;
 }) => (
@@ -253,18 +258,18 @@ export const ThemeSpotlight = ({
           <li key={theme.slug} className="bg-background">
             <Link
               href={`/research/${theme.slug}`}
-              className="group flex h-full flex-col gap-4 px-2 py-7 transition-colors duration-150 ease-snappy hover:bg-muted/50 active:bg-muted sm:px-6"
+              style={themeLinkInk(theme.slug)}
+              className={cn("group flex h-full flex-col gap-4 px-2 py-7 sm:px-6", themeLinkPress)}
             >
               <ThemeGlyph slug={theme.slug} className="size-16 shrink-0" />
-              <SquiggleText className="font-display text-2xl leading-snug text-balance">
+              <SquiggleText arrow className="font-display text-2xl leading-snug text-balance">
                 {theme.title}
               </SquiggleText>
               {theme.description && (
                 <p className="text-sm text-pretty text-muted-foreground">{theme.description}</p>
               )}
-              <span className="mt-auto flex items-center gap-2 pt-2 text-sm tabular-nums text-muted-foreground">
+              <span className="mt-auto pt-2 text-sm tabular-nums text-muted-foreground">
                 {counts.join(" · ")}
-                <ArrowRight className="arrow-ne size-4 group-hover:text-foreground" />
               </span>
             </Link>
           </li>
@@ -273,26 +278,42 @@ export const ThemeSpotlight = ({
     </ol>
 
     {rest.length > 0 && (
-      <p className="mt-8 max-w-4xl text-pretty">
-        <span className={cn(labelClass, "mr-3 align-middle")}>Also working on</span>
-        {rest.map((theme, i) => (
-          <span key={theme.slug}>
-            {i > 0 && (
-              <span aria-hidden className="mx-2 text-muted-foreground/60">
-                ·
-              </span>
-            )}
-            <Link href={`/research/${theme.slug}`} className="group">
-              <SquiggleText className={cn("font-display text-xl", themeInk(theme.slug))}>
-                {theme.title}
-              </SquiggleText>
-            </Link>
-          </span>
-        ))}
-      </p>
+      <div className="mt-12">
+        <p className={cn(labelClass, "mb-4")}>Also working on</p>
+        <ul className="grid gap-x-8 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
+          {rest.map((theme) => (
+            <li key={theme.slug}>
+              <Link
+                href={`/research/${theme.slug}`}
+                style={themeLinkInk(theme.slug)}
+                className={cn("group -mx-2 flex items-center gap-4 px-2 py-3", themeLinkPress)}
+              >
+                <ThemeGlyph slug={theme.slug} className="size-10 shrink-0" />
+                <SquiggleText
+                  arrow
+                  className={cn("min-w-0 font-display text-xl leading-snug", themeInk(theme.slug))}
+                >
+                  {theme.title}
+                </SquiggleText>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
     )}
   </div>
 );
+
+/** Inks a Theme link's squiggle and arrow, and the wash it takes when pressed. */
+const themeLinkInk = (slug: string) =>
+  ({
+    "--squiggle-ink": themeInkVar(slug),
+    "--press-wash": `color-mix(in oklab, ${themeInkVar(slug)} 10%, transparent)`,
+  }) as React.CSSProperties;
+
+/** Pressed, the link takes a wash of its Theme's ink and gives under the finger. */
+const themeLinkPress =
+  "transition-[scale,background-color] duration-150 ease-snappy active:scale-[0.98] active:bg-(--press-wash)";
 
 // ─── Numbered steps ──────────────────────────────────────────────────────────
 

@@ -78,20 +78,63 @@ export const SquiggleText = ({
   children,
   className,
   highlight,
+  arrow,
 }: {
   children: string;
   className?: string;
   /** Search term to mark inside the text. Marked only in the visible copy. */
   highlight?: string;
+  /** Ends the text with a `PencilArrow`, held to the last word. */
+  arrow?: boolean;
 }) => (
-  <span className={cn("relative block w-fit", className)}>
+  <span className={cn("relative block", !arrow && "w-fit", className)}>
     {highlight ? <MarkedText text={children} term={highlight} /> : children}
+    {/* A no-break space glues the arrow to the last word, so it wraps with the
+        words instead of hanging alone at the edge. */}
+    {arrow && (
+      <>
+        {"\u00A0"}
+        <PencilArrow className="inline-block h-[0.45em] w-[0.9em] align-middle text-[var(--squiggle-ink,var(--ink))]" />
+      </>
+    )}
     {/* The stroke copy keeps the bare string: it only has to wrap identically,
-        and a <mark> in here would be stroked as well as marked. */}
-    <span aria-hidden className="pointer-events-none absolute inset-0 text-ink">
+        and a <mark> in here would be stroked as well as marked. With an arrow,
+        a blank box its width stands in for it, so the stroke stops at the
+        words. `--squiggle-ink` re-inks the stroke, for a Theme's own ink. */}
+    <span
+      aria-hidden
+      className="pointer-events-none absolute inset-0 text-[var(--squiggle-ink,var(--ink))]"
+    >
       <span className="ink-squiggle-text">{children}</span>
+      {arrow && (
+        <>
+          {"\u00A0"}
+          <span className="inline-block w-[0.9em]" />
+        </>
+      )}
     </span>
   </span>
+);
+
+/**
+ * A pen-drawn arrow: wobbly shaft, uneven head. The hand-drawn counterpart of
+ * the Lucide arrow, for links that sit among the other marks. Nudges forward
+ * when its `group` is hovered.
+ */
+export const PencilArrow = ({ className }: { className?: string }) => (
+  <svg
+    aria-hidden
+    viewBox="0 0 40 18"
+    className={cn(
+      "h-3.5 w-8 shrink-0 transition-transform duration-200 ease-snappy group-hover:translate-x-1",
+      className,
+    )}
+    {...strokeProps}
+    strokeWidth={1.8}
+  >
+    <path d="M2 10c7-1.5 15-.5 22-1.2s7-.6 11-.8" />
+    <path d="M27 3c2.5 2 5.5 4.2 8.5 6-3 1.6-6 4-8.2 6.4" />
+  </svg>
 );
 
 /**

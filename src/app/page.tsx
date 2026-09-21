@@ -102,7 +102,7 @@ export default function Home() {
           ]}
           art="bloom"
           animateIn={false}
-          className="pt-0 pb-8 md:pt-0 md:pb-10"
+          className="py-0 md:py-0"
         >
           <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8">
             <PrimaryLink href="/research">Explore the research</PrimaryLink>

@@ -138,11 +138,16 @@ const PageHeader = ({
           )}
           {facts && facts.length > 0 && (
             // A ruled ledger strip: hairlines above and below, one column per
-            // figure. Capped short of the margin the art bleeds into.
+            // figure. Capped short of the margin the art bleeds into. The
+            // columns never wrap: a wrapped figure lost its rule and hung
+            // indented under the first row. On a phone they share the width
+            // equally and the type steps down to fit; from `sm` each column
+            // takes its own width.
             <dl
               {...step(4)}
+              style={{ ["--fact-cols" as string]: facts.length }}
               className={cn(
-                "relative z-10 flex w-fit max-w-full flex-wrap border-y border-ink/40 lg:max-w-2xl",
+                "relative z-10 grid w-full grid-cols-[repeat(var(--fact-cols),minmax(0,1fr))] border-y border-ink/40 sm:w-fit sm:grid-cols-[repeat(var(--fact-cols),auto)] lg:max-w-2xl",
                 step(4).className,
               )}
             >
@@ -150,25 +155,29 @@ const PageHeader = ({
                 <div
                   key={fact.label}
                   className={cn(
-                    "flex flex-col gap-2 py-4 pr-8",
-                    i > 0 && "border-l border-ink/25 pl-6",
+                    "flex min-w-0 flex-col gap-2 py-4 pr-3 sm:pr-8",
+                    i > 0 && "border-l border-ink/25 pl-3 sm:pl-6",
                   )}
                 >
                   {/* Caption row: the figure number on the left, the mark stamped
                       on the right. The slot is held open when a label has no
                       mark, so the numerals below stay on one baseline. */}
-                  <div className="flex h-5 items-center justify-between gap-6">
+                  <div className="flex h-5 items-center justify-between gap-2 sm:gap-6">
                     <span
                       aria-hidden
-                      className="font-mono text-[10px] tracking-[0.2em] text-ink uppercase"
+                      className="font-mono text-[10px] tracking-[0.12em] whitespace-nowrap text-ink uppercase sm:tracking-[0.2em]"
                     >
                       Fig. {String(i + 1).padStart(2, "0")}
                     </span>
                     <FactMark label={fact.label} className="ink-mark size-5 shrink-0" />
                   </div>
-                  <dd className="font-display text-5xl leading-none tabular-nums">{fact.value}</dd>
+                  <dd className="font-display text-4xl leading-none tabular-nums sm:text-5xl">
+                    {fact.value}
+                  </dd>
                   {/* Lettered by hand, like a note in the margin of the plate. */}
-                  <dt className="pt-1 font-hand text-xl leading-none text-ink">{fact.label}</dt>
+                  <dt className="pt-1 font-hand text-lg leading-tight text-balance text-ink sm:text-xl sm:leading-none">
+                    {fact.label}
+                  </dt>
                 </div>
               ))}
             </dl>

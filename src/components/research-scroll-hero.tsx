@@ -104,13 +104,19 @@ const ResearchScrollHero = ({ className, children }: ResearchScrollHeroProps) =>
 
   /**
    * Lets the band's hand-drawn strokes (the underline and the circle) draw
-   * themselves. They are held undrawn by `data-ink-hold` until the sheet has
-   * settled, so they draw on arrival rather than while the band is still
-   * sliding in from below. One-shot: scrolling back up does not re-draw them.
+   * themselves. They are held undrawn by `data-ink-hold` until the title's
+   * foot (where the underline sits) has risen to the middle of the viewport,
+   * so they draw as the reader arrives at the words rather than while the band
+   * is still low on the screen. The settled sheet is a fallback, in case the
+   * title rests below the middle on a short viewport. One-shot: scrolling back
+   * up does not re-draw them.
    */
   const releaseInk = useCallback((progress: number) => {
     const panel = panelRef.current;
-    if (panel && progress >= 0.95) panel.setAttribute("data-ink-go", "");
+    if (!panel) return;
+    const title = panel.querySelector("h1");
+    const titleArrived = title && title.getBoundingClientRect().bottom <= window.innerHeight * 0.5;
+    if (titleArrived || progress >= 0.95) panel.setAttribute("data-ink-go", "");
   }, []);
 
   useMotionValueEvent(riseProgress, "change", releaseInk);
@@ -206,7 +212,9 @@ const ResearchScrollHero = ({ className, children }: ResearchScrollHeroProps) =>
           // the remainder left as dead space under them. pt clears the fixed
           // nav plus breathing room, so the second hero does not arrive tight
           // under it, and is a floor on the centring rather than a gap.
-          "relative z-20 mt-[20vh] flex min-h-screen w-full flex-col justify-center overflow-hidden rounded-4xl border-t border-border bg-background pt-28 pb-16 text-foreground md:pt-32 md:pb-20",
+          "relative z-20 mt-[20vh] flex min-h-screen w-full flex-col justify-center overflow-hidden rounded-t-4xl border-t border-border bg-background pt-28 pb-8 text-foreground md:pt-32 md:pb-10",
+          // Only the top is rounded: the bottom runs straight into the page,
+          // and rounded corners there showed the dimmed stage in the notches.
           // Lifts off the page: a shadow thrown upward onto the stage.
           "shadow-[0_-32px_64px_-24px_oklch(0.19_0.012_60/0.22)] dark:shadow-[0_-32px_64px_-24px_oklch(0_0_0/0.6)]",
         )}
