@@ -1,12 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Caveat,
-  Geist,
-  Geist_Mono,
-  Fraunces,
-  Noto_Sans_Bengali,
-  Noto_Serif_Bengali,
-} from "next/font/google";
+import { Caveat, Geist, Geist_Mono, Fraunces, Mina } from "next/font/google";
 import "./globals.css";
 import { Navbar4 } from "@/components/navbar4";
 import { Footer18 } from "@/components/footer18";
@@ -24,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 // Display serif for page and section titles. Bengali project names fall
-// through to the matching Bengali face, so Project names like "স্যন্ধি" are
+// through to the Bengali face, so Project names like "স্যন্ধি" are
 // set on purpose rather than in whatever the OS happens to have.
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -40,14 +33,12 @@ const caveat = Caveat({
   subsets: ["latin"],
 });
 
-// Bengali-only subsets: the files load only when Bengali glyphs are on the page.
-const bengaliSerif = Noto_Serif_Bengali({
-  variable: "--font-bengali-serif",
-  subsets: ["bengali"],
-});
-
-const bengaliSans = Noto_Sans_Bengali({
-  variable: "--font-bengali-sans",
+// Bengali in one face, Mina, behind every stack. Bengali subset only: the
+// file loads only when Bengali glyphs are on the page, and Latin text never
+// falls through to it.
+const bengali = Mina({
+  variable: "--font-bengali",
+  weight: ["400", "700"],
   subsets: ["bengali"],
 });
 
@@ -75,7 +66,7 @@ export default function RootLayout({
       lang="en"
       // The theme script adds `dark` before hydration.
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${caveat.variable} ${bengaliSerif.variable} ${bengaliSans.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${caveat.variable} ${bengali.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

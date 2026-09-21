@@ -11,6 +11,7 @@ import {
   SquiggleUnderline,
   TickMark,
 } from "@/components/marks";
+import { DialLockup, DialMark } from "@/components/dial-logo";
 import { OptionalImage } from "@/components/optional-image";
 import { PersonChip } from "@/components/person-chip";
 import { RisoArt } from "@/components/riso";
@@ -528,6 +529,27 @@ const LabMenu = () => (
           </span>
         </div>
       </NavigationMenuLink>
+
+      <NavigationMenuLink
+        href="/design-system"
+        className="group relative flex w-full flex-row items-start gap-4 overflow-hidden rounded-md border border-border p-6"
+      >
+        <span aria-hidden className="halftone absolute inset-0 opacity-[0.07]" />
+        <DialMark title="" className="relative w-7 shrink-0 text-ink" />
+        <div className="relative">
+          <div className="font-display relative inline-block text-base leading-tight">
+            Brand guidelines
+            <SquiggleUnderline />
+          </div>
+          <p className="mt-1 text-xs text-pretty text-muted-foreground">
+            The logo, inks, type and marks the site is printed in.
+          </p>
+          <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium">
+            See the system
+            <ArrowRight className="arrow-ne size-4" />
+          </span>
+        </div>
+      </NavigationMenuLink>
     </div>
   </div>
 );
@@ -589,22 +611,12 @@ const Navbar4 = ({ nav, className }: Navbar4Props) => {
                 drawing, which made the DIAL letters themselves small; the
                 mark now stands alone and the university is named quietly
                 beside it. */}
-            <Link href="/" className="flex items-center gap-3">
-              <img
-                src="/dial-logo.svg"
-                width={844}
-                height={264}
-                className="w-28 max-w-none dark:invert sm:w-32"
-                alt="DIAL"
+            <Link href="/" className="flex items-center">
+              <DialLockup
+                descriptor="university"
+                wordmarkClassName="w-28 max-w-none sm:w-32"
+                textClassName="hidden sm:block"
               />
-              {/* The old lockup set "NSU HCI" in wide-tracked capitals under
-                  the mark, which shrank the DIAL letters. It now sits beside
-                  the mark and spells the university out — named, but quiet. */}
-              <span className="hidden border-l border-border pl-3 text-[0.65rem] leading-[1.35] tracking-[0.16em] text-muted-foreground uppercase sm:block">
-                North South
-                <br />
-                University HCI
-              </span>
             </Link>
 
             {/* Desktop nav */}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactElement } from "react";
 
+import { DialWordmark } from "@/components/dial-logo";
 import { Button } from "@/components/ui/button";
 import { labInfo } from "@/data/lab-info";
 import { researchThemes } from "@/data/research-themes";
@@ -69,6 +70,7 @@ const NAVIGATION = [
       { name: "News", href: "/news" },
       { name: "Join the Lab", href: "/join-us" },
       { name: "Contact", href: "/contact" },
+      { name: "Brand guidelines", href: "/design-system" },
     ],
   },
 ];
@@ -84,13 +86,7 @@ const Footer18 = ({ className }: Footer18Props) => {
         <nav className="flex flex-col gap-9 lg:flex-row">
           <div className="flex w-full flex-col gap-9 lg:w-1/4">
             <Link href="/">
-              <img
-                src="/dial-logo.svg"
-                width={844}
-                height={264}
-                alt="DIAL"
-                className="w-40 max-w-none dark:invert"
-              />
+              <DialWordmark className="w-40 max-w-none" />
             </Link>
             <p className="text-sm leading-relaxed text-muted-foreground">
               HCI research from Bangladesh.
