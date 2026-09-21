@@ -19,22 +19,14 @@ import { RISO_COMPOSITIONS, type RisoVariant } from "@/components/riso";
  * an ink rule, the lockup at the foot, and the page's riso composition
  * bleeding off the right edge past the crop marks.
  *
- * Every card is served twice, WebP first and then a JPEG fallback for
- * crawlers that do not take WebP. `ImageResponse` only produces PNG, so sharp
- * re-encodes it. The two are separate files per route, `opengraph-image.tsx`
- * and `opengraph-image2.tsx`, because `generateImageMetadata` would have made
- * them one file but stops dynamic segments from prerendering.
- * The cards themselves are in `cards.ts`, so both files print the same one.
+ * Served as WebP: `ImageResponse` only produces PNG, so sharp re-encodes it.
+ * One image per page, deliberately. Open Graph has no format fallback — a
+ * second `og:image` is a second image, and iMessage shows both side by side —
+ * so a JPEG copy for crawlers without WebP cannot be offered alongside it.
+ * What each card says is in `cards.ts`.
  */
 
 export const size = { width: 1200, height: 630 };
-
-const FORMATS = {
-  webp: (img: sharp.Sharp) => img.webp({ quality: 88 }),
-  jpeg: (img: sharp.Sharp) => img.jpeg({ quality: 88, mozjpeg: true }),
-} as const;
-
-export type OgFormat = keyof typeof FORMATS;
 
 // ─── Inks ────────────────────────────────────────────────────────────────────
 // Satori and resvg cannot read CSS variables or OKLCH, so the light-theme
@@ -339,8 +331,8 @@ function Card({
   );
 }
 
-/** Renders a card as WebP or JPEG; no card is a 404. */
-export async function ogImage(card: OgCard | undefined, format: OgFormat): Promise<Response> {
+/** Renders a card as WebP; no card is a 404. */
+export async function ogImage(card: OgCard | undefined): Promise<Response> {
   if (!card) return new Response(null, { status: 404 });
 
   const [fraunces, geist, geistMono, mina, logo] = await Promise.all([
@@ -362,7 +354,9 @@ export async function ogImage(card: OgCard | undefined, format: OgFormat): Promi
     ],
   });
 
-  const body = await FORMATS[format](sharp(Buffer.from(await png.arrayBuffer()))).toBuffer();
+  const webp = await sharp(Buffer.from(await png.arrayBuffer()))
+    .webp({ quality: 88 })
+    .toBuffer();
 
-  return new Response(new Uint8Array(body), { headers: { "Content-Type": `image/${format}` } });
+  return new Response(new Uint8Array(webp), { headers: { "Content-Type": "image/webp" } });
 }

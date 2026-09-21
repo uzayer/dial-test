@@ -6,5 +6,5 @@ export const contentType = "image/webp";
 export const alt = "DIAL — Design Inclusion and Access Lab";
 
 export default function Image() {
-  return ogImage(siteCard, "webp");
+  return ogImage(siteCard);
 }

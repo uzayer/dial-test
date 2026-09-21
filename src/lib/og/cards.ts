@@ -4,9 +4,9 @@ import { toNewsPost } from "@/data/views";
 import type { OgCard } from "./og-image";
 
 /**
- * What each route's Open Graph card says. Each route has a WebP and a JPEG
- * image file; both read their card from here. Each composition matches the
- * one on that section's index page header.
+ * What each route's Open Graph card says, read by that route's
+ * `opengraph-image.tsx`. Each composition matches the one on that section's
+ * index page header.
  */
 
 export const siteCard: OgCard = {

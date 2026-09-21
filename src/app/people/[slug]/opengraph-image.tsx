@@ -11,5 +11,5 @@ export function generateStaticParams() {
 }
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
-  return ogImage(personCard((await params).slug), "webp");
+  return ogImage(personCard((await params).slug));
 }
