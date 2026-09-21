@@ -20,7 +20,7 @@ interface PIProfileProps {
   className?: string;
 }
 
-/** The Lab's director, featured above the roster. */
+/** The Lab's PI, featured above the roster. */
 const PIProfile = ({ pi, className }: PIProfileProps) => (
   <section className={cn("container", className)}>
     <div className="grid gap-10 border-t border-border pt-6 md:grid-cols-[minmax(0,20rem)_1fr] md:gap-16">
@@ -48,7 +48,7 @@ const PIProfile = ({ pi, className }: PIProfileProps) => (
       )}
 
       <div className="flex flex-col">
-        <p className={label}>Director</p>
+        <p className={label}>Principal Investigator</p>
         <h2 className="mt-3 font-display text-4xl leading-tight md:text-5xl">Dr. {pi.name}</h2>
         <p className="mt-2 text-muted-foreground">{pi.title}</p>
 

@@ -347,13 +347,18 @@ const PublicationsMenu = ({ nav }: MenuProps) => (
  * four categories, four alumni also linking to /people, and a twelve-cell grid
  * of the communities DIAL designs with — which is a statement about the
  * research, not a way to reach anyone. Now every row is a person with a page.
+ *
+ * The lead tile is the panel's answer to "I clicked People": it goes to
+ * /people, like every other panel's tile goes to its section's index. It wears
+ * the PI's portrait because she leads the roster, but her profile is one click
+ * on from there — the tile is the section, not the person.
  */
 const PeopleMenu = ({ nav }: MenuProps) => (
   <div className="grid gap-8 lg:grid-cols-[18rem_1fr]">
-    {/* PI card. The photograph is taped on when there is one; there is no
-        stock portrait standing in for a real person. */}
+    {/* The photograph is taped on when there is one; there is no stock
+        portrait standing in for a real person. */}
     <Link
-      href={nav.pi?.href ?? "/people"}
+      href="/people"
       className="group relative flex flex-col overflow-hidden rounded-md border border-border bg-muted/40 p-5"
     >
       <CropMarks className="text-ink/50" />
@@ -378,13 +383,17 @@ const PeopleMenu = ({ nav }: MenuProps) => (
         )}
       </div>
       <div className="relative mt-5">
-        <span className="font-display relative inline-block text-lg leading-tight">
-          {nav.pi ? `Dr. ${nav.pi.name}` : "Principal Investigator"}
+        <span className="font-display relative inline-block text-xl leading-tight">
+          People at DIAL
           <SquiggleUnderline />
         </span>
-        <p className="mt-1 text-xs text-pretty text-muted-foreground">{nav.pi?.title}</p>
+        <p className="mt-1 text-xs text-pretty text-muted-foreground">
+          {nav.pi
+            ? `Led by Dr. ${nav.pi.name}, Principal Investigator, with ${nav.teamCount} members and ${nav.alumniCount} alumni.`
+            : `${nav.teamCount} members and ${nav.alumniCount} alumni.`}
+        </p>
         <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium">
-          Read the profile
+          Meet the lab
           <ArrowRight className="arrow-ne size-4" />
         </span>
       </div>
@@ -395,7 +404,7 @@ const PeopleMenu = ({ nav }: MenuProps) => (
           the PI has a photograph, so the rest arrive as their printed initial
           in their own ink — the roster's vocabulary, not a placeholder. */}
       <div>
-        <PanelLabel action={<PanelMore href="/people">The whole roster</PanelMore>}>
+        <PanelLabel>
           {nav.teamCount} In the Lab
         </PanelLabel>
         <div className="grid gap-6 md:grid-cols-3">

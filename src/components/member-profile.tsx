@@ -33,7 +33,7 @@ interface MemberProfileProps {
 }
 
 const ROLE_LABELS: Record<string, string> = {
-  director: "Director",
+  director: "Principal Investigator",
   faculty: "Faculty",
   "research-staff": "Research staff",
   "graduate-ra": "Graduate research assistant",
