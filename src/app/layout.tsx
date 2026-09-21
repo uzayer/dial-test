@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Caveat, Geist, Geist_Mono, Fraunces, Mina } from "next/font/google";
+import { Caveat, Geist, Geist_Mono, Mina } from "next/font/google";
+import { preload } from "react-dom";
 import "./globals.css";
 import { Navbar4 } from "@/components/navbar4";
 import { Footer18 } from "@/components/footer18";
@@ -19,16 +20,15 @@ const geistMono = Geist_Mono({
   preload: false,
 });
 
-// Display serif for page and section titles. Bengali project names fall
-// through to the Bengali face, so Project names like "স্যন্ধি" are
-// set on purpose rather than in whatever the OS happens to have.
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  // opsz tightens the letterforms at display sizes; SOFT is tuned in globals.css.
-  axes: ["opsz", "SOFT"],
-});
+// Display serif for page and section titles, self-hosted with SOFT pinned at
+// 50 (see the @font-face rules in globals.css). Only the latin files are
+// preloaded; the hero's first paint uses both styles. Bengali project names
+// fall through to the Bengali face, so Project names like "স্যন্ধি" are set on
+// purpose rather than in whatever the OS happens to have.
+const frauncesPreloads = [
+  "/fonts/fraunces-soft50-roman-latin.v1.woff2",
+  "/fonts/fraunces-soft50-italic-latin.v1.woff2",
+];
 
 // Margin notes and annotations only, never body copy.
 const caveat = Caveat({
@@ -66,12 +66,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  for (const href of frauncesPreloads) {
+    preload(href, { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
+  }
+
   return (
     <html
       lang="en"
       // The theme script adds `dark` before hydration.
       suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${caveat.variable} ${bengali.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${caveat.variable} ${bengali.variable} h-full antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

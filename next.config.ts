@@ -11,6 +11,16 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [{ protocol: "https", hostname: "deifkwefumgah.cloudfront.net" }],
   },
+  // Self-hosted font files are versioned in their names (`.v1`), so they can
+  // be cached forever; public/ files otherwise revalidate on every visit.
+  async headers() {
+    return [
+      {
+        source: "/fonts/:file*",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+    ];
+  },
   turbopack: {
     root: path.resolve(__dirname),
   },
