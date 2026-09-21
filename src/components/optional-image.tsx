@@ -16,6 +16,7 @@ const OptionalImage = ({
   frameClassName,
   fallback,
   overlay,
+  priority = false,
 }: {
   src: string;
   alt: string;
@@ -29,14 +30,20 @@ const OptionalImage = ({
    * rendered as a sibling would survive the fallback and tape a drawing.
    */
   overlay?: React.ReactNode;
+  /**
+   * Load eagerly at high priority. Only for a photograph in the first
+   * viewport; everything else is lazy so it stays off the critical path.
+   */
+  priority?: boolean;
 }) => {
   const [failed, setFailed] = useState(false);
   const ref = useRef<HTMLImageElement>(null);
 
-  // A server-rendered <img> can fail before hydration attaches onError.
+  // A server-rendered <img> can fail before hydration attaches onError. A lazy
+  // image that has not started loading has no currentSrc, so it is not a failure.
   useEffect(() => {
     const img = ref.current;
-    if (img?.complete && img.naturalWidth === 0) setFailed(true);
+    if (img?.complete && img.currentSrc && img.naturalWidth === 0) setFailed(true);
   }, []);
 
   if (failed) return fallback ?? null;
@@ -49,6 +56,9 @@ const OptionalImage = ({
           ref={ref}
           src={src}
           alt={alt}
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
+          decoding="async"
           onError={() => setFailed(true)}
           className={cn("w-full object-cover", className)}
         />

@@ -100,6 +100,7 @@ const MemberProfile = ({ member, className }: MemberProfileProps) => {
             <OptionalImage
               src={member.photo}
               alt={member.name}
+              priority
               overlay={<Tape />}
               frameClassName="aspect-[4/5] w-full rounded-sm"
               className="h-full w-full object-cover object-top"

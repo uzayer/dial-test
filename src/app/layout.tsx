@@ -11,9 +11,12 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+// Fonts that never appear in the first viewport skip preload, so they do not
+// compete with the hero's Fraunces and Geist for bandwidth on first load.
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  preload: false,
 });
 
 // Display serif for page and section titles. Bengali project names fall
@@ -31,6 +34,7 @@ const fraunces = Fraunces({
 const caveat = Caveat({
   variable: "--font-caveat",
   subsets: ["latin"],
+  preload: false,
 });
 
 // Bengali in one face, Mina, behind every stack. Bengali subset only: the
@@ -40,6 +44,7 @@ const bengali = Mina({
   variable: "--font-bengali",
   weight: ["400", "700"],
   subsets: ["bengali"],
+  preload: false,
 });
 
 // Runs before first paint so a stored dark preference never flashes light
