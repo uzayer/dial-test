@@ -130,7 +130,8 @@ const Bloom = ({ id }: { id: string }) => (
   </>
 );
 
-const VARIANTS: Record<Variant, (props: { id: string }) => React.ReactElement> = {
+/** The drawings themselves, for renderers that cannot use `RisoArt` (the OG images). */
+export const RISO_COMPOSITIONS: Record<Variant, (props: { id: string }) => React.ReactElement> = {
   orbit: Orbit,
   strata: Strata,
   signal: Signal,
@@ -145,7 +146,7 @@ export function RisoArt({
   variant?: Variant;
   className?: string;
 }) {
-  const Composition = VARIANTS[variant];
+  const Composition = RISO_COMPOSITIONS[variant];
   // Pattern ids must be unique per variant, since several can share a page.
   const id = `riso-${variant}`;
   return (
