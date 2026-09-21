@@ -1,4 +1,6 @@
-@import "tailwindcss";
+/* Scan src/ only. The default is the whole project, which pulled every class
+   out of the agent-skill docs (.agents/, .claude/) and temp/ into the CSS. */
+@import "tailwindcss" source("../");
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
