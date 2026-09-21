@@ -10,7 +10,8 @@ import type { ResearchProject } from "@/components/feature295";
 import type { MemberProfileData, Social } from "@/components/member-profile";
 import type { MemberPublication } from "@/components/member-publications";
 import type { NavData } from "@/components/navbar4";
-import type { NewsEntry } from "@/components/news-feed";
+import type { NewsPostData } from "@/components/news-post";
+import type { NewsEntry } from "@/lib/news";
 import type { Person } from "@/components/person-chip";
 import type { PIProfileData } from "@/components/pi-profile";
 import type { ProjectData } from "@/components/project-post";
@@ -53,11 +54,13 @@ import {
   relatedPublications,
   publicTeam,
   publicationAuthorNames,
+  publicationsByYear,
   publicationTeamIds,
   publicationThemeIds,
   researchThemes,
   resolveIds,
   teamIdForName,
+  venueFullName,
   venueLabel,
 } from "./index";
 import type { Award, Grant, News, Project, Publication, ResearchTheme, Team } from "./types";
@@ -101,6 +104,7 @@ export function toPublicationView(pub: Publication): PublicationView {
     authors: publicationAuthorNames(pub).join(", "),
     authorFaces: publicationFaces(pub),
     venue: venueLabel(pub),
+    venueFull: venueFullName(pub),
     award: publicationAwardLabel(pub),
     pdfLink: pub.pdf?.link ?? null,
     projectLink: project ? `/projects/${project.slug}` : null,
@@ -349,6 +353,27 @@ export function toProjectPost(project: Project): ProjectData {
       { heading: "Overview", body: project.abstract ?? "" },
       ...contentSections(project.content),
     ].filter((section) => section.body),
+    trace:
+      project.slug === "protibadi"
+        ? {
+            heading: "From a place to ask for help to a device that can respond in the moment.",
+            steps: [
+              {
+                label: "Starting point",
+                detail: "A website designed to support women facing sexual harassment.",
+              },
+              {
+                label: "Material outcome",
+                detail:
+                  "A low-cost wearable designed to work through available connections, from Bluetooth to cellular and cloud networks.",
+              },
+              {
+                label: "Research context",
+                detail: "Bangladesh, with later exploration in India and Pakistan.",
+              },
+            ],
+          }
+        : undefined,
     metaItems,
   };
 }
@@ -531,6 +556,7 @@ export function toAwardRow(award: Award): AwardRow {
 
 export function toNewsEntry(item: News): NewsEntry {
   return {
+    slug: item.id,
     type: item.type,
     date: item.date,
     datePrecision: item.datePrecision ?? undefined,
@@ -542,6 +568,26 @@ export function toNewsEntry(item: News): NewsEntry {
 }
 
 export const newsEntries = (): NewsEntry[] => news.map(toNewsEntry);
+
+/**
+ * One news entry with its neighbours in the archive. News records carry no
+ * relationships, so "what else" is the archive either side of this date — the
+ * honest adjacency, not an invented topical one.
+ */
+export function toNewsPost(slug: string): NewsPostData | null {
+  const entry = news.find((item) => item.id === slug);
+  if (!entry) return null;
+  // Newest first, which is the order the archive prints in.
+  const ordered = [...news].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const i = ordered.findIndex((item) => item.id === slug);
+  const neighbour = (n: News | undefined) =>
+    n ? { slug: n.id, title: n.title, type: n.type } : null;
+  return {
+    entry: toNewsEntry(entry),
+    newer: neighbour(ordered[i - 1]),
+    older: neighbour(ordered[i + 1]),
+  };
+}
 
 // ─── Research Themes ────────────────────────────────────────────────────────
 
@@ -576,10 +622,7 @@ export function getNavData(): NavData {
   const visible = publicTeam();
   const pi = director();
   const featuredLab = labAwards().filter((a) => a.featured);
-  const [headline] = featuredLab;
-  const minYear = stats.awardYears?.min;
 
-  const awarded = projects.filter((p) => (p.awards?.length ?? 0) > 0);
   const featured = featuredProjects();
   const card = (project: Project) => {
     const [award] = awardsForProject(project);
@@ -590,8 +633,22 @@ export function getNavData(): NavData {
       href: `/projects/${project.slug}`,
     };
   };
-  const countIn = (section: Team["rosterSection"]) =>
-    visible.filter((m) => !isAlumni(m) && m.rosterSection === section).length;
+
+  // Current lab members, in roster order. Only the PI has a photograph, so
+  // everyone else arrives as their printed initial (PersonChip) — which is the
+  // honest treatment, not a placeholder for one.
+  const current = (section: Team["rosterSection"]) =>
+    visible
+      .filter((m) => !isAlumni(m) && m.role !== "director" && m.rosterSection === section)
+      .map((m) => ({
+        name: m.name,
+        slug: m.slug,
+        photo: m.photo ?? null,
+        role: shortAffiliation(m),
+      }));
+
+  const pubs = publicationsByYear();
+  const years = pubs.map((p) => p.year).filter(Number.isFinite);
 
   return {
     researchThemes: researchThemes.map((t) => ({
@@ -600,65 +657,52 @@ export function getNavData(): NavData {
       slug: t.slug,
       description: t.shortDescription ?? "",
     })),
-    awardedProjects: awarded.slice(0, 3).map((p) => {
-      const [award] = awardsForProject(p);
-      return {
-        id: p.id,
-        title: p.title,
-        slug: p.slug,
-        award: `${awardName(award)} · ${award.year}`,
-      };
-    }),
     projectCategories: [
       { title: "Featured Projects", projects: featured.slice(0, 3).map(card) },
       { title: "More Projects", projects: featured.slice(3, 6).map(card) },
     ].filter((category) => category.projects.length > 0),
-    headlineAward: headline
-      ? {
-          title: awardName(headline),
-          body: `${headline.organizationLabel ?? ""} ${headline.year} — one of ${stats.labAwards} Lab honours${
-            minYear ? ` since ${minYear}` : ""
-          }.`.trim(),
-        }
-      : null,
-    publicationRecognition: featuredLab.slice(0, 5).map((a) => ({
+    projectCount: projects.length,
+
+    // Real papers, not query-param links back to the same page: the menu can
+    // show what the list contains, which the list's own filter bar cannot.
+    recentPublications: pubs.slice(0, 5).map((pub) => ({
+      id: pub.id,
+      title: pub.title,
+      venue: venueLabel(pub) ?? "",
+      year: pub.year,
+      href: `/publications/${pub.id}`,
+    })),
+    publicationCount: pubs.length,
+    publicationYears: years.length ? `${Math.min(...years)}–${Math.max(...years)}` : "",
+    publicationRecognition: featuredLab.slice(0, 4).map((a) => ({
       id: a.id,
       title: awardName(a),
-      body: `${a.organizationLabel ?? ""} · ${a.year}`,
+      body: `${a.organizationLabel ?? ""} · ${a.year}`.replace(/^ · /, ""),
       href: "/awards",
     })),
-    teamCategories: [
+
+    pi: pi
+      ? {
+          name: pi.name,
+          title: pi.title,
+          photo: pi.photo ?? null,
+          href: `/people/${pi.slug}`,
+        }
+      : null,
+    rosterGroups: [
+      { title: "Faculty & research staff", people: current("researchers") },
+      { title: "Graduate researchers", people: current("graduate") },
       {
-        id: "graduate",
-        title: "Graduate Research Assistants",
-        description: `${countIn("graduate")} active researchers at NSU`,
-        href: "/people",
+        title: "Undergraduate researchers",
+        people: [...current("undergraduate"), ...current("emerging")],
       },
-      {
-        id: "undergraduate",
-        title: "Undergraduate Assistants",
-        description: `${countIn("undergraduate")} student researchers at NSU`,
-        href: "/people",
-      },
-      {
-        id: "emerging",
-        title: "Emerging Researchers",
-        description: `${countIn("emerging")} early-career lab members`,
-        href: "/people",
-      },
-      {
-        id: "everyone",
-        title: "Meet Everyone",
-        description: "Full team directory",
-        href: "/people",
-      },
-    ],
+    ].filter((group) => group.people.length > 0),
+    teamCount: visible.filter((m) => !isAlumni(m)).length,
     alumniTeaser: visible
       .filter((m) => isAlumni(m) && m.currentPosition)
       .sort((a, b) => (b.alumniYear ?? 0) - (a.alumniYear ?? 0))
       .slice(0, 4)
       .map((m) => ({ name: m.name, placement: m.currentPosition ?? "" })),
     alumniCount: stats.alumni,
-    pi: pi ? { name: pi.name, title: pi.title, photo: pi.photo ?? null } : null,
   };
 }

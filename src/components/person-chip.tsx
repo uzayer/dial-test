@@ -142,7 +142,7 @@ export function PersonChip({
   className,
 }: Person & {
   /** Optional trailing note — a role, an affiliation. Kept short. */
-  meta?: string;
+  meta?: string | null;
   size?: Size;
   className?: string;
 }) {
@@ -151,9 +151,9 @@ export function PersonChip({
   const body = (
     <>
       <PersonFace name={name} seed={seed} photo={photo} size={size} />
-      <span className="truncate font-display leading-none">{name}</span>
+      <span className="truncate font-sans leading-none">{name}</span>
       {meta && (
-        <span className="truncate text-xs font-normal text-muted-foreground">
+        <span className="truncate font-sans text-xs font-normal text-muted-foreground">
           <span aria-hidden className="mr-1.5 opacity-60">
             ·
           </span>

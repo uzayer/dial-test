@@ -4,7 +4,7 @@ import type { ReactElement } from "react";
 import { Button } from "@/components/ui/button";
 import { labInfo } from "@/data/lab-info";
 import { researchThemes } from "@/data/research-themes";
-import { RegistrationMark, StampRing } from "@/components/marks";
+import { RegistrationMark } from "@/components/marks";
 import { label } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
@@ -92,7 +92,6 @@ const Footer18 = ({ className }: Footer18Props) => {
                 className="w-40 max-w-none dark:invert"
               />
             </Link>
-            <StampRing className="my-2 size-28" />
             <p className="text-sm leading-relaxed text-muted-foreground">
               HCI research from Bangladesh.
               <br />

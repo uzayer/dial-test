@@ -73,22 +73,28 @@ const PageHeader = ({
       {/* Printer's marks and a halftone wash: the page as a printed sheet. */}
       <CropMarks className="ink-mark-soft top-8 md:top-14" />
       {art && (
-        // Clipped on the horizontal only: `overflow-x: clip` beside an explicit
-        // `overflow-y: visible` is honoured as written, so the composition is
-        // trimmed at the sheet's edge without gaining a hard top or bottom cut.
-        // The trim sits at `-right-5`, exactly where CropMarks puts the corner
-        // marks, so the cut reads as the trim it is rather than as a clipped div.
+        // The composition is trimmed on three sides at the sheet's edge: right
+        // at `-right-5`, exactly where CropMarks puts the corner marks, and
+        // bottom at the header's own edge. It used to run with
+        // `overflow-y: visible`, to avoid a hard top or bottom cut — but this
+        // header is `relative isolate`, so it paints in the positioned phase,
+        // *above* the plain sections that follow it. A 40rem composition in a
+        // header shorter than that did not bleed into the margin, it printed
+        // over the next section's controls. The container carries a generous
+        // overhang above the sheet so the top cut falls off-screen, and the
+        // composition is anchored to the bottom edge, where the cut reads as
+        // the trim it is.
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-y-0 -right-5 -z-10 w-[26rem] overflow-x-clip overflow-y-visible max-lg:hidden xl:w-[32rem]"
+          className="pointer-events-none absolute -top-32 bottom-0 -right-5 -z-10 w-[26rem] overflow-clip max-lg:hidden xl:w-[32rem]"
         >
           <RisoArt
             variant={art}
             className={cn(
               "absolute opacity-90",
               bleed
-                ? "-top-10 -right-32 size-[34rem] xl:-right-36 xl:size-[40rem]"
-                : "top-0 right-0 size-64 xl:size-72",
+                ? "-right-32 bottom-0 size-[30rem] xl:-right-36 xl:size-[34rem]"
+                : "right-0 bottom-8 size-64 xl:size-72",
             )}
           />
         </div>
@@ -108,9 +114,14 @@ const PageHeader = ({
       )}
       <div
         {...step(1)}
-        className={cn("relative w-fit", (eyebrow || glyph) && "mt-4", step(1).className)}
+        className={cn(
+          "relative",
+          fullTitleSquiggle ? "w-full" : "w-fit",
+          (eyebrow || glyph) && "mt-4",
+          step(1).className,
+        )}
       >
-        <h1 className={pageTitle}>{title}</h1>
+        <h1 className={cn(pageTitle, fullTitleSquiggle && "w-fit")}>{title}</h1>
         <Squiggle className={cn("ink-mark mt-1", fullTitleSquiggle ? "max-w-none" : "max-w-md")} />
       </div>
 

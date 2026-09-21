@@ -165,11 +165,11 @@ export function PublicationPost({ pub }: { pub: PublicationPostData }) {
           )}
         </p>
 
-        <div className="enter relative mt-4 max-w-4xl" style={enterStep(1)}>
+        <div className="enter relative mt-4 w-full" style={enterStep(1)}>
           {/* Set a step below a directory page's title: a paper title is a
               sentence, sometimes two, and at 7xl it stops being readable. */}
-          <h1 className={cn(pageTitle, "md:text-6xl")}>{pub.title}</h1>
-          <Squiggle className="ink-mark mt-2 max-w-md" />
+          <h1 className={cn(pageTitle, "max-w-4xl md:text-6xl")}>{pub.title}</h1>
+          <Squiggle className="ink-mark mt-2 max-w-none" />
         </div>
 
         <div className="enter mt-7" style={enterStep(2)}>
@@ -352,10 +352,8 @@ export function PublicationPost({ pub }: { pub: PublicationPostData }) {
                     photo={author.photo}
                     href={author.href ?? undefined}
                     size="sm"
+                    meta={author.role}
                   />
-                  {author.role && (
-                    <p className="mt-1 ml-8 text-xs text-muted-foreground">{author.role}</p>
-                  )}
                 </li>
               ))}
             </ul>

@@ -1,7 +1,7 @@
 import { ExternalLink } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { type NewsEntry, type NewsType } from "@/components/news-feed";
+import { type NewsEntry, type NewsType } from "@/lib/news";
 
 interface Changelog3Props {
   entries: NewsEntry[];

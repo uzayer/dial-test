@@ -1,7 +1,7 @@
 import { AlumniGrid } from "@/components/alumni-grid";
 import { ScrollRuler } from "@/components/scroll-ruler";
 import { ClosingNote } from "@/components/closing-note";
-import { SectionHeader, sectionSpacing } from "@/components/editorial";
+import { SectionHeader, sectionSpacingTight } from "@/components/editorial";
 import { FaqSection } from "@/components/faq-section";
 import { PageHeader } from "@/components/page-header";
 import { PeopleRoster } from "@/components/people-roster";
@@ -28,6 +28,7 @@ export default function PeoplePage() {
       <PageHeader
         eyebrow="Lab"
         art="bloom"
+        className="pb-10 md:pb-14"
         title="People"
         description="Faculty, research assistants, and collaborators who run DIAL's fieldwork, build its systems, and write its papers, and the alumni who have moved on."
         facts={[
@@ -38,7 +39,7 @@ export default function PeoplePage() {
 
       {pi && <PIProfile pi={pi} />}
 
-      <section className={cn("container", sectionSpacing)}>
+      <section className={cn("container", sectionSpacingTight)}>
         <SectionHeader title="The team" className="mb-8" />
         <PeopleRoster
           groups={[
@@ -55,7 +56,7 @@ export default function PeoplePage() {
       </section>
 
       {alumni.length > 0 && (
-        <section className={cn("container", sectionSpacing)}>
+        <section className={cn("container", sectionSpacingTight)}>
           <SectionHeader
             label="Alumni"
             title="Where our people go"
@@ -66,11 +67,13 @@ export default function PeoplePage() {
         </section>
       )}
 
-      <FaqSection items={peopleFaqs} title="About the roster" />
+      {/* On the tighter rhythm the rest of this page runs on. */}
+      <FaqSection items={peopleFaqs} title="About the roster" className={sectionSpacingTight} />
 
       <ScrollRuler />
 
       <ClosingNote
+        className="pt-4"
         heading="No prerequisites. Curious about HCI and ready for fieldwork in Bangladesh?"
         links={[
           { text: "Apply to join", href: "/join-us" },

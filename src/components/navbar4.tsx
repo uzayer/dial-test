@@ -1,28 +1,9 @@
 "use client";
 
-import {
-  ArrowLeft,
-  ArrowRight,
-  BookOpen,
-  Calendar,
-  Globe,
-  GraduationCap,
-  Lightbulb,
-  Menu,
-  Moon,
-  Search,
-  Sun,
-  Tag,
-  UserPlus,
-  UserRound,
-  Users,
-  X,
-  type LucideIcon,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Menu, Moon, Sun, UserPlus, X } from "lucide-react";
 import Link from "next/link";
 import { useState, useSyncExternalStore, type ReactElement } from "react";
 
-import { COMMUNITY_INK, CommunityMark } from "@/components/community-marks";
 import {
   AsteriskMark,
   CropMarks,
@@ -31,6 +12,7 @@ import {
   TickMark,
 } from "@/components/marks";
 import { OptionalImage } from "@/components/optional-image";
+import { PersonChip } from "@/components/person-chip";
 import { RisoArt } from "@/components/riso";
 import { ThemeGlyph, themeInk } from "@/components/theme-marks";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -47,99 +29,41 @@ import { cn } from "@/lib/utils";
 // ── Navigation data ────────────────────────────────────────────────────────
 // Records arrive as a server-computed `nav` prop (see getNavData in
 // src/data/views.ts), so this client component never imports the data module.
+//
+// One rule decides what may appear in a panel: **every row is a destination
+// you cannot already see from the page the panel's tile points at.** That is
+// what removed the old "Browse Publications" column (six links to
+// /publications with a query string, duplicating the list's own filter bar)
+// and the old team-category rows (four links to /people). A menu that repeats
+// a page's controls looks full and teaches nothing.
 
 export interface NavData {
   researchThemes: { id: string; title: string; slug: string; description: string }[];
-  awardedProjects: { id: string; title: string; award: string; slug: string }[];
   projectCategories: {
     title: string;
     projects: { id: string; title: string; description: string; href: string }[];
   }[];
-  /** The most recent featured Lab award, for the Publications promo card. */
-  headlineAward: { title: string; body: string } | null;
+  projectCount: number;
+  /** Real papers, newest first — what only the menu can show. */
+  recentPublications: { id: string; title: string; venue: string; year: number; href: string }[];
+  publicationCount: number;
+  /** e.g. "2014–2025". */
+  publicationYears: string;
   publicationRecognition: { id: string; title: string; body: string; href: string }[];
-  teamCategories: { id: string; title: string; description: string; href: string }[];
+  pi: { name: string; title: string; photo: string | null; href: string } | null;
+  /** Current lab members, by roster section. Each person links to their page. */
+  rosterGroups: {
+    title: string;
+    people: { name: string; slug: string; photo: string | null; role: string }[];
+  }[];
+  teamCount: number;
   alumniTeaser: { name: string; placement: string }[];
   alumniCount: number;
-  pi: { name: string; title: string; photo: string | null } | null;
 }
 
 interface MenuProps {
   nav: NavData;
 }
-
-const TEAM_CATEGORY_ICONS: Record<string, LucideIcon> = {
-  graduate: GraduationCap,
-  undergraduate: UserRound,
-  emerging: Lightbulb,
-  everyone: Users,
-};
-
-// Browse modes are site navigation, not records.
-const publicationsBrowse = [
-  {
-    id: "pb-1",
-    title: "All Publications",
-    description: "Complete bibliography.",
-    href: "/publications",
-    icon: BookOpen,
-  },
-  {
-    id: "pb-2",
-    title: "By Year",
-    description: "Chronological view of our output.",
-    href: "/publications",
-    icon: Calendar,
-  },
-  {
-    id: "pb-3",
-    title: "By Research Theme",
-    description: "Publications grouped by topic.",
-    href: "/publications?view=theme",
-    icon: Tag,
-  },
-  {
-    id: "pb-4",
-    title: "By Venue",
-    description: "Conference and journal index.",
-    href: "/publications?view=venue",
-    icon: Search,
-  },
-  {
-    id: "pb-5",
-    title: "Open Access",
-    description: "Freely available papers.",
-    href: "/publications?open=1",
-    icon: Globe,
-  },
-  {
-    id: "pb-6",
-    title: "Collaborations",
-    description: "Cross-institutional work.",
-    href: "/publications?collab=1",
-    icon: Users,
-  },
-];
-
-// The drawing for each group lives in community-marks.tsx, keyed by title.
-const communities = [
-  {
-    title: "Accessibility",
-    groups: ["Blind users", "Stroke patients", "Low-literacy users"],
-  },
-  {
-    title: "At-risk Groups",
-    groups: ["Garment workers", "Rohingya refugees", "Domestic workers"],
-  },
-  {
-    title: "Digital Society",
-    groups: ["Social media users", "Teenagers online", "Rural communities"],
-  },
-  {
-    title: "Education",
-    groups: ["University students", "School teachers", "STEM learners"],
-  },
-];
 
 // ── Menu furniture ─────────────────────────────────────────────────────────
 // The panels are printed sheets, not cards: a ruled label over each column and
@@ -161,10 +85,30 @@ const PanelLabel = ({
   </div>
 );
 
+/** The "N more →" link that closes a panel label. */
+const PanelMore = ({ href, children }: { href: string; children: React.ReactNode }) => (
+  <NavigationMenuLink
+    href={href}
+    className="group flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+  >
+    <span className="relative">
+      {children}
+      <SquiggleUnderline />
+    </span>
+    <ArrowRight className="arrow-ne size-3.5" />
+  </NavigationMenuLink>
+);
+
 /**
  * The promo block at the head of a panel. It is paper with a printed
  * composition in it rather than a photograph: nothing here claims to be a
  * picture of DIAL's work until DIAL supplies one.
+ *
+ * `emphasis` decides which of the two lines is set in the display serif. The
+ * default ("statement") leads with an editorial line and files it under a
+ * tracked-caps section name. "destination" swaps them, so the big line is the
+ * name of the page you land on — which is what a tile whose whole job is to be
+ * the section's primary destination should say loudest.
  */
 const PromoCard = ({
   href,
@@ -172,6 +116,7 @@ const PromoCard = ({
   eyebrow,
   title,
   body,
+  emphasis = "statement",
   className,
 }: {
   href: string;
@@ -179,73 +124,131 @@ const PromoCard = ({
   eyebrow?: string;
   title: string;
   body: string;
+  emphasis?: "statement" | "destination";
   className?: string;
-}) => (
-  <Link
-    href={href}
-    className={cn(
-      "group relative flex h-full flex-col justify-between overflow-hidden rounded-md border border-border bg-muted/40 p-6",
-      className,
-    )}
-  >
-    <CropMarks className="text-ink/50" />
-    <span aria-hidden className="halftone absolute inset-0 opacity-[0.07]" />
-    <RisoArt
-      variant={art}
-      className="pointer-events-none absolute -right-10 -bottom-10 size-48 opacity-70"
-    />
-    <div className="relative">
-      {eyebrow && (
-        <span className="mb-3 block text-[0.65rem] font-medium tracking-[0.2em] text-muted-foreground uppercase">
-          {eyebrow}
-        </span>
+}) => {
+  const swap = emphasis === "destination";
+  const capsLine =
+    "block text-[0.7rem] font-medium tracking-[0.16em] text-muted-foreground uppercase";
+  const displayLine = "font-display relative inline-block text-xl leading-tight";
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "group relative flex h-full flex-col justify-between overflow-hidden rounded-md border border-border bg-muted/40 p-6",
+        className,
       )}
-      <span className="font-display relative inline-block text-xl leading-tight">
+    >
+      <CropMarks className="text-ink/50" />
+      <span aria-hidden className="halftone absolute inset-0 opacity-[0.07]" />
+      <RisoArt
+        variant={art}
+        className="pointer-events-none absolute -right-10 -bottom-10 size-48 opacity-70"
+      />
+      <div className="relative">
+        {eyebrow &&
+          (swap ? (
+            <span className={cn(displayLine, "mb-2")}>
+              {eyebrow}
+              <SquiggleUnderline />
+            </span>
+          ) : (
+            <span className={cn(capsLine, "mb-3")}>{eyebrow}</span>
+          ))}
+        {swap ? (
+          <span className={capsLine}>{title}</span>
+        ) : (
+          <span className={displayLine}>
+            {title}
+            <SquiggleUnderline />
+          </span>
+        )}
+        <p className="mt-2 max-w-[22rem] text-xs text-pretty text-muted-foreground">{body}</p>
+      </div>
+      <span className="relative mt-8 inline-flex items-center gap-1.5 text-xs font-medium">
+        Open
+        <ArrowRight className="arrow-ne size-4" />
+      </span>
+    </Link>
+  );
+};
+
+/** A row in a panel: mark, title + note, arrow. The panels' one list shape. */
+const PanelRow = ({
+  href,
+  mark,
+  title,
+  note,
+  arrow = true,
+}: {
+  href: string;
+  mark?: React.ReactNode;
+  title: string;
+  note?: string;
+  arrow?: boolean;
+}) => (
+  <NavigationMenuLink
+    href={href}
+    className="group flex flex-row items-baseline gap-3 border-b border-border/60 py-3 text-left last:border-0"
+  >
+    {mark && <span className="shrink-0 translate-y-0.5">{mark}</span>}
+    <span className="flex-1">
+      <span className="relative inline-block text-sm font-medium text-foreground/85 group-hover:text-foreground">
         {title}
         <SquiggleUnderline />
       </span>
-      <p className="mt-2 max-w-[22rem] text-xs text-pretty text-muted-foreground">{body}</p>
-    </div>
-    <span className="relative mt-8 inline-flex items-center gap-1.5 text-xs font-medium">
-      Open
-      <ArrowRight className="arrow-ne size-4" />
+      {note && (
+        <span className="mt-0.5 block text-xs text-pretty text-muted-foreground">{note}</span>
+      )}
     </span>
-  </Link>
+    {arrow && <ArrowRight className="arrow-ne size-4 shrink-0 self-center text-muted-foreground" />}
+  </NavigationMenuLink>
 );
 
 // ── Menu components ────────────────────────────────────────────────────────
 
+/**
+ * Research holds the Themes *and* the Projects. They were two top-level items
+ * naming the same thing — a Theme is what the lab studies, a Project is an
+ * instance of studying it — and splitting them meant a visitor had to guess
+ * which of two menus held the work.
+ */
 const ResearchMenu = ({ nav }: MenuProps) => (
   <div className="grid gap-8 sm:grid-cols-2">
     <PromoCard
       href="/research"
       art="orbit"
-      eyebrow="HCI Research from Bangladesh"
-      title="Where social need and technical systems meet"
-      body="Participatory design with communities that mainstream technology largely ignores."
+      emphasis="destination"
+      eyebrow="Research at DIAL"
+      title="HCI research from Bangladesh"
+      body="Participatory design with communities that mainstream technology largely ignores: nine themes, and the projects under them."
     />
 
-    {/* Award-winning project callouts */}
     <div>
-      <PanelLabel>Award-winning Projects</PanelLabel>
+      <PanelLabel action={<PanelMore href="/projects">All {nav.projectCount}</PanelMore>}>
+        Projects
+      </PanelLabel>
       <div className="grid gap-1">
-        {nav.awardedProjects.map((project) => (
-          <NavigationMenuLink
-            key={project.id}
-            href={`/projects/${project.slug}`}
-            className="group flex flex-row items-baseline gap-3 border-b border-border/60 py-3 last:border-0"
-          >
-            <AsteriskMark className="size-3.5 shrink-0 translate-y-0.5 text-ink" />
-            <div className="flex-1">
-              <span className="relative text-sm font-medium">
-                {project.title}
-                <SquiggleUnderline />
-              </span>
-              <span className="mt-0.5 block text-xs text-muted-foreground">{project.award}</span>
-            </div>
-            <ArrowRight className="arrow-ne size-4 shrink-0 self-center text-muted-foreground" />
-          </NavigationMenuLink>
-        ))}
+        {nav.projectCategories
+          .flatMap((category) => category.projects)
+          .slice(0, 5)
+          .map((project) => (
+            <PanelRow
+              key={project.id}
+              href={project.href}
+              title={project.title}
+              note={project.description}
+              mark={
+                <span
+                  aria-hidden
+                  className="sticker font-display relative grid size-8 place-items-center overflow-hidden rounded-[0.5rem] bg-muted text-base leading-none text-foreground/70 group-hover:-rotate-[1.75deg]"
+                >
+                  <span aria-hidden className="halftone absolute inset-0 opacity-25" />
+                  <span className="relative">{[...project.title][0]}</span>
+                </span>
+              }
+            />
+          ))}
       </div>
     </div>
 
@@ -282,255 +285,180 @@ const ResearchMenu = ({ nav }: MenuProps) => (
   </div>
 );
 
-const ProjectsMenu = ({ nav }: MenuProps) => (
-  <div className="grid gap-y-10 lg:flex lg:space-x-10">
-    <PromoCard
-      href="/projects"
-      art="field"
-      eyebrow="The project directory"
-      title="Built with communities, not for them"
-      body="Participatory technology interventions across Bangladesh, each one a long relationship with the people it is for."
-      className="w-full shrink-0 lg:max-w-[20rem]"
-    />
-
-    {/* Project categories. The cover mark is the project's own initial, set in
-        the display serif on a halftone block — the same mark the directory
-        prints, and honest where a stock photograph would not be. */}
-    <div className="grid w-full gap-y-10">
-      {nav.projectCategories.map((category) => (
-        <div key={category.title}>
-          <PanelLabel>{category.title}</PanelLabel>
-          <menu className="grid md:grid-cols-3 md:gap-x-6">
-            {category.projects.map((project) => (
-              <NavigationMenuLink
-                key={project.id}
-                href={project.href}
-                className="group flex flex-row items-center gap-4 border-b border-border/60 py-4 text-left"
-              >
-                <span
-                  aria-hidden
-                  className="sticker font-display relative grid size-11 shrink-0 place-items-center overflow-hidden rounded-[0.6rem] bg-muted text-xl leading-none text-foreground/70 group-hover:-rotate-[1.75deg]"
-                >
-                  <span aria-hidden className="halftone absolute inset-0 opacity-25" />
-                  <span className="relative">{[...project.title][0]}</span>
-                </span>
-                <div className="flex-1">
-                  <div className="relative inline-block text-sm font-medium text-foreground/85 group-hover:text-foreground">
-                    {project.title}
-                    <SquiggleUnderline />
-                  </div>
-                  <p className="mt-0.5 text-xs text-muted-foreground">{project.description}</p>
-                </div>
-                <ArrowRight className="arrow-ne size-4 shrink-0 text-muted-foreground" />
-              </NavigationMenuLink>
-            ))}
-          </menu>
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
+/**
+ * Publications has exactly two destinations — the list and the honours — so
+ * the panel spends its space on the one thing the list page cannot offer from
+ * the navbar: the newest papers, by name, each a direct jump.
+ */
 const PublicationsMenu = ({ nav }: MenuProps) => (
-  <div className="grid gap-y-12 md:grid-cols-2 md:gap-x-6 lg:grid-cols-4 lg:gap-6">
+  <div className="grid gap-8 lg:grid-cols-[20rem_1fr_18rem]">
     <PromoCard
-      href="/awards"
+      href="/publications"
       art="strata"
-      eyebrow="Recognition"
-      title={nav.headlineAward?.title ?? "Awards & recognition"}
-      body={nav.headlineAward?.body ?? "What the Lab's work has been recognised for."}
-      className="col-span-1"
+      emphasis="destination"
+      eyebrow="All publications"
+      title={
+        nav.publicationYears
+          ? `${nav.publicationCount} papers · ${nav.publicationYears}`
+          : `${nav.publicationCount} papers`
+      }
+      body="The complete bibliography, with filters for year, venue, theme, open access, and collaborations."
     />
 
-    {/* Browse modes */}
-    <div className="lg:col-span-2 lg:flex lg:flex-col">
-      <PanelLabel>Browse Publications</PanelLabel>
-      <menu className="grid gap-y-2 lg:h-full lg:grid-cols-2 lg:gap-x-6">
-        {publicationsBrowse.map((item) => (
-          <NavigationMenuLink
-            key={item.id}
-            href={item.href}
-            className="group flex flex-row items-center gap-4 border-b border-border/60 py-3.5 text-left"
-          >
-            <item.icon className="size-5 shrink-0 text-ink" />
-            <div className="flex-1">
-              <div className="relative inline-block text-sm font-medium text-foreground/85 group-hover:text-foreground">
-                {item.title}
-                <SquiggleUnderline />
-              </div>
-              <p className="mt-0.5 text-xs text-muted-foreground">{item.description}</p>
-            </div>
-            <ArrowRight className="arrow-ne size-4 shrink-0 text-muted-foreground" />
-          </NavigationMenuLink>
+    <div>
+      <PanelLabel action={<PanelMore href="/publications">The full list</PanelMore>}>
+        Most Recent
+      </PanelLabel>
+      <div className="grid gap-1">
+        {nav.recentPublications.map((pub) => (
+          <PanelRow
+            key={pub.id}
+            href={pub.href}
+            title={pub.title}
+            note={[pub.venue, pub.year].filter(Boolean).join(" · ")}
+          />
         ))}
-      </menu>
+      </div>
     </div>
 
-    {/* Recognition. The stamp ring is the Awards page's own mark. */}
-    <div className="col-span-1 md:col-span-2 lg:col-span-1">
-      <PanelLabel>Honours</PanelLabel>
-      <menu className="grid md:grid-cols-2 lg:grid-cols-1">
+    <div>
+      <PanelLabel action={<PanelMore href="/awards">All awards</PanelMore>}>
+        Awarded Work
+      </PanelLabel>
+      <div className="grid gap-1">
         {nav.publicationRecognition.map((award) => (
-          <NavigationMenuLink
+          <PanelRow
             key={award.id}
             href={award.href}
-            className="group flex flex-row items-baseline gap-3 border-b border-border/60 py-3 text-left"
-          >
-            <AsteriskMark className="size-3.5 shrink-0 translate-y-0.5 text-ink" />
-            <div className="flex-1">
-              <div className="relative inline-block text-sm font-medium text-foreground/85 group-hover:text-foreground">
-                {award.title}
-                <SquiggleUnderline />
-              </div>
-              <p className="mt-0.5 text-xs text-muted-foreground">{award.body}</p>
-            </div>
-          </NavigationMenuLink>
+            title={award.title}
+            note={award.body}
+            arrow={false}
+            mark={<AsteriskMark className="size-3.5 text-ink" />}
+          />
         ))}
-      </menu>
+      </div>
     </div>
   </div>
 );
 
+/**
+ * People shows people. The panel used to hold four links to /people dressed as
+ * four categories, four alumni also linking to /people, and a twelve-cell grid
+ * of the communities DIAL designs with — which is a statement about the
+ * research, not a way to reach anyone. Now every row is a person with a page.
+ */
 const PeopleMenu = ({ nav }: MenuProps) => (
-  <div>
-    <div className="space-y-6 lg:flex lg:space-y-0 lg:space-x-8">
-      {/* PI card. The photograph is taped on when there is one; there is no
-          stock portrait standing in for a real person. */}
-      <div className="w-full shrink-0 lg:max-w-[18rem]">
-        <Link
-          href="/people"
-          className="group relative flex h-full flex-col overflow-hidden rounded-md border border-border bg-muted/40 p-5"
+  <div className="grid gap-8 lg:grid-cols-[18rem_1fr]">
+    {/* PI card. The photograph is taped on when there is one; there is no
+        stock portrait standing in for a real person. */}
+    <Link
+      href={nav.pi?.href ?? "/people"}
+      className="group relative flex flex-col overflow-hidden rounded-md border border-border bg-muted/40 p-5"
+    >
+      <CropMarks className="text-ink/50" />
+      <span aria-hidden className="halftone absolute inset-0 opacity-[0.07]" />
+      <div className="relative">
+        {nav.pi?.photo ? (
+          <span className="relative block">
+            {/* A 4/3 frame cropped this portrait to its top 60% — ceiling and
+                shadow, with the subject cut at the chest. The source is 4:5,
+                so the frame is 3/4 and centred: very nearly the whole photo. */}
+            <OptionalImage
+              src={nav.pi.photo}
+              alt={`Dr. ${nav.pi.name}`}
+              overlay={<span aria-hidden className="tape -top-2.5 left-6 z-10" />}
+              frameClassName="aspect-3/4 w-full rounded-sm"
+              className="h-full w-full object-cover object-center"
+              fallback={<RisoArt variant="bloom" className="mx-auto size-40" />}
+            />
+          </span>
+        ) : (
+          <RisoArt variant="bloom" className="mx-auto size-40" />
+        )}
+      </div>
+      <div className="relative mt-5">
+        <span className="font-display relative inline-block text-lg leading-tight">
+          {nav.pi ? `Dr. ${nav.pi.name}` : "Principal Investigator"}
+          <SquiggleUnderline />
+        </span>
+        <p className="mt-1 text-xs text-pretty text-muted-foreground">{nav.pi?.title}</p>
+        <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium">
+          Read the profile
+          <ArrowRight className="arrow-ne size-4" />
+        </span>
+      </div>
+    </Link>
+
+    <div className="flex flex-col gap-8">
+      {/* Every current member, by name, each linking to their own page. Only
+          the PI has a photograph, so the rest arrive as their printed initial
+          in their own ink — the roster's vocabulary, not a placeholder. */}
+      <div>
+        <PanelLabel action={<PanelMore href="/people">The whole roster</PanelMore>}>
+          {nav.teamCount} In the Lab
+        </PanelLabel>
+        <div className="grid gap-6 md:grid-cols-3">
+          {nav.rosterGroups.map((group) => (
+            <div key={group.title}>
+              <p className="mb-3 text-[0.7rem] font-medium tracking-[0.14em] text-muted-foreground uppercase">
+                {group.title}
+              </p>
+              <ul className="flex flex-col items-start gap-2">
+                {group.people.map((person) => (
+                  <li key={person.slug} className="max-w-full">
+                    <PersonChip
+                      name={person.name}
+                      seed={person.slug}
+                      photo={person.photo}
+                      href={`/people/${person.slug}`}
+                      meta={person.role}
+                      size="sm"
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid gap-8 md:grid-cols-[1fr_16rem]">
+        <div>
+          <PanelLabel action={<PanelMore href="/people">All {nav.alumniCount}</PanelMore>}>
+            Where Our People Go
+          </PanelLabel>
+          <ul className="grid gap-x-8 gap-y-3 md:grid-cols-2">
+            {nav.alumniTeaser.map((alum) => (
+              <li key={alum.name}>
+                <span className="text-sm font-medium text-foreground/85">{alum.name}</span>
+                <span className="mt-0.5 block text-xs text-pretty text-muted-foreground">
+                  {alum.placement}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <NavigationMenuLink
+          href="/join-us"
+          className="group relative flex h-fit flex-row items-start gap-4 overflow-hidden rounded-md border border-border p-5"
         >
-          <CropMarks className="text-ink/50" />
           <span aria-hidden className="halftone absolute inset-0 opacity-[0.07]" />
+          <UserPlus className="relative size-6 shrink-0 text-ink" />
           <div className="relative">
-            {nav.pi?.photo ? (
-              <span className="relative block">
-                {/* Tape rides with the photograph (see OptionalImage): if the
-                    photo fails, the composition replaces it untaped. */}
-                <OptionalImage
-                  src={nav.pi.photo}
-                  alt={`Dr. ${nav.pi.name}`}
-                  overlay={<span aria-hidden className="tape -top-2.5 left-6 z-10" />}
-                  frameClassName="aspect-4/3 w-full rounded-sm"
-                  className="h-full w-full object-cover object-top"
-                  fallback={<RisoArt variant="bloom" className="mx-auto size-40" />}
-                />
-              </span>
-            ) : (
-              <RisoArt variant="bloom" className="mx-auto size-40" />
-            )}
-          </div>
-          <div className="relative mt-5">
-            <span className="font-display relative inline-block text-lg leading-tight">
-              {nav.pi ? `Dr. ${nav.pi.name}` : "Principal Investigator"}
+            <div className="font-display relative inline-block text-base leading-tight">
+              Join the Lab
               <SquiggleUnderline />
-            </span>
-            <p className="mt-1 text-xs text-muted-foreground">{nav.pi?.title}</p>
-            <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium">
-              The whole team
+            </div>
+            <p className="mt-1 text-xs text-pretty text-muted-foreground">
+              We read every email from graduate and undergraduate students.
+            </p>
+            <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium">
+              How to apply
               <ArrowRight className="arrow-ne size-4" />
             </span>
           </div>
-        </Link>
-      </div>
-
-      {/* Team categories + alumni */}
-      <div className="grid w-full gap-y-12 lg:gap-y-6">
-        {/* Research team */}
-        <div className="grid gap-y-2 lg:gap-y-6">
-          <div className="border-border text-left lg:border-b lg:pb-3">
-            <strong className="text-left text-xs font-medium tracking-wider text-muted-foreground uppercase">
-              Research Team
-            </strong>
-          </div>
-          <menu className="grid md:grid-cols-3 md:gap-x-6 lg:gap-y-6">
-            {nav.teamCategories.map((member) => {
-              const CategoryIcon = TEAM_CATEGORY_ICONS[member.id] ?? Users;
-              return (
-                <NavigationMenuLink
-                  key={member.id}
-                  href={member.href}
-                  className="group flex flex-row items-center space-x-4 border-b border-border py-5 text-left sm:py-7 lg:border-0 lg:py-0"
-                >
-                  <div className="flex aspect-square size-9 shrink-0 items-center justify-center">
-                    <CategoryIcon className="size-5" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium text-foreground/85 group-hover:text-foreground">
-                      {member.title}
-                    </div>
-                    <p className="mt-1 text-xs text-muted-foreground group-hover:text-foreground">
-                      {member.description}
-                    </p>
-                  </div>
-                  <ArrowRight className="size-4 arrow-ne lg:hidden" />
-                </NavigationMenuLink>
-              );
-            })}
-          </menu>
-        </div>
-
-        {/* Alumni teaser */}
-        <div className="grid gap-y-2 lg:gap-y-6">
-          <div className="flex items-center justify-between border-border text-left lg:border-b lg:pb-3">
-            <strong className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
-              Where Our People Go
-            </strong>
-            <NavigationMenuLink
-              href="/people"
-              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-            >
-              {nav.alumniCount} alumni <ArrowRight className="size-3" />
-            </NavigationMenuLink>
-          </div>
-          <menu className="grid md:grid-cols-2 md:gap-x-6 lg:gap-y-3">
-            {nav.alumniTeaser.map((alum) => (
-              <NavigationMenuLink
-                key={alum.name}
-                href="/people"
-                className="group flex flex-col border-b border-border py-4 text-left lg:border-0 lg:py-0"
-              >
-                <span className="text-sm font-medium text-foreground/85 group-hover:text-foreground">
-                  {alum.name}
-                </span>
-                <span className="mt-0.5 text-xs text-muted-foreground">{alum.placement}</span>
-              </NavigationMenuLink>
-            ))}
-          </menu>
-        </div>
-      </div>
-    </div>
-
-    {/* Communities we design with. Each group carries a drawing of what is in
-        its hands or around it, never a drawing of the people themselves. */}
-    <div className="mt-10">
-      <PanelLabel>Communities We Design With</PanelLabel>
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-        {communities.map((community) => (
-          <div key={community.title}>
-            <div className="flex items-center gap-2 text-left text-[0.65rem] font-medium tracking-[0.18em] text-muted-foreground uppercase">
-              <RegistrationMark
-                className={cn("size-3", COMMUNITY_INK[community.title] ?? "text-ink")}
-              />
-              {community.title}
-            </div>
-            <menu className="mt-4 grid gap-y-3.5">
-              {community.groups.map((group) => (
-                <div
-                  key={group}
-                  className="flex flex-row items-center gap-3 text-left text-foreground/85"
-                >
-                  <CommunityMark
-                    label={group}
-                    className={cn("size-6 shrink-0", COMMUNITY_INK[community.title] ?? "text-ink")}
-                  />
-                  <div className="flex-1 text-sm">{group}</div>
-                </div>
-              ))}
-            </menu>
-          </div>
-        ))}
+        </NavigationMenuLink>
       </div>
     </div>
   </div>
@@ -541,6 +469,7 @@ const LabMenu = () => (
     <PromoCard
       href="/news"
       art="signal"
+      emphasis="destination"
       eyebrow="News & Lab Activity"
       title="What the Lab has been doing"
       body="Conference trips, invited talks, community events and fieldwork, as they happen."
@@ -550,14 +479,35 @@ const LabMenu = () => (
     <PromoCard
       href="/about"
       art="bloom"
-      eyebrow="About"
+      emphasis="destination"
+      eyebrow="About the Lab"
       title="The Design Inclusion and Access Lab"
       body="An HCI lab at North South University, Dhaka."
       className="md:col-span-1"
     />
 
-    {/* Join Us */}
     <div className="grid gap-4 md:col-span-1">
+      <NavigationMenuLink
+        href="/contact"
+        className="group relative flex w-full flex-row items-start gap-4 overflow-hidden rounded-md border border-border p-6"
+      >
+        <span aria-hidden className="halftone absolute inset-0 opacity-[0.07]" />
+        <RegistrationMark className="relative size-7 shrink-0 text-ink" />
+        <div className="relative">
+          <div className="font-display relative inline-block text-base leading-tight">
+            Contact
+            <SquiggleUnderline />
+          </div>
+          <p className="mt-1 text-xs text-pretty text-muted-foreground">
+            Where the lab is, and how to reach it.
+          </p>
+          <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium">
+            Get in touch
+            <ArrowRight className="arrow-ne size-4" />
+          </span>
+        </div>
+      </NavigationMenuLink>
+
       <NavigationMenuLink
         href="/join-us"
         className="group relative flex w-full flex-row items-start gap-4 overflow-hidden rounded-md border border-border p-6"
@@ -569,8 +519,8 @@ const LabMenu = () => (
             Join the Lab
             <SquiggleUnderline />
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Open positions for graduate and undergraduate researchers.
+          <p className="mt-1 text-xs text-pretty text-muted-foreground">
+            We take graduate and undergraduate students year-round.
           </p>
           <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium">
             How to apply
@@ -584,9 +534,11 @@ const LabMenu = () => (
 
 // ── Nav config ─────────────────────────────────────────────────────────────
 
+// Four items, not five: "Research", "Projects" and "Publications" were three
+// words for the work, and a visitor had to guess which menu held what. Projects
+// now live under Research, which is the thing they are instances of.
 const navigationMenuItems = [
   { key: "research", label: "Research", component: ResearchMenu },
-  { key: "projects", label: "Projects", component: ProjectsMenu },
   { key: "publications", label: "Publications", component: PublicationsMenu },
   { key: "people", label: "People", component: PeopleMenu },
   // LabMenu is static; it ignores the nav prop the other menus take.
@@ -660,7 +612,7 @@ const Navbar4 = ({ nav, className }: Navbar4Props) => {
               <NavigationMenuList className="hidden gap-0 lg:flex">
                 {navigationMenuItems.map((item) => (
                   <NavigationMenuItem key={item.key}>
-                    <NavigationMenuTrigger className="text-xs xl:text-sm">
+                    <NavigationMenuTrigger className="px-3 text-sm xl:text-base">
                       {item.label}
                     </NavigationMenuTrigger>
                     <NavigationMenuContent className="min-w-[calc(100vw-4rem)] p-12 2xl:min-w-[calc(1400px-4rem)]">

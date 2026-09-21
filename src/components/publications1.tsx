@@ -49,6 +49,12 @@ export type Publication = {
    */
   authorFaces?: Person[] | null;
   venue?: string | null;
+  /**
+   * The venue written out, where the short form is an acronym. The list prints
+   * the acronym — "ACM CHI Conference on Human Factors in Computing Systems" on
+   * every row would bury the titles — and carries this as the expansion.
+   */
+  venueFull?: string | null;
   award?: string | null;
   pdfLink?: string | null;
   projectLink?: string | null;
@@ -279,7 +285,21 @@ function PublicationRow({
         </div>
         <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-            {pub.venue && <span className="font-medium text-foreground">{pub.venue}</span>}
+            {pub.venue &&
+              (pub.venueFull ? (
+                // `abbr` is the element for exactly this and puts the expansion
+                // in the accessibility tree, which a `title` on a span does not.
+                // The dotted rule is the long-standing signal that a word can be
+                // expanded; without it the tooltip is undiscoverable.
+                <abbr
+                  title={pub.venueFull}
+                  className="font-medium text-foreground decoration-border decoration-dotted underline-offset-4 hover:decoration-current"
+                >
+                  {pub.venue}
+                </abbr>
+              ) : (
+                <span className="font-medium text-foreground">{pub.venue}</span>
+              ))}
             {pub.type && <span>{TYPE_LABELS[pub.type] ?? pub.type}</span>}
             {pub.award && (
               <span className="inline-flex items-center gap-1.5 rounded-[0.8rem] border border-ink/35 bg-ink/8 px-2.5 py-0.5 text-ink">
@@ -311,6 +331,8 @@ type Group = {
   /** The facet value this group stands for — what clicking its header filters to. */
   key: string;
   label: string;
+  /** Set in the venue view: the acronym written out, under the heading. */
+  sublabel?: string | null;
   /** False for the synthetic catch-alls ("Other", "Uncategorized"), which name no facet value. */
   filterable: boolean;
   publications: Publication[];
@@ -325,8 +347,14 @@ const LAYOUT_ANIMATION_LIMIT = 60;
 
 function buildGroups(visible: Entry<Publication>[], view: ViewMode): Group[] {
   const map = new Map<string, Group>();
-  const add = (key: string, label: string, filterable: boolean, pub: Publication) => {
-    const group = map.get(key) ?? { key, label, filterable, publications: [] };
+  const add = (
+    key: string,
+    label: string,
+    filterable: boolean,
+    pub: Publication,
+    sublabel?: string | null,
+  ) => {
+    const group = map.get(key) ?? { key, label, filterable, sublabel, publications: [] };
     group.publications.push(pub);
     map.set(key, group);
   };
@@ -335,7 +363,7 @@ function buildGroups(visible: Entry<Publication>[], view: ViewMode): Group[] {
     if (view === "all") {
       add(String(year), String(year), true, pub);
     } else if (view === "venue") {
-      if (pub.venue) add(pub.venue, pub.venue, true, pub);
+      if (pub.venue) add(pub.venue, pub.venue, true, pub, pub.venueFull);
       else add("\u0000other", "Other", false, pub);
     } else if (view === "theme") {
       if (pub.themes?.length) for (const theme of pub.themes) add(theme, theme, true, pub);
@@ -676,7 +704,12 @@ const PublicationsSection = ({
                     data-group-key={group.key}
                     className="pt-8 first:pt-0 lg:pt-16"
                   >
-                    <header className="flex h-20 items-end border-b border-foreground/20 pb-2 text-xl font-medium tracking-tight text-foreground/50">
+                    {/* The header's height is load-bearing: it is exactly the
+                        sticky bar's `h-20`, and the list is pulled up by
+                        `-mt-20` so the first group's own header hides behind
+                        it. The expansion therefore goes *inside* the row,
+                        opposite the name, rather than on a line above it. */}
+                    <header className="flex h-20 items-end justify-between gap-6 border-b border-foreground/20 pb-2 text-xl font-medium tracking-tight text-foreground/50">
                       {group.filterable ? (
                         // The group name is the filter: you are already looking
                         // at the pile, clicking it keeps only that pile.
@@ -708,6 +741,11 @@ const PublicationsSection = ({
                           <span className="mr-1 text-foreground">{group.label}</span>/{" "}
                           {groupCountLabel(group)}
                         </>
+                      )}
+                      {group.sublabel && (
+                        <span className="min-w-0 truncate text-sm font-normal tracking-normal text-muted-foreground max-md:hidden">
+                          {group.sublabel}
+                        </span>
                       )}
                     </header>
                     <ul>

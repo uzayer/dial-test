@@ -11,13 +11,42 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { TextLink } from "@/components/editorial";
-import { CropMarks, MarginNote, Squiggle, StampRing } from "@/components/marks";
+import { CropMarks, Squiggle } from "@/components/marks";
 import { enterStep } from "@/lib/motion";
 import { label, lede, pageTitle } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
 const linkClass =
   "underline decoration-border underline-offset-[6px] transition-colors hover:decoration-current";
+
+/**
+ * Who is writing, and where each of them should go.
+ *
+ * One form for everybody means the lab triages by hand: a student asking to
+ * join, a researcher proposing a collaboration and a journalist on a deadline
+ * all arrive in the same inbox in the same shape, and two of the three are in
+ * the wrong place. Naming the three before the form sends the students to
+ * `/join-us` (where the actual process is written down) and tells the other
+ * two what to put in the message, which is the whole of what a triage step
+ * can usefully do without becoming a form builder.
+ */
+const WHO_IS_WRITING = [
+  {
+    title: "Students",
+    body: "Wanting to join the lab, or asking about research assistantships. The form is not the route — there is a proper one, and it is short.",
+    link: { text: "How to join", href: "/join-us" },
+  },
+  {
+    title: "Researchers & collaborators",
+    body: "Proposing joint work, a visit, or a co-authored paper. Say what you are working on and which of DIAL's areas it touches; that is enough to start.",
+    link: { text: "See the research areas", href: "/research" },
+  },
+  {
+    title: "Press & media",
+    body: "Reporting on the lab's work. Mention your outlet and your deadline in the first line, and the papers behind the work are all here in full.",
+    link: { text: "Browse publications", href: "/publications" },
+  },
+];
 
 const contactFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -105,6 +134,20 @@ const Contact1 = ({ email, address, scholarUrl, className, onSubmit }: Contact1P
         <div className="enter flex flex-col gap-10" style={enterStep(3)}>
           <p className={lede}>For collaboration, media, and general enquiries.</p>
 
+          <ul>
+            {WHO_IS_WRITING.map((who) => (
+              <li key={who.title} className="border-t border-border py-5 last:border-b">
+                <h2 className="font-display text-xl leading-snug">{who.title}</h2>
+                <p className="mt-1.5 max-w-prose text-pretty text-sm text-muted-foreground">
+                  {who.body}
+                </p>
+                <TextLink href={who.link.href} className="mt-3 text-sm">
+                  {who.link.text}
+                </TextLink>
+              </li>
+            ))}
+          </ul>
+
           <dl className="text-sm">
             <div className="grid grid-cols-[7rem_1fr] gap-4 border-t border-border py-3">
               <dt className="text-muted-foreground">Email</dt>
@@ -142,17 +185,6 @@ const Contact1 = ({ email, address, scholarUrl, className, onSubmit }: Contact1P
               </dd>
             </div>
           </dl>
-
-          <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
-            <TextLink href="/join-us" className="text-muted-foreground hover:text-foreground">
-              Looking to join the lab? See open positions
-            </TextLink>
-            {/* Restates the line above it; the note adds no new claim. */}
-            <MarginNote className="pb-0.5">that is a different door</MarginNote>
-          </div>
-
-          {/* The Lab's own stamp, in the open space under the address. */}
-          <StampRing className="sticker ink-mark-soft mt-4 size-52 max-lg:hidden" />
         </div>
 
         <form

@@ -161,6 +161,22 @@ export function venueLabel(pub: Publication): string | null {
   return venue?.shortName ?? venue?.name ?? pub.venueLabel ?? null;
 }
 
+/**
+ * The venue written out, when that says something the short form does not.
+ *
+ * "CHI" is the only form worth printing in a list — the full name is eleven
+ * words — but it is also opaque to anyone outside the field, which is most of
+ * the people a lab site has to convince. So the list keeps the acronym and
+ * carries the expansion alongside it. Null when there is nothing to expand:
+ * a venue with no `shortName` already renders as its full name, and a
+ * free-text `venueLabel` has no expansion to give.
+ */
+export function venueFullName(pub: Publication): string | null {
+  const venue = pub.venue ? getVenue(pub.venue) : undefined;
+  if (!venue?.shortName || venue.shortName === venue.name) return null;
+  return venue.name;
+}
+
 /** Venues that have DIAL publications, most-published first. */
 export function venuesByPublicationCount(): Venue[] {
   const count = (v: Venue) => publications.filter((p) => p.venue === v.id).length;

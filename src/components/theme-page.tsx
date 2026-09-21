@@ -9,7 +9,12 @@ import { ThemeGlyph, themeArt, themeInkVar } from "@/components/theme-marks";
 import { ProjectIndex } from "@/components/project-index";
 import { InkBand, SectionHeader, sectionSpacing } from "@/components/editorial";
 import { FlatPublicationList } from "@/components/publications1";
-import { ThemeCollaborators, ThemeRelatedAreas } from "@/components/theme-page-sections";
+import {
+  ThemeCollaborators,
+  ThemeRelatedAreas,
+  ThemeStakes,
+  type ThemeStakesData,
+} from "@/components/theme-page-sections";
 import { label } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 import {
@@ -36,6 +41,8 @@ interface ThemePageProps {
   slug: string;
   /** Hardcoded prose for the header (research intro copy stays in code). */
   description: string;
+  /** The opening orientation section: plain words, the stake, a sourced note. */
+  stakes: ThemeStakesData;
   /** Editorial "related areas" for this theme, by slug. */
   relatedSlugs: string[];
 }
@@ -45,7 +52,7 @@ interface ThemePageProps {
  * passes its own slug and prose; everything else — projects, publications,
  * collaborators, funders, and counts — is resolved from the records.
  */
-export function ThemePage({ slug, description, relatedSlugs }: ThemePageProps) {
+export function ThemePage({ slug, description, stakes, relatedSlugs }: ThemePageProps) {
   const theme = getResearchThemeBySlug(slug);
   if (!theme) notFound();
 
@@ -78,6 +85,7 @@ export function ThemePage({ slug, description, relatedSlugs }: ThemePageProps) {
         ink={themeInkVar(theme.slug)}
         glyph={<ThemeGlyph slug={theme.slug} className="size-28 md:size-40" />}
         title={theme.title}
+        fullTitleSquiggle
         description={description}
         facts={[
           { value: String(stats.projects), label: "Projects" },
@@ -86,7 +94,10 @@ export function ThemePage({ slug, description, relatedSlugs }: ThemePageProps) {
         ]}
       />
 
-      {/* §2 Projects */}
+      {/* §2 What this is, and why it matters — before the evidence for it. */}
+      <ThemeStakes stakes={stakes} />
+
+      {/* §3 Projects */}
       {projects.length > 0 && (
         <section className={cn("container", sectionSpacing, "pt-0 md:pt-0")}>
           <SectionHeader title="Projects" className="mb-6" />
@@ -94,9 +105,9 @@ export function ThemePage({ slug, description, relatedSlugs }: ThemePageProps) {
         </section>
       )}
 
-      {/* §3 Publications */}
+      {/* §4 Publications */}
       {themePublications.length > 0 && (
-        <section className={cn("container", sectionSpacing)}>
+        <section className={cn("container", sectionSpacing, "pt-0 md:pt-0")}>
           <SectionHeader title="Publications" className="mb-6" />
           <FlatPublicationList
             yearGroups={toPublicationYears(themePublications)}
@@ -106,10 +117,10 @@ export function ThemePage({ slug, description, relatedSlugs }: ThemePageProps) {
         </section>
       )}
 
-      {/* §4 Collaborators — only when the theme's Projects list collaborators */}
+      {/* §5 Collaborators — only when the theme's Projects list collaborators */}
       {collaboratorGroups.length > 0 && <ThemeCollaborators groups={collaboratorGroups} />}
 
-      {/* §5 Funding — funders of the theme's Grants. This is the Theme page's
+      {/* §6 Funding — funders of the theme's Grants. This is the Theme page's
           one full-bleed band, printed in the Theme's own ink: a short, factual
           sentence is exactly the length that survives being set at this size. */}
       {funders.length > 0 && (
@@ -131,7 +142,7 @@ export function ThemePage({ slug, description, relatedSlugs }: ThemePageProps) {
         </InkBand>
       )}
 
-      {/* §6 Related themes */}
+      {/* §7 Related themes */}
       <FaqSection items={themeFaqs} title="How themes work" />
 
       <ThemeRelatedAreas themes={related} />

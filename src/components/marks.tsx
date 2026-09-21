@@ -247,45 +247,6 @@ export const RegistrationMark = ({ className }: { className?: string }) => (
   </svg>
 );
 
-/**
- * A rubber stamp: the Lab's name set around a ring, drawn by hand. The text is
- * decoration — the same words are in the footer as real text.
- */
-export const StampRing = ({
-  text = "DESIGN INCLUSION AND ACCESS LAB · NORTH SOUTH UNIVERSITY · DHAKA · ",
-  className,
-}: {
-  text?: string;
-  className?: string;
-}) => (
-  <svg aria-hidden viewBox="0 0 160 160" className={cn("size-32 text-ink/70", className)}>
-    <defs>
-      <path
-        id="stamp-ring-path"
-        d="M80 80m-58 0a58 58 0 1 1 116 0a58 58 0 1 1 -116 0"
-        fill="none"
-      />
-    </defs>
-    <g {...strokeProps} strokeWidth={1.6}>
-      <circle cx="80" cy="80" r="70" />
-      <circle cx="80" cy="80" r="44" />
-    </g>
-    <text className="fill-current font-mono text-[9.5px] tracking-[0.18em] uppercase">
-      <textPath href="#stamp-ring-path" startOffset="0">
-        {text}
-      </textPath>
-    </text>
-    <text
-      x="80"
-      y="86"
-      textAnchor="middle"
-      className="fill-current font-display text-[26px] tracking-tight"
-    >
-      DIAL
-    </text>
-  </svg>
-);
-
 /** Dashed connector, drawn between steps in a sequence. */
 export const DashedPath = ({ className }: { className?: string }) => (
   <svg

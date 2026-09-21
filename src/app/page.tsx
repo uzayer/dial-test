@@ -4,8 +4,8 @@ import {
   PullQuote,
   SectionHeader,
   TextLink,
-  ThemeIndex,
-  sectionSpacing,
+  ThemeSpotlight,
+  sectionSpacingTight,
 } from "@/components/editorial";
 import { CircleMark, MarginNote } from "@/components/marks";
 import { PageHeader } from "@/components/page-header";
@@ -44,6 +44,37 @@ export default function Home() {
   const featured = featuredPublications();
   // Featured publications, or the most recent five when none are marked.
   const selected = featured.length > 0 ? featured : publicationsByYear().slice(0, 5);
+
+  // Which three themes lead is derived, not curated. `featured` on the records
+  // is an editorial flag from the prototype and marks six of nine, which is not
+  // a shortlist; counting the projects and papers actually filed against each
+  // theme is both defensible ("this is where the work is", which is what the
+  // section claims) and self-maintaining — a Lab Editor never has to revisit it,
+  // and it cannot go stale the way a hand-picked three would.
+  const rankedThemes = researchThemes
+    .map((theme) => {
+      const counts = themeStats(theme.id);
+      return {
+        slug: theme.slug,
+        title: theme.title,
+        description: theme.shortDescription,
+        projectCount: counts.projects,
+        publicationCount: counts.publications,
+        weight: counts.projects + counts.publications,
+      };
+    })
+    .sort((a, b) => b.weight - a.weight);
+  const leadThemes = rankedThemes.slice(0, 3);
+  // The rest keep the taxonomy's own order, so the line reads as the lab's
+  // list rather than as a leaderboard continuing past third place.
+  const restOrder = new Set(rankedThemes.slice(3).map((t) => t.slug));
+  const restThemes = rankedThemes
+    .filter((t) => restOrder.has(t.slug))
+    .sort(
+      (a, b) =>
+        researchThemes.findIndex((t) => t.slug === a.slug) -
+        researchThemes.findIndex((t) => t.slug === b.slug),
+    );
 
   return (
     <>
@@ -87,7 +118,7 @@ export default function Home() {
         </PageHeader>
       </ResearchScrollHero>
 
-      <section className={cn("container", sectionSpacing)}>
+      <section className={cn("container", sectionSpacingTight)}>
         <div
           data-reveal
           className="relative grid gap-10 pt-6 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-24"
@@ -118,28 +149,18 @@ export default function Home() {
         </div>
       </section>
 
-      <section className={cn("container", sectionSpacing, "relative")}>
+      <section className={cn("container", sectionSpacingTight, "relative")}>
         <SectionHeader
           label="Research"
           title="Where social need and technical systems meet"
-          link={{ text: "All research", href: "/research" }}
-          className="mb-6"
+          description="Nine areas, ranked here by how much of the lab's work sits in each. The three with the most projects and papers behind them lead."
+          link={{ text: "All nine areas", href: "/research" }}
+          className="mb-8"
         />
-        <ThemeIndex
-          themes={researchThemes.map((theme) => {
-            const counts = themeStats(theme.id);
-            return {
-              slug: theme.slug,
-              title: theme.title,
-              description: theme.shortDescription,
-              projectCount: counts.projects,
-              publicationCount: counts.publications,
-            };
-          })}
-        />
+        <ThemeSpotlight lead={leadThemes} rest={restThemes} />
       </section>
 
-      <section className={cn("container", sectionSpacing)}>
+      <section className={cn("container", sectionSpacingTight)}>
         <SectionHeader
           label="Publications"
           title="Selected work"
@@ -160,7 +181,7 @@ export default function Home() {
         <PullQuote>Technology that is locally appropriate, low-cost, and explainable.</PullQuote>
       </InkBand>
 
-      <section className={cn("container", sectionSpacing)}>
+      <section className={cn("container", sectionSpacingTight)}>
         <SectionHeader
           label="Work with us"
           title="Research with purpose. Join the lab."

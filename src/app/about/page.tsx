@@ -7,6 +7,7 @@ import {
   SectionHeader,
   sectionSpacing,
 } from "@/components/editorial";
+import { FieldNote } from "@/components/field-note";
 import { PageHeader } from "@/components/page-header";
 import { PhotoSlot } from "@/components/photo-slot";
 import { ScrollStroke } from "@/components/scroll-stroke";
@@ -174,6 +175,15 @@ export default function AboutPage() {
           className="mb-10"
         />
         <NumberedSteps steps={methods} />
+        {/* The method described above has a lineage, and saying so is not a
+            digression: "we design with the people who will use it" reads as a
+            slogan until it is placed in a tradition that has been argued over
+            for fifty years. */}
+        <FieldNote source="UTOPIA project, 1981–1986" className="mt-10">
+          Designing with the people who will use the thing began with Scandinavian trade unions.
+          Typographers worked alongside researchers on the systems that were about to change their
+          trade — not as subjects, as co-designers.
+        </FieldNote>
       </section>
 
       <section className={cn("container", sectionSpacing, "relative")}>

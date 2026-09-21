@@ -1,7 +1,8 @@
-import { NewsFeed, type NewsEntry } from "@/components/news-feed";
+import { NewsFeed } from "@/components/news-feed";
 import { ScrollRuler } from "@/components/scroll-ruler";
 import { PageHeader } from "@/components/page-header";
 import { newsEntries } from "@/data/views";
+import type { NewsEntry } from "@/lib/news";
 
 export const metadata = {
   title: "News",

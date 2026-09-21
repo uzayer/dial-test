@@ -46,6 +46,11 @@ type ContentSection = {
   body: string;
 };
 
+type ProjectTraceData = {
+  heading: string;
+  steps: { label: string; detail: string }[];
+};
+
 export type ProjectData = {
   /** English title. */
   title: string;
@@ -62,6 +67,8 @@ export type ProjectData = {
   awards: Award[];
   publications: PublicationYear[];
   content: ContentSection[];
+  /** Optional project-specific evidence, shown only when the record supports it. */
+  trace?: ProjectTraceData;
   metaItems?: { label: string; value: string }[];
 };
 
@@ -87,10 +94,60 @@ const slugify = (heading: string) => heading.toLowerCase().replace(/\s+/g, "-");
 
 function Fact({ term, children }: { term: string; children: React.ReactNode }) {
   return (
-    <div className="grid grid-cols-[7rem_1fr] gap-4 border-t border-border py-3 text-sm">
+    <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-4 border-t border-border py-3 text-sm sm:grid-cols-[7rem_minmax(0,1fr)]">
       <dt className="text-muted-foreground">{term}</dt>
       <dd>{children}</dd>
     </div>
+  );
+}
+
+/**
+ * A project needs a trace of the work, not a second decorative image slot.
+ * These statements come from the record's abstract and body, so they explain
+ * the intervention without pretending we have fieldwork imagery we do not.
+ */
+function ProjectTrace({
+  trace,
+  art,
+}: {
+  trace: ProjectTraceData;
+  art: ReturnType<typeof themeArt>;
+}) {
+  return (
+    <section
+      aria-labelledby="project-trace"
+      className="relative overflow-hidden rounded-md border border-border bg-secondary/35 px-6 py-7 md:px-8 md:py-9"
+    >
+      <RisoArt
+        variant={art}
+        className="pointer-events-none absolute -right-16 -bottom-16 size-52 opacity-25"
+      />
+      <div className="relative">
+        <p className={label}>Project trace</p>
+        <h2
+          id="project-trace"
+          className="mt-3 max-w-sm font-display text-2xl leading-tight md:text-3xl"
+        >
+          {trace.heading}
+        </h2>
+        <ol className="mt-8 space-y-5">
+          {trace.steps.map((step, index) => (
+            <li
+              key={step.label}
+              className="grid grid-cols-[2.5rem_1fr] gap-3 border-t border-border pt-4"
+            >
+              <span className="font-mono text-xs text-muted-foreground">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <div>
+                <p className="text-sm font-medium">{step.label}</p>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{step.detail}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
   );
 }
 
@@ -104,9 +161,10 @@ export function ProjectPost({ project }: { project: ProjectData }) {
   const primaryTheme = project.themes[0]?.slug ?? "";
   // The abstract is already the lede; the body starts with the record's own sections.
   const sections = project.content.filter((s) => s.body !== project.overview);
+  const soleLead = project.teamMembers.length === 1 ? project.teamMembers[0] : null;
 
   return (
-    <article>
+    <article className="overflow-x-clip">
       {/* Breadcrumb */}
       <div className="border-b border-border">
         <nav
@@ -167,12 +225,12 @@ export function ProjectPost({ project }: { project: ProjectData }) {
             className="ink-rule enter-rule absolute inset-x-0 top-0 h-px"
             style={enterStep(2)}
           />
-          <p className={cn(lede, "enter md:text-xl")} style={enterStep(3)}>
+          <p className={cn(lede, "enter w-full md:text-xl")} style={enterStep(3)}>
             {project.overview}
           </p>
 
           <dl
-            className="enter relative [&>div:first-child]:border-t-0 [&>div:first-child]:pt-0"
+            className="enter relative min-w-0 [&>div:first-child]:border-t-0 [&>div:first-child]:pt-0"
             style={enterStep(4)}
           >
             <RisoArt
@@ -180,6 +238,18 @@ export function ProjectPost({ project }: { project: ProjectData }) {
               className="pointer-events-none absolute -top-52 right-0 size-40 opacity-70 max-lg:hidden xl:-top-56 xl:size-48"
             />
             {span && <Fact term="Timeline">{span}</Fact>}
+            {soleLead && (
+              <Fact term="Led by">
+                <PersonChip
+                  name={soleLead.name}
+                  seed={soleLead.slug}
+                  photo={soleLead.avatarUrl}
+                  href={soleLead.href}
+                  meta={soleLead.role}
+                  size="sm"
+                />
+              </Fact>
+            )}
             {project.themes.length > 0 && (
               <Fact term="Themes">
                 <ul className="flex flex-col gap-1">
@@ -218,17 +288,22 @@ export function ProjectPost({ project }: { project: ProjectData }) {
           </dl>
         </div>
 
-        {/* Where this Project's photographs go. The slots are here whether or
-            not DIAL has supplied them yet, so the pictures land in a layout
-            that already expects them. */}
-        <div className="mt-12 grid gap-5 sm:grid-cols-2">
+        {/* The supplied hero photo carries the page; beside it, a factual trace
+            makes the intervention legible without manufacturing a second photo. */}
+        <div
+          className={cn(
+            "mt-12",
+            project.trace && "grid items-stretch gap-5 lg:grid-cols-[1.15fr_0.85fr]",
+          )}
+        >
           <PhotoSlot
             src={project.heroImageUrl}
             alt={project.title}
             art={themeArt(primaryTheme)}
-            aspect="aspect-4/3"
+            aspect={project.trace ? "aspect-4/3 lg:aspect-auto" : "aspect-16/7"}
+            className={project.trace ? "h-full" : undefined}
           />
-          <PhotoSlot alt={`Fieldwork for ${project.title}`} art="field" aspect="aspect-4/3" />
+          {project.trace && <ProjectTrace trace={project.trace} art={themeArt(primaryTheme)} />}
         </div>
       </header>
 
@@ -262,7 +337,7 @@ export function ProjectPost({ project }: { project: ProjectData }) {
             )}
           </div>
 
-          {project.teamMembers.length > 0 && (
+          {project.teamMembers.length > 1 && (
             <aside className="h-fit lg:sticky lg:top-24">
               <h2 className={cn(label, "border-t border-border pt-6")}>Project team</h2>
               {/* A margin reference to people, not a roster: each person is one
@@ -270,16 +345,14 @@ export function ProjectPost({ project }: { project: ProjectData }) {
                   fuller treatment. */}
               <ul className="mt-5 flex flex-col gap-3">
                 {project.teamMembers.map((member) => (
-                  <li key={member.id} className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                  <li key={member.id}>
                     <PersonChip
                       name={member.name}
                       seed={member.slug}
                       photo={member.avatarUrl}
                       href={member.href}
+                      meta={member.role}
                     />
-                    {/* Alongside the chip, not under it: the pill is the person
-                        and the role is an annotation on the same line. */}
-                    <span className="text-xs text-muted-foreground">{member.role}</span>
                   </li>
                 ))}
               </ul>

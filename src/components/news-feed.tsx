@@ -1,90 +1,54 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 import { SectionHeader } from "@/components/editorial";
 import { SegmentedControl } from "@/components/segmented-control";
 import { OptionalImage } from "@/components/optional-image";
+import {
+  TYPE_INK,
+  TYPE_LABELS,
+  formatFull,
+  formatInYear,
+  getYear,
+  isUpcoming,
+  type NewsEntry,
+  type NewsType,
+} from "@/lib/news";
 import { listEnter, listStagger } from "@/lib/motion";
 import { displaySectionTitle } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
-export type NewsType = "academic" | "event" | "community";
+// The vocabulary moved to @/lib/news so the entry page can share it; these
+// re-exports keep the component's existing importers working.
+export type { NewsEntry, NewsType };
 
-export interface NewsEntry {
-  type: NewsType;
-  title: string;
-  /** ISO date string: "YYYY-MM-DD", or "YYYY-MM" / "YYYY" when that is all the source gives. */
-  date: string;
-  /** How much of `date` is known; defaults to "day". */
-  datePrecision?: "day" | "month" | "year";
-  description: string;
-  photo?: string;
-  url?: string;
-}
-
-const TYPE_LABELS: Record<NewsType, string> = {
-  academic: "Academic",
-  event: "Event",
-  community: "Community",
-};
-
-/** One press ink per kind of activity, so the archive reads at a glance. */
-const TYPE_INK: Record<NewsType, string> = {
-  academic: "text-ink-blue",
-  event: "text-ink-violet",
-  community: "text-brand",
-};
-
-function isUpcoming(dateStr: string): boolean {
-  return new Date(dateStr) > new Date();
-}
-
-// Dates are formatted in UTC so a year- or month-only ISO string never shifts
-// into the previous day/month in western time zones.
-function formatFull(dateStr: string, precision: NewsEntry["datePrecision"] = "day"): string {
-  if (precision === "year") return String(getYear(dateStr));
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    month: "long",
-    ...(precision === "day" ? { day: "numeric" as const } : {}),
-    year: "numeric",
-    timeZone: "UTC",
-  });
-}
-
-/** Date without its year, for rows already grouped under a year heading. */
-function formatInYear(dateStr: string, precision: NewsEntry["datePrecision"] = "day"): string {
-  if (precision === "year") return "Date not recorded";
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    month: "long",
-    ...(precision === "day" ? { day: "numeric" as const } : {}),
-    timeZone: "UTC",
-  });
-}
-
-function getYear(dateStr: string): number {
-  return new Date(dateStr).getUTCFullYear();
-}
-
+/**
+ * An entry's title, linking to its own page. An entry that also has an external
+ * record carries that as a separate mark beside the title rather than on it —
+ * one title, one destination, so a click is never a guess about where it goes.
+ */
 function EntryTitle({ entry, className }: { entry: NewsEntry; className?: string }) {
   return (
     <h3 className={cn("font-display text-2xl leading-snug text-balance", className)}>
-      {entry.url ? (
+      <Link
+        href={`/news/${entry.slug}`}
+        className="decoration-border underline-offset-4 hover:underline"
+      >
+        {entry.title}
+      </Link>
+      {entry.url && (
         <a
           href={entry.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="decoration-border underline-offset-4 hover:underline"
+          aria-label={`${entry.title} — external announcement`}
+          className="ml-1.5 inline-block align-baseline text-muted-foreground transition-colors hover:text-foreground"
         >
-          {entry.title}
-          <ArrowUpRight
-            aria-label="(external link)"
-            className="ml-1 inline size-4 align-baseline text-muted-foreground"
-          />
+          <ArrowUpRight className="inline size-4" />
         </a>
-      ) : (
-        entry.title
       )}
     </h3>
   );
@@ -127,7 +91,7 @@ export function NewsFeed({ entries }: { entries: NewsEntry[] }) {
           <SectionHeader label="Upcoming" title="Coming up" className="mb-6" />
           <ul className="grid gap-x-8 md:grid-cols-2">
             {upcoming.map((entry) => (
-              <li key={`${entry.date}-${entry.title}`} className="border-t border-border py-6">
+              <li key={entry.slug} className="border-t border-border py-6">
                 <p className="text-sm text-brand">
                   {formatFull(entry.date, entry.datePrecision)} · {TYPE_LABELS[entry.type]}
                 </p>
@@ -165,7 +129,7 @@ export function NewsFeed({ entries }: { entries: NewsEntry[] }) {
                 .filter((e) => getYear(e.date) === year)
                 .map((entry, i) => (
                   <li
-                    key={`${entry.date}-${entry.title}`}
+                    key={entry.slug}
                     className={cn(
                       "grid gap-x-8 gap-y-2 py-6 first:pt-2 lg:grid-cols-[9rem_1fr]",
                       listEnter,
@@ -185,7 +149,10 @@ export function NewsFeed({ entries }: { entries: NewsEntry[] }) {
                       <EntryTitle entry={entry} />
                       <p className="mt-2 text-pretty text-muted-foreground">{entry.description}</p>
                       {entry.photo && (
-                        <div className="relative mt-6 w-fit">
+                        <Link
+                          href={`/news/${entry.slug}`}
+                          className="group relative mt-6 block w-fit"
+                        >
                           {/* Tape rides with the photograph (see OptionalImage);
                               as a sibling it outlived a failed load and left a
                               strip of tape stuck to nothing. */}
@@ -196,8 +163,15 @@ export function NewsFeed({ entries }: { entries: NewsEntry[] }) {
                             frameClassName="sticker-alt rounded-sm shadow-[0_12px_28px_-20px_rgba(0,0,0,0.6)]"
                             className="aspect-video"
                           />
-                        </div>
+                        </Link>
                       )}
+                      <Link
+                        href={`/news/${entry.slug}`}
+                        className="group mt-4 inline-flex items-center gap-1.5 text-sm font-medium"
+                      >
+                        Read the entry
+                        <ArrowRight className="arrow-ne size-4" />
+                      </Link>
                     </div>
                   </li>
                 ))}

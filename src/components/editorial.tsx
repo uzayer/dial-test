@@ -14,6 +14,14 @@ import { cn } from "@/lib/utils";
 
 export const sectionSpacing = "py-16 md:py-28";
 
+/**
+ * The rhythm for a page that is a run of short sections rather than a few long
+ * ones — Home, People, Join the lab. At the default spacing those pages put most of
+ * a screen of empty paper between every heading, which reads as the page
+ * having ended rather than as breathing room.
+ */
+export const sectionSpacingTight = "py-12 md:py-16";
+
 // ─── Section header ──────────────────────────────────────────────────────────
 
 interface SectionHeaderProps {
@@ -202,6 +210,88 @@ export const ThemeIndex = ({
       );
     })}
   </ol>
+);
+
+// ─── Theme spotlight ─────────────────────────────────────────────────────────
+
+/**
+ * The Research section for a *landing* page, as opposed to `ThemeIndex`, which
+ * is the directory.
+ *
+ * Nine equally-weighted rows is the right answer on `/research`, where the
+ * visitor came to survey the taxonomy. On Home it is the wrong one twice over:
+ * it costs about three phone screens before the rest of the page begins, and
+ * nine items at identical weight communicate no priority at all — a lab that
+ * lists nine areas without ranking them reads as a lab that does everything.
+ *
+ * So Home leads with three and names the other six in a line of prose. Nothing
+ * is hidden: every theme is still one click away, and the six are links, not a
+ * teaser. What changes is that the section now makes a claim instead of
+ * presenting a table of contents.
+ */
+export const ThemeSpotlight = ({
+  lead,
+  rest,
+  className,
+}: {
+  /** The themes given a tile. Three fits the grid and the argument. */
+  lead: ThemeIndexEntry[];
+  /** Everything else, named inline. */
+  rest: ThemeIndexEntry[];
+  className?: string;
+}) => (
+  <div className={className}>
+    {/* Hairlines in both directions, from the gap rather than from borders, so
+        no cell doubles its neighbour's rule. */}
+    <ol className="grid gap-px border-y border-border bg-border sm:grid-cols-3">
+      {lead.map((theme) => {
+        const counts = [
+          theme.projectCount ? plural(theme.projectCount, "project") : null,
+          theme.publicationCount ? plural(theme.publicationCount, "publication") : null,
+        ].filter(Boolean);
+        return (
+          <li key={theme.slug} className="bg-background">
+            <Link
+              href={`/research/${theme.slug}`}
+              className="group flex h-full flex-col gap-4 px-2 py-7 transition-colors duration-150 ease-snappy hover:bg-muted/50 active:bg-muted sm:px-6"
+            >
+              <ThemeGlyph slug={theme.slug} className="size-16 shrink-0" />
+              <SquiggleText className="font-display text-2xl leading-snug text-balance">
+                {theme.title}
+              </SquiggleText>
+              {theme.description && (
+                <p className="text-sm text-pretty text-muted-foreground">{theme.description}</p>
+              )}
+              <span className="mt-auto flex items-center gap-2 pt-2 text-sm tabular-nums text-muted-foreground">
+                {counts.join(" · ")}
+                <ArrowRight className="arrow-ne size-4 group-hover:text-foreground" />
+              </span>
+            </Link>
+          </li>
+        );
+      })}
+    </ol>
+
+    {rest.length > 0 && (
+      <p className="mt-8 max-w-4xl text-pretty">
+        <span className={cn(labelClass, "mr-3 align-middle")}>Also working on</span>
+        {rest.map((theme, i) => (
+          <span key={theme.slug}>
+            {i > 0 && (
+              <span aria-hidden className="mx-2 text-muted-foreground/60">
+                ·
+              </span>
+            )}
+            <Link href={`/research/${theme.slug}`} className="group">
+              <SquiggleText className={cn("font-display text-xl", themeInk(theme.slug))}>
+                {theme.title}
+              </SquiggleText>
+            </Link>
+          </span>
+        ))}
+      </p>
+    )}
+  </div>
 );
 
 // ─── Numbered steps ──────────────────────────────────────────────────────────

@@ -41,12 +41,27 @@ export default async function MemberPage({ params }: Props) {
   const grants = grantsByTeamMember(member.id).map((g) => toMemberGrant(g, member.id));
   const scholarUrl = profile.socials.find((s) => s.platform === "google-scholar")?.url;
 
+  // Projects, then publications, then grants: current work first, the record
+  // of it second, and the funding behind it last. Whichever of the three a
+  // person actually has runs flush against the profile header, so an
+  // undergraduate with no projects does not open on a band of empty paper.
+  const leading =
+    projects.length > 0 ? "projects" : publications.length > 0 ? "publications" : "grants";
+  const first = (section: string) => (section === leading ? "pt-0 md:pt-0" : undefined);
+
   return (
     <>
       <MemberProfile member={profile} />
 
+      {projects.length > 0 && (
+        <section className={cn("container", sectionSpacing, first("projects"))}>
+          <SectionHeader title="Projects" className="mb-6" />
+          <ProjectIndex projects={projects} />
+        </section>
+      )}
+
       {publications.length > 0 && (
-        <section className={cn("container", sectionSpacing, "pt-0 md:pt-0")}>
+        <section className={cn("container", sectionSpacing, first("publications"))}>
           <SectionHeader
             title="Publications"
             link={scholarUrl ? { text: "All on Google Scholar", href: scholarUrl } : undefined}
@@ -60,15 +75,8 @@ export default async function MemberPage({ params }: Props) {
         </section>
       )}
 
-      {projects.length > 0 && (
-        <section className={cn("container", sectionSpacing)}>
-          <SectionHeader title="Projects" className="mb-6" />
-          <ProjectIndex projects={projects} />
-        </section>
-      )}
-
       {grants.length > 0 && (
-        <section className={cn("container", sectionSpacing)}>
+        <section className={cn("container", sectionSpacing, first("grants"))}>
           <SectionHeader title="Grants" className="mb-6" />
           <ul className="divide-y divide-border border-y border-border">
             {grants.map((grant) => (

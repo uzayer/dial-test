@@ -1,6 +1,53 @@
+import { FieldNote } from "@/components/field-note";
 import { SectionHeader, ThemeIndex, sectionSpacing } from "@/components/editorial";
-import { label } from "@/lib/typography";
+import { displaySectionTitle, label } from "@/lib/typography";
 import { cn } from "@/lib/utils";
+
+// ─── ThemeStakes ─────────────────────────────────────────────────────────────
+
+export interface ThemeStakesData {
+  /**
+   * What the field's term means, without the field's vocabulary. Every one of
+   * these nine titles is jargon to someone — "Feminist HCI", "ICT for
+   * Development", "Explainable AI" all name a discipline rather than describe
+   * one — and a visitor who cannot decode the title cannot decide whether the
+   * page below is for them.
+   */
+  plainly: string;
+  /** Why the area matters here, argued rather than asserted. */
+  why: string;
+  /** A piece of the field's own history, set in the margin. Always sourced. */
+  note: { text: string; source: string };
+}
+
+/**
+ * The opening section of a Theme page: the title in plain words, the stake, and
+ * one note from the field's history.
+ *
+ * It sits above Projects and Publications because the rest of the page assumes
+ * a reader who already knows what the theme is. Most arrivals here are from a
+ * search engine, and the projects and papers below answer "what has DIAL done"
+ * for someone who has not yet been told "about what, and why".
+ */
+export function ThemeStakes({ stakes }: { stakes: ThemeStakesData }) {
+  return (
+    <section className={cn("container", sectionSpacing, "pt-0 md:pt-0")}>
+      <div data-reveal className="relative grid gap-x-16 gap-y-8 pt-6 lg:grid-cols-[1fr_auto]">
+        <span aria-hidden className="reveal-rule absolute inset-x-0 top-0 h-px bg-border" />
+        <div className="reveal-item max-w-3xl">
+          <p className={cn(label, "mb-4")}>Why this matters</p>
+          <p className={cn(displaySectionTitle, "text-balance")}>{stakes.plainly}</p>
+          <p className="mt-6 max-w-prose text-pretty leading-relaxed text-muted-foreground md:text-lg">
+            {stakes.why}
+          </p>
+        </div>
+        <FieldNote source={stakes.note.source} className="reveal-item lg:mt-14">
+          {stakes.note.text}
+        </FieldNote>
+      </div>
+    </section>
+  );
+}
 
 // ─── ThemeCollaborators ───────────────────────────────────────────────────────
 
