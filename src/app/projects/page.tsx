@@ -3,6 +3,7 @@ import { ClosingNote } from "@/components/closing-note";
 import { FaqSection } from "@/components/faq-section";
 import { PageHeader } from "@/components/page-header";
 import { ProjectDirectory, ProjectIndex } from "@/components/project-index";
+import { ScrollRuler } from "@/components/scroll-ruler";
 import { projects } from "@/data";
 import { projectFaqs } from "@/data/faqs";
 import { toProjectEntry } from "@/data/views";
@@ -33,6 +34,8 @@ export default function ProjectsPage() {
           { value: String(ongoingCount), label: "Ongoing" },
         ]}
       />
+
+      <ScrollRuler />
 
       <section className="container">
         <Suspense fallback={<ProjectIndex projects={entries} themeFilter />}>

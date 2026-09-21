@@ -11,6 +11,7 @@ import { FieldNote } from "@/components/field-note";
 import { PageHeader } from "@/components/page-header";
 import { PhotoSlot } from "@/components/photo-slot";
 import { ScrollStroke } from "@/components/scroll-stroke";
+import { ScrollRuler } from "@/components/scroll-ruler";
 import { labInfo, labStats, venuesByPublicationCount } from "@/data";
 import { displaySectionTitle, label } from "@/lib/typography";
 import { cn } from "@/lib/utils";
@@ -89,6 +90,7 @@ const milestones = [
 export default function AboutPage() {
   return (
     <>
+      <ScrollRuler />
       <PageHeader
         eyebrow="North South University · Dhaka"
         art="orbit"

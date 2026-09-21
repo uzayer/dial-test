@@ -9,6 +9,7 @@ import { ExpandableList } from "@/components/expandable-list";
 import { FieldNote } from "@/components/field-note";
 import { MarginNote } from "@/components/marks";
 import { PageHeader } from "@/components/page-header";
+import { ScrollRuler } from "@/components/scroll-ruler";
 import { labInfo } from "@/data";
 import { cn } from "@/lib/utils";
 
@@ -120,6 +121,7 @@ export default function JoinUsPage() {
 
   return (
     <>
+      <ScrollRuler />
       <PageHeader
         eyebrow="Join the lab"
         art="signal"

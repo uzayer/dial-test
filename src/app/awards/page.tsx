@@ -1,5 +1,6 @@
 import { FaqSection } from "@/components/faq-section";
 import { PageHeader } from "@/components/page-header";
+import { ScrollRuler } from "@/components/scroll-ruler";
 import { AwardsFilterTable, type Award } from "@/components/awards-filter-table";
 import { labAwards, yearRange } from "@/data";
 import { awardFaqs } from "@/data/faqs";
@@ -49,6 +50,8 @@ export default function AwardsPage() {
           ...(minYear ? [{ value: String(minYear), label: "Since" }] : []),
         ]}
       />
+
+      <ScrollRuler />
 
       {/* §2 Featured awards */}
       <section className="container pb-24">

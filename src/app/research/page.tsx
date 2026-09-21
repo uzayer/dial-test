@@ -8,6 +8,7 @@ import {
   sectionSpacing,
 } from "@/components/editorial";
 import { PageHeader } from "@/components/page-header";
+import { ScrollRuler } from "@/components/scroll-ruler";
 import { ProjectIndex } from "@/components/project-index";
 import { FlatPublicationList } from "@/components/publications1";
 import {
@@ -54,6 +55,7 @@ export default function ResearchPage() {
 
   return (
     <>
+      <ScrollRuler />
       <PageHeader
         eyebrow="Research"
         art="orbit"

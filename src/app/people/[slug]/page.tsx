@@ -5,6 +5,7 @@ import { SectionHeader, sectionSpacing } from "@/components/editorial";
 import { MemberProfile } from "@/components/member-profile";
 import { ProjectIndex } from "@/components/project-index";
 import { FlatPublicationList } from "@/components/publications1";
+import { ScrollRuler } from "@/components/scroll-ruler";
 import {
   getTeamMemberBySlug,
   grantsByTeamMember,
@@ -51,6 +52,7 @@ export default async function MemberPage({ params }: Props) {
 
   return (
     <>
+      <ScrollRuler />
       <MemberProfile member={profile} />
 
       {projects.length > 0 && (

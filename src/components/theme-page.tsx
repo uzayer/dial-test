@@ -9,6 +9,7 @@ import { ThemeGlyph, themeArt, themeInkVar } from "@/components/theme-marks";
 import { ProjectIndex } from "@/components/project-index";
 import { InkBand, SectionHeader, sectionSpacing } from "@/components/editorial";
 import { FlatPublicationList } from "@/components/publications1";
+import { ScrollRuler } from "@/components/scroll-ruler";
 import {
   ThemeCollaborators,
   ThemeRelatedAreas,
@@ -65,6 +66,7 @@ export function ThemePage({ slug, description, stakes, relatedSlugs }: ThemePage
 
   return (
     <>
+      <ScrollRuler />
       {/* Breadcrumb */}
       <div className="border-b border-border">
         <div className="container flex items-center gap-1.5 py-3 text-sm text-muted-foreground">

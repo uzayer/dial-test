@@ -10,10 +10,11 @@ import { cn } from "@/lib/utils";
  * hairline and a percentage riding the current position. After skiper-ui's
  * Skiper95, restyled in the second ink.
  *
- * It answers "how much of this list is left", so it belongs on pages that are
- * one long run of records (Publications, News, the People roster) and not on
- * composed pages, where a percentage through mixed sections tells you nothing.
- * It hides itself where there is no margin to spare (below xl) and where the
+ * It answers "how much is left", so it belongs on pages people read or scan to
+ * the end: the long lists (Publications, News, People, Awards, Projects) and
+ * the long reading pages (About, Join Us, Research and its themes, profiles).
+ * Not on Home, whose pinned research hero already tracks scroll, nor on short
+ * or single-record pages. It hides itself where there is no margin to spare (below xl) and where the
  * page is not actually long, which is what happens once a filter cuts a list
  * down.
  */
