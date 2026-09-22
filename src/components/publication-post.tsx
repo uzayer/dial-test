@@ -5,7 +5,7 @@ import { ChevronRight, FileText, LockOpen } from "lucide-react";
 import { ClosingNote } from "@/components/closing-note";
 import { InkBand, SectionHeader, TextLink, sectionSpacing } from "@/components/editorial";
 import { PersonChip } from "@/components/person-chip";
-import { AsteriskMark, CropMarks, Squiggle, SquiggleUnderline, TickMark } from "@/components/marks";
+import { AsteriskMark, CropMarks, SquiggleUnderline, TickMark } from "@/components/marks";
 import { CitationPanel } from "@/components/publication-cite";
 import { FlatPublicationList, type PublicationYear } from "@/components/publications1";
 import { RisoArt } from "@/components/riso";
@@ -165,11 +165,10 @@ export function PublicationPost({ pub }: { pub: PublicationPostData }) {
           )}
         </p>
 
-        <div className="enter relative mt-4 w-full" style={enterStep(1)}>
+        <div className="enter relative mt-4 w-fit max-w-4xl" style={enterStep(1)}>
           {/* Set a step below a directory page's title: a paper title is a
               sentence, sometimes two, and at 7xl it stops being readable. */}
-          <h1 className={cn(pageTitle, "max-w-4xl md:text-6xl")}>{pub.title}</h1>
-          <Squiggle className="ink-mark mt-2 max-w-none" />
+          <h1 className={cn(pageTitle, "md:text-6xl")}>{pub.title}</h1>
         </div>
 
         <div className="enter mt-7" style={enterStep(2)}>
@@ -327,7 +326,7 @@ export function PublicationPost({ pub }: { pub: PublicationPostData }) {
       </header>
 
       {/* Body: the citation on the measure, the Lab's own authors in the margin. */}
-      <div className="container grid gap-16 pb-24 lg:grid-cols-[1fr_20rem] lg:gap-16">
+      <div className="container grid gap-16 pb-12 md:pb-16 lg:grid-cols-[1fr_20rem] lg:gap-16">
         <section className="max-w-prose border-t border-border pt-6">
           <h2 className="font-display text-2xl md:text-3xl">Cite this paper</h2>
           <p className="mt-3 text-pretty text-muted-foreground">

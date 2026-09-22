@@ -1,4 +1,4 @@
-import { TextLink } from "@/components/editorial";
+import { TextLink, sectionSpacing } from "@/components/editorial";
 import { displaySectionTitle } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +13,7 @@ interface ClosingNoteProps {
  * billboard. The first link is the primary next step.
  */
 const ClosingNote = ({ heading, links, className }: ClosingNoteProps) => (
-  <section className={cn("container py-24", className)}>
+  <section className={cn("container", sectionSpacing, className)}>
     <div
       data-reveal
       className="relative flex flex-col gap-6 pt-10 md:flex-row md:items-end md:justify-between"

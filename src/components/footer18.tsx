@@ -70,7 +70,7 @@ const NAVIGATION = [
       { name: "News", href: "/news" },
       { name: "Join the Lab", href: "/join-us" },
       { name: "Contact", href: "/contact" },
-      { name: "Brand guidelines", href: "/design-system" },
+      { name: "Design system and guidelines", href: "/design-system" },
     ],
   },
 ];

@@ -1,9 +1,9 @@
-import { CropMarks, Squiggle, Tape } from "@/components/marks";
-import { InitialTile } from "@/components/initial-tile";
-import { OptionalImage } from "@/components/optional-image";
+import { AwardList, type AwardListItem } from "@/components/award-list";
+import { CropMarks } from "@/components/marks";
+import { MountedPortrait } from "@/components/mounted-portrait";
 import { RisoArt } from "@/components/riso";
 import { enterStep } from "@/lib/motion";
-import { label, pageTitle } from "@/lib/typography";
+import { label } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
 export type Social = {
@@ -11,7 +11,7 @@ export type Social = {
   url: string;
 };
 
-export type MemberAward = { title: string };
+export type MemberAward = AwardListItem;
 
 export interface MemberProfileData {
   name: string;
@@ -53,7 +53,7 @@ const SOCIAL_LABELS: Record<Social["platform"], string> = {
 const linkClass =
   "underline decoration-border underline-offset-[6px] transition-colors hover:text-foreground hover:decoration-current";
 
-/** Team Member profile header: the same shape as PageHeader, with a portrait. */
+/** Team Member profile header: the People page's PI section, as a page header. */
 const MemberProfile = ({ member, className }: MemberProfileProps) => {
   const links = [
     ...member.socials.map((s) => ({
@@ -69,119 +69,101 @@ const MemberProfile = ({ member, className }: MemberProfileProps) => {
   return (
     <header className={cn("relative isolate container pt-16 pb-12 md:pt-24 md:pb-16", className)}>
       <CropMarks className="ink-mark-soft top-8 md:top-10" />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-y-0 -right-5 -z-10 w-[26rem] overflow-x-clip overflow-y-visible max-lg:hidden xl:w-[32rem]"
-      >
-        <RisoArt
-          variant="bloom"
-          className="absolute -top-10 -right-32 size-[34rem] opacity-90 xl:-right-36 xl:size-[40rem]"
-        />
-      </div>
-      <p className={cn(label, "enter")} style={enterStep(0)}>
-        {ROLE_LABELS[member.role] ?? member.role}
-      </p>
-      <div className="enter relative mt-4 w-fit" style={enterStep(1)}>
-        <h1 className={pageTitle}>{member.name}</h1>
-        <Squiggle className="ink-mark mt-1 max-w-md" />
-      </div>
+      {/* A mark in the margin beside the name, not a backdrop: sized to the
+          gutter the prose measure leaves, so it never sits under the bio. */}
+      <RisoArt
+        variant="bloom"
+        className="pointer-events-none absolute top-20 right-0 -z-10 size-56 opacity-80 max-lg:hidden md:top-28 xl:size-64"
+      />
 
-      <div className="relative mt-10 grid gap-10 pt-6 md:grid-cols-[minmax(0,16rem)_1fr] md:gap-16">
-        <span
-          aria-hidden
-          className="ink-rule enter-rule absolute inset-x-0 top-0 h-px"
+      {/* The PI section's shape on the People page: the mounted portrait on
+          the left, the record beside it, so the two read as one person. One
+          grid, one column of record — the wrappers that only carried an
+          entrance step are gone, each piece takes its own.
+
+          On a phone the portrait spans the column exactly. Capped at 20rem it
+          stopped a few pixels short of the text's right edge, so the card and
+          the words under it never quite lined up on either side. */}
+      <div className="grid gap-10 md:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] md:gap-16">
+        <MountedPortrait
+          src={member.photo}
+          name={member.name}
+          priority
+          className={cn("enter max-md:max-w-none", !member.photo && "max-md:hidden")}
           style={enterStep(2)}
         />
-        {member.photo ? (
-          <span className="enter relative block w-full max-w-64" style={enterStep(3)}>
-            {/* `tape` is the strip itself, laid over the corner of a relative
-                parent — never applied to the frame, which would collapse it,
-                and passed as `overlay` so it comes down with a failed photo. */}
-            <OptionalImage
-              src={member.photo}
-              alt={member.name}
-              priority
-              overlay={<Tape />}
-              frameClassName="aspect-[4/5] w-full rounded-sm"
-              className="h-full w-full object-cover object-top"
-              fallback={
-                <InitialTile
-                  name={member.name}
-                  className="aspect-[4/5] h-auto w-full rounded-lg font-display text-7xl"
-                />
-              }
-            />
-          </span>
-        ) : (
-          // No photograph: the printed initial tile the roster already uses,
-          // rather than a grey box with a letter in it.
-          <InitialTile
-            name={member.name}
-            className="aspect-[4/5] h-auto w-full max-w-64 rounded-lg font-display text-7xl max-md:hidden"
-          />
-        )}
 
-        <div className="enter flex max-w-prose flex-col" style={enterStep(4)}>
-          <p className="text-lg">{member.title}</p>
-          <p className="mt-1 text-muted-foreground">
-            {member.affiliation.url ? (
-              <a href={member.affiliation.url} className={linkClass}>
-                {member.affiliation.name}
-              </a>
-            ) : (
-              member.affiliation.name
-            )}
+        <div className="max-w-prose min-w-0">
+          <p className={cn(label, "enter")} style={enterStep(0)}>
+            {ROLE_LABELS[member.role] ?? member.role}
           </p>
+          <h1
+            className="enter mt-3 font-display text-4xl leading-tight tracking-tight text-balance md:text-5xl"
+            style={enterStep(1)}
+          >
+            {member.name}
+          </h1>
 
-          {member.bio && (
-            <p className="mt-6 text-pretty leading-relaxed text-muted-foreground md:text-lg">
-              {member.bio}
+          <div className="enter mt-2" style={enterStep(3)}>
+            <p className="text-lg">{member.title}</p>
+            <p className="mt-1 text-muted-foreground">
+              {member.affiliation.url ? (
+                <a href={member.affiliation.url} className={linkClass}>
+                  {member.affiliation.name}
+                </a>
+              ) : (
+                member.affiliation.name
+              )}
             </p>
-          )}
 
-          <dl className="mt-8 text-sm">
-            {member.researchInterests.length > 0 && (
-              <div className="grid grid-cols-[7rem_1fr] gap-4 border-t border-border py-3">
-                <dt className="text-muted-foreground">Interests</dt>
-                <dd>{member.researchInterests.join(", ")}</dd>
-              </div>
+            {member.bio && (
+              <p className="mt-6 text-pretty leading-relaxed text-muted-foreground md:text-lg">
+                {member.bio}
+              </p>
             )}
-            {member.awards.length > 0 && (
-              <div className="grid grid-cols-[7rem_1fr] gap-4 border-t border-border py-3">
-                <dt className="text-muted-foreground">Awards</dt>
-                <dd>
-                  <ul className="flex flex-col gap-1">
-                    {member.awards.map((award) => (
-                      <li key={award.title}>{award.title}</li>
+
+            <dl className="mt-8 text-sm">
+              {member.researchInterests.length > 0 && (
+                <div className="grid grid-cols-[7rem_1fr] gap-4 border-t border-border py-3">
+                  <dt className="text-muted-foreground">Interests</dt>
+                  <dd>{member.researchInterests.join(", ")}</dd>
+                </div>
+              )}
+              {(member.email || links.length > 0) && (
+                <div className="grid grid-cols-[7rem_1fr] gap-4 border-y border-border py-3">
+                  <dt className="text-muted-foreground">Elsewhere</dt>
+                  <dd className="flex min-w-0 flex-wrap gap-x-4 gap-y-1">
+                    {member.email && (
+                      <a href={`mailto:${member.email}`} className={cn(linkClass, "break-all")}>
+                        {member.email}
+                      </a>
+                    )}
+                    {links.map((link) => (
+                      <a
+                        key={link.href}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={linkClass}
+                      >
+                        {link.label}
+                      </a>
                     ))}
-                  </ul>
-                </dd>
-              </div>
+                  </dd>
+                </div>
+              )}
+            </dl>
+
+            {/* Awards are their own ruled list, not one more row of the ledger
+                above: each has four parts worth reading down (name, body,
+                year, paper), which a single cell of joined text could not. */}
+            {member.awards.length > 0 && (
+              <section className="mt-10">
+                <h2 className={label}>Awards</h2>
+                <AwardList awards={member.awards} className="mt-3" />
+              </section>
             )}
-            {(member.email || links.length > 0) && (
-              <div className="grid grid-cols-[7rem_1fr] gap-4 border-y border-border py-3">
-                <dt className="text-muted-foreground">Elsewhere</dt>
-                <dd className="flex flex-wrap gap-x-4 gap-y-1">
-                  {member.email && (
-                    <a href={`mailto:${member.email}`} className={linkClass}>
-                      {member.email}
-                    </a>
-                  )}
-                  {links.map((link) => (
-                    <a
-                      key={link.href}
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={linkClass}
-                    >
-                      {link.label}
-                    </a>
-                  ))}
-                </dd>
-              </div>
-            )}
-          </dl>
+          </div>
         </div>
       </div>
     </header>

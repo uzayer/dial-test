@@ -12,12 +12,15 @@ import { ImageResponse } from "next/og";
 import sharp from "sharp";
 
 import { RISO_COMPOSITIONS, type RisoVariant } from "@/components/riso";
+import { ThemeGlyph } from "@/components/theme-marks";
 
 /**
  * Open Graph cards in DIAL's riso-notebook style: the PageHeader, printed on
- * one sheet. Eyebrow, display-serif title with the drawn underline, a lede on
- * an ink rule, the lockup at the foot, and the page's riso composition
- * bleeding off the right edge past the crop marks.
+ * one sheet. Eyebrow, display-serif title, a lede on an ink rule, the lockup
+ * at the foot, and the page's riso composition bleeding off the right edge
+ * past the crop marks. No drawn underline under the title: on the site the
+ * squiggle means "this is a link", so it is not set under headings, and on a
+ * card it never covered a title that wrapped.
  *
  * Served as WebP: `ImageResponse` only produces PNG, so sharp re-encodes it.
  * One image per page, deliberately. Open Graph has no format fallback — a
@@ -55,16 +58,33 @@ const INK_BLACK = oklch(0.19, 0.012, 60); // --foreground
 const PENCIL = oklch(0.52, 0.014, 60); // --muted-foreground
 const BORDER = oklch(0.9, 0.008, 75); // --border
 
-/** The press, keyed by the Tailwind text class the riso drawings use. */
-const PRESS: Record<string, string> = {
-  "text-brand": oklch(0.47, 0.1, 165),
-  "text-ink": oklch(0.58, 0.17, 38),
-  "text-ink-blue": oklch(0.53, 0.14, 248),
-  "text-ink-yellow": oklch(0.74, 0.14, 82),
-  "text-ink-violet": oklch(0.55, 0.16, 340),
+/** The press as OKLCH, keyed by the Tailwind text class the drawings use. */
+const PRESS_LCH = {
+  "text-brand": [0.47, 0.1, 165],
+  "text-ink": [0.58, 0.17, 38],
+  "text-ink-blue": [0.53, 0.14, 248],
+  "text-ink-yellow": [0.74, 0.14, 82],
+  "text-ink-violet": [0.55, 0.16, 340],
+} as const;
+
+/** One of the press's inks, by its Tailwind class. */
+export type PressInk = keyof typeof PRESS_LCH;
+
+const press = (ink: PressInk, alpha = 1) => {
+  const [L, C, h] = PRESS_LCH[ink];
+  return oklch(L, C, h, alpha);
 };
-const INK = PRESS["text-ink"];
-const inkAt = (alpha: number) => oklch(0.58, 0.17, 38, alpha);
+
+/** The press as resolved colours, for re-inking the drawings. */
+const PRESS: Record<string, string> = Object.fromEntries(
+  Object.keys(PRESS_LCH).map((ink) => [ink, press(ink as PressInk)]),
+);
+
+/**
+ * Yellow is too light to set type in on paper; a yellow Theme keeps its
+ * yellow composition and glyph, and prints its words in the second ink.
+ */
+const typeInk = (ink: PressInk): PressInk => (ink === "text-ink-yellow" ? "text-ink" : ink);
 
 // ─── Fonts ───────────────────────────────────────────────────────────────────
 // Static TTF instances, since Satori reads neither woff2 nor variable axes:
@@ -125,39 +145,34 @@ function reink(
   );
 }
 
-function Riso({ variant, px }: { variant: RisoVariant; px: number }) {
+function Riso({ variant, px, ink }: { variant: RisoVariant; px: number; ink: string }) {
   const Composition = RISO_COMPOSITIONS[variant];
   return (
     <svg viewBox="0 0 208 208" width={px} height={px}>
-      {reink(<g>{Composition({ id: `og-${variant}` })}</g>, INK, { fill: false, stroke: false })}
+      {reink(<g>{Composition({ id: `og-${variant}` })}</g>, ink, { fill: false, stroke: false })}
     </svg>
   );
+}
+
+/** A Theme's drawn glyph at plate size, re-inked the same way as the art. */
+function Glyph({ slug, px, ink }: { slug: string; px: number; ink: string }) {
+  const drawing = ThemeGlyph({ slug });
+  if (!isValidElement<Record<string, unknown>>(drawing)) return null;
+  const inked = reink(drawing, ink, { fill: false, stroke: false });
+  return isValidElement(inked)
+    ? cloneElement(inked as ReactElement<Record<string, unknown>>, { width: px, height: px })
+    : null;
 }
 
 // ─── Marks ───────────────────────────────────────────────────────────────────
 
-/** The drawn underline: one wave tiled at a fixed wavelength, as on the site. */
-function Squiggle({ width }: { width: number }) {
-  const scale = 1.5; // the site's 44 × 10 tile, at card scale
-  const tiles = Math.ceil(width / (44 * scale));
-  const d = Array.from(
-    { length: tiles },
-    (_, i) => `M${i * 44} 5c5.5-3 16.5-3 22 0s16.5 3 22 0`,
-  ).join("");
-  return (
-    <svg width={width} height={10 * scale} viewBox={`0 0 ${width / scale} 10`}>
-      <path d={d} fill="none" stroke={INK} strokeWidth={1.8} strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function CropMark({ flip }: { flip?: boolean }) {
+function CropMark({ flip, color }: { flip?: boolean; color: string }) {
   return (
     <svg width={24} height={24} viewBox="0 0 20 20">
       <path
         d={flip ? "M20 14H6M6 20V6" : "M0 14h14M14 20V6"}
         fill="none"
-        stroke={inkAt(0.45)}
+        stroke={color}
         strokeWidth={1.5}
         strokeLinecap="round"
       />
@@ -205,6 +220,13 @@ export interface OgCard {
   /** The composition the matching page header prints. */
   art?: RisoVariant;
   /**
+   * The ink the card prints in — a Research Theme's own, as its page is. The
+   * second ink otherwise. Sets the eyebrow, the marks and the rule.
+   */
+  ink?: PressInk;
+  /** A Research Theme's slug: prints its drawn glyph above the title. */
+  glyph?: string;
+  /**
    * Lead with the DIAL wordmark at display size and set the title under it.
    * The footer lockup is dropped, since it would repeat the mark. For the
    * site-wide card, where the lab itself is the subject.
@@ -216,16 +238,31 @@ export interface OgCard {
 const titleSize = (title: string) =>
   title.length <= 28 ? 104 : title.length <= 56 ? 80 : title.length <= 100 ? 56 : 46;
 
+/**
+ * The composition gives way to the words. At 660px it was a backdrop, which
+ * suits a two-word title with room around it; under a four-line paper title it
+ * ran up into the lines and outweighed them. Long titles get a plate tucked
+ * into the bottom corner instead.
+ */
+const artSize = (title: string, logo: boolean) =>
+  logo ? 620 : title.length <= 28 ? 560 : title.length <= 56 ? 480 : 380;
+
 function Card({
   eyebrow,
   title,
   description,
   art = "bloom",
+  ink = "text-ink",
+  glyph,
   logo = false,
   wordmark,
 }: OgCard & { wordmark: string }) {
-  const fontSize = logo ? 60 : titleSize(title);
+  // A Theme card spends a line's height on its glyph, so its title steps down
+  // to keep the lede clear of the lockup.
+  const fontSize = logo ? 52 : glyph ? Math.min(titleSize(title), 64) : titleSize(title);
   const short = title.length <= 56;
+  const px = artSize(title, logo);
+  const words = press(typeInk(ink));
   return (
     <div
       style={{
@@ -240,17 +277,23 @@ function Card({
     >
       {/* The composition, bleeding off the right edge of the sheet. */}
       <div
-        style={{ position: "absolute", right: -170, bottom: -110, display: "flex", opacity: 0.9 }}
+        style={{
+          position: "absolute",
+          right: -Math.round(px * 0.26),
+          bottom: -Math.round(px * 0.17),
+          display: "flex",
+          opacity: 0.9,
+        }}
       >
-        <Riso variant={art} px={660} />
+        <Riso variant={art} px={px} ink={press(ink)} />
       </div>
 
       {/* Printer's crop marks at the sheet's top corners. */}
       <div style={{ position: "absolute", top: 40, left: 40, display: "flex" }}>
-        <CropMark />
+        <CropMark color={press(typeInk(ink), 0.45)} />
       </div>
       <div style={{ position: "absolute", top: 40, right: 40, display: "flex" }}>
-        <CropMark flip />
+        <CropMark flip color={press(typeInk(ink), 0.45)} />
       </div>
 
       <div
@@ -259,7 +302,9 @@ function Card({
           flexDirection: "column",
           justifyContent: logo ? "center" : "space-between",
           padding: "88px 80px 64px",
-          width: 800,
+          // The site card sets the lab's name on one line under the mark, so
+          // it takes the width the composition leaves it.
+          width: logo ? 860 : 800,
         }}
       >
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -270,10 +315,15 @@ function Card({
                 fontSize: 18,
                 letterSpacing: "0.2em",
                 textTransform: "uppercase",
-                color: INK,
+                color: words,
               }}
             >
               {eyebrow}
+            </div>
+          )}
+          {glyph && (
+            <div style={{ display: "flex", marginTop: eyebrow ? 22 : 0 }}>
+              <Glyph slug={glyph} px={72} ink={press(ink)} />
             </div>
           )}
           {logo && (
@@ -289,21 +339,22 @@ function Card({
           <div
             style={{
               display: "block",
-              marginTop: logo ? 36 : eyebrow ? 24 : 0,
+              marginTop: logo ? 32 : glyph ? 14 : eyebrow ? 24 : 0,
               fontFamily: "Fraunces",
               fontSize,
               lineHeight: 1.02,
               letterSpacing: "-0.02em",
-              // A title with no lede under it may take the lede's room.
-              lineClamp: description ? 3 : 4,
+              // A title with no lede under it may take the lede's room; a
+              // paper's title needs a fifth line more often than not.
+              lineClamp: description ? 3 : short ? 4 : 5,
               // Balancing a long title that is then clamped wraps it narrow.
-              textWrap: short ? "balance" : "wrap",
+              // The lab's name is one line, never balanced: balanced, it broke
+              // as "Design Inclusion / and Access Lab", leading with "and".
+              textWrap: short && !logo ? "balance" : "wrap",
+              whiteSpace: logo ? "nowrap" : "normal",
             }}
           >
             {title}
-          </div>
-          <div style={{ display: "flex", marginTop: 14 }}>
-            <Squiggle width={Math.min(420, title.length * fontSize * 0.45)} />
           </div>
           {description && (
             <div
@@ -311,7 +362,7 @@ function Card({
                 display: "block",
                 marginTop: 32,
                 paddingTop: 20,
-                borderTop: `1px solid ${inkAt(0.4)}`,
+                borderTop: `1px solid ${press(typeInk(ink), 0.4)}`,
                 fontFamily: "Geist",
                 fontSize: 24,
                 lineHeight: 1.4,

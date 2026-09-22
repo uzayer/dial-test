@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { AwardStamp } from "@/components/award-stamp";
+import { sectionSpacing } from "@/components/editorial";
 import { SegmentedControl } from "@/components/segmented-control";
 import { displaySectionTitle } from "@/lib/typography";
 
@@ -27,7 +29,7 @@ export interface Award {
   isFeatured?: boolean;
 }
 
-const categoryLabels: Record<AwardCategory, string> = {
+export const categoryLabels: Record<AwardCategory, string> = {
   "best-paper": "Best Paper",
   "best-poster": "Best Poster",
   "honorable-mention": "Honorable Mention",
@@ -61,7 +63,7 @@ export function AwardsFilterTable({ awards, yearRange }: AwardsFilterTableProps)
   const sortedYears = Object.keys(byYear).sort((a, b) => Number(b) - Number(a));
 
   return (
-    <section className="pb-24">
+    <section className={sectionSpacing}>
       <div className="container space-y-8">
         <div className="flex w-full items-baseline justify-between gap-4 border-t border-border pt-6">
           <h2 className={displaySectionTitle}>Every award</h2>
@@ -84,7 +86,7 @@ export function AwardsFilterTable({ awards, yearRange }: AwardsFilterTableProps)
               <th className="hidden min-w-28 pr-4 font-normal lg:table-cell">Organization</th>
               <th className="pr-4 font-normal">Award</th>
               <th className="hidden pr-4 font-normal md:table-cell">Publication</th>
-              <th className="hidden text-right font-normal sm:table-cell">Category</th>
+              <th className="hidden text-right font-normal lg:table-cell">Category</th>
             </tr>
           </thead>
           {sortedYears.map((year) => (
@@ -99,19 +101,29 @@ export function AwardsFilterTable({ awards, yearRange }: AwardsFilterTableProps)
               </tr>
               {byYear[year].map((award, i) => (
                 <tr key={i} className="border-b">
-                  <td className="hidden py-5 pr-6 align-top text-sm text-muted-foreground lg:table-cell">
-                    {award.organization}
+                  {/* The awarding body is a stamp line in every layout — its own
+                      column from lg, the kicker above the award below it —
+                      never another grey caption next to the paper's title. */}
+                  <td className="hidden py-5 pr-6 align-top lg:table-cell">
+                    <AwardStamp organization={award.organization} className="pt-1.5" />
                   </td>
                   <td className="py-5 pr-6 align-top font-display text-lg leading-snug text-foreground lg:text-xl">
+                    <AwardStamp
+                      organization={award.organization}
+                      category={categoryLabels[award.category]}
+                      className="mb-2 lg:hidden"
+                    />
                     {award.title}
-                    <span className="mt-1 block font-sans text-xs text-muted-foreground lg:hidden">
-                      {award.organization}
-                    </span>
+                    {award.linkedPublication && (
+                      <span className="mt-2 block font-sans text-sm text-pretty text-muted-foreground md:hidden">
+                        &ldquo;{award.linkedPublication}&rdquo;
+                      </span>
+                    )}
                   </td>
                   <td className="hidden py-5 pr-6 align-top text-sm text-pretty text-muted-foreground md:table-cell">
                     {award.linkedPublication ? `"${award.linkedPublication}"` : "—"}
                   </td>
-                  <td className="hidden py-5 text-right align-top text-sm whitespace-nowrap text-muted-foreground sm:table-cell">
+                  <td className="hidden py-5 text-right align-top text-sm whitespace-nowrap text-muted-foreground lg:table-cell">
                     {categoryLabels[award.category]}
                   </td>
                 </tr>

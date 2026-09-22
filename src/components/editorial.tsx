@@ -9,18 +9,21 @@ import { cn } from "@/lib/utils";
 /**
  * Shared editorial sections. Every section on the site opens with a ruled
  * SectionHeader and sits on the plain `container`, so pages share one left
- * edge and one vertical rhythm (py-16 md:py-28 per section).
+ * edge and one vertical rhythm.
  */
-
-export const sectionSpacing = "py-16 md:py-28";
 
 /**
- * The rhythm for a page that is a run of short sections rather than a few long
- * ones — Home, People, Join the lab. At the default spacing those pages put most of
- * a screen of empty paper between every heading, which reads as the page
- * having ended rather than as breathing room.
+ * The site's one section rhythm: 96px between sections on a phone, 128px on
+ * a desktop, since two neighbours' padding meets. The first section under a
+ * page header adds `pt-0 md:pt-0`; the header's own foot is the gap there.
+ *
+ * There used to be two rhythms (py-16/md:py-28 and py-12/md:py-16) plus
+ * one-off paddings (pb-24, py-24, pb-16/md:pb-24) wherever a section was
+ * written by hand. Mixed on one page, the gap between two headings came out as
+ * 96, 128, 208 or 224px depending on which pair you were between, which read
+ * as random rather than as rhythm.
  */
-export const sectionSpacingTight = "py-12 md:py-16";
+export const sectionSpacing = "py-12 md:py-16";
 
 // ─── Section header ──────────────────────────────────────────────────────────
 
@@ -155,11 +158,25 @@ export interface ThemeIndexEntry {
   description?: string | null;
   projectCount?: number;
   publicationCount?: number;
+  /**
+   * Project names filed under the Theme, as evidence of what the Lab actually
+   * did there. Printed, not linked: the whole row is already one link.
+   */
+  examples?: string[];
 }
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
-/** Ruled, numbered list of Research Themes; the same row wherever themes are listed. */
+/**
+ * Ruled, numbered list of Research Themes; the same row wherever themes are
+ * listed.
+ *
+ * Hover is the site's two signals and nothing else: the glyph lifts and the
+ * title takes the squiggle. The paper used to darken as well, which made three.
+ * A phone keeps the glyph (it is how a Theme is recognised across the site) and
+ * the arrow (it has no hover to tell it the row is a link), and drops only the
+ * running number.
+ */
 export const ThemeIndex = ({
   themes,
   className,
@@ -178,27 +195,35 @@ export const ThemeIndex = ({
           <Link
             href={`/research/${theme.slug}`}
             className={cn(
-              "group -mx-4 grid grid-cols-[2rem_1fr_auto] items-baseline gap-x-4 gap-y-1 rounded-lg px-4 py-5",
-              "md:grid-cols-[6.5rem_minmax(0,19rem)_1fr_auto_1.25rem] md:items-center md:gap-x-10 md:py-9",
-              "transition-colors duration-150 ease-snappy hover:bg-muted/50 active:bg-muted",
+              "group -mx-4 grid grid-cols-[2.75rem_1fr_auto] items-center gap-x-4 gap-y-1 rounded-lg px-4 py-5",
+              "md:grid-cols-[6.5rem_minmax(0,19rem)_1fr_auto_1.25rem] md:gap-x-10 md:py-9",
+              "transition-[scale,background-color] duration-150 ease-snappy active:scale-[0.99] active:bg-muted/60",
             )}
           >
             <span
               className={cn(
-                "flex items-center gap-4 font-mono text-xs tabular-nums",
+                "row-span-2 flex items-center gap-4 self-start font-mono text-xs tabular-nums md:row-span-1 md:self-center",
                 themeInk(theme.slug),
               )}
             >
-              <span className="opacity-70">{String(i + 1).padStart(2, "0")}</span>
-              <ThemeGlyph slug={theme.slug} className="size-14 shrink-0 max-md:hidden" />
+              <span className="opacity-70 max-md:hidden">{String(i + 1).padStart(2, "0")}</span>
+              <span className="mark-lift shrink-0">
+                <ThemeGlyph slug={theme.slug} className="size-11 md:size-14" />
+              </span>
             </span>
             <SquiggleText className="font-display text-xl leading-snug md:text-2xl">
               {theme.title}
             </SquiggleText>
             <ArrowRight className="size-4 self-center text-muted-foreground arrow-ne group-hover:text-foreground md:hidden" />
-            {theme.description && (
-              <span className="col-start-2 text-sm text-pretty text-muted-foreground md:col-start-auto">
+            {(theme.description || theme.examples?.length) && (
+              <span className="col-start-2 flex flex-col gap-1.5 text-sm text-pretty text-muted-foreground md:col-start-auto">
                 {theme.description}
+                {theme.examples && theme.examples.length > 0 && (
+                  <span className="text-xs">
+                    <span className="font-hand text-base text-ink">e.g.</span>{" "}
+                    <span className="text-foreground/80">{theme.examples.join(", ")}</span>
+                  </span>
+                )}
               </span>
             )}
             <span className="col-start-2 text-sm whitespace-nowrap tabular-nums text-muted-foreground md:col-start-auto md:text-right">
@@ -261,7 +286,9 @@ export const ThemeSpotlight = ({
               style={themeLinkInk(theme.slug)}
               className={cn("group flex h-full flex-col gap-4 px-2 py-7 sm:px-6", themeLinkPress)}
             >
-              <ThemeGlyph slug={theme.slug} className="size-16 shrink-0" />
+              <span className="mark-lift w-fit shrink-0">
+                <ThemeGlyph slug={theme.slug} className="size-16" />
+              </span>
               <SquiggleText arrow className="font-display text-2xl leading-snug text-balance">
                 {theme.title}
               </SquiggleText>
@@ -288,7 +315,9 @@ export const ThemeSpotlight = ({
                 style={themeLinkInk(theme.slug)}
                 className={cn("group -mx-2 flex items-center gap-4 px-2 py-3", themeLinkPress)}
               >
-                <ThemeGlyph slug={theme.slug} className="size-10 shrink-0" />
+                <span className="mark-lift shrink-0">
+                  <ThemeGlyph slug={theme.slug} className="size-10" />
+                </span>
                 <SquiggleText
                   arrow
                   className={cn("min-w-0 font-display text-xl leading-snug", themeInk(theme.slug))}

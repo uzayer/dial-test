@@ -1,16 +1,15 @@
+import { AwardList, type AwardListItem } from "@/components/award-list";
 import { TextLink } from "@/components/editorial";
 import { label } from "@/lib/typography";
-import { InitialTile } from "@/components/initial-tile";
-import { OptionalImage } from "@/components/optional-image";
+import { MountedPortrait } from "@/components/mounted-portrait";
 import { cn } from "@/lib/utils";
-import { Tape } from "@/components/marks";
 
 export interface PIProfileData {
   name: string;
   title: string;
   photo?: string | null;
   bio?: string | null;
-  awards: string[];
+  awards: AwardListItem[];
   scholarUrl?: string | null;
   email?: string | null;
   profileHref: string;
@@ -25,37 +24,7 @@ interface PIProfileProps {
 const PIProfile = ({ pi, className }: PIProfileProps) => (
   <section className={cn("container", className)}>
     <div className="grid gap-10 border-t border-border pt-6 md:grid-cols-[minmax(0,20rem)_1fr] md:gap-16">
-      {pi.photo ? (
-        // Mounted on the same bordered, halftoned card as the People menu's
-        // portrait. `self-start` keeps the grid from stretching the card to
-        // the bio's height, which would leave it empty below the photo.
-        <div className="relative w-full max-w-80 self-start rounded-md border border-border bg-muted/40 p-5">
-          <span
-            aria-hidden
-            className="halftone absolute inset-0 rounded-[inherit] opacity-[0.07]"
-          />
-          <span className="relative block">
-            <OptionalImage
-              src={pi.photo}
-              alt={pi.name}
-              overlay={<Tape />}
-              frameClassName="aspect-[4/5] w-full rounded-sm shadow-[0_1px_0_0_var(--paper-line),0_12px_28px_-18px_rgba(0,0,0,0.55)]"
-              className="h-full w-full object-cover object-top"
-              fallback={
-                <InitialTile
-                  name={pi.name}
-                  className="aspect-[4/5] h-auto w-full max-w-80 rounded-lg font-display text-7xl"
-                />
-              }
-            />
-          </span>
-        </div>
-      ) : (
-        <InitialTile
-          name={pi.name}
-          className="aspect-[4/5] h-auto w-full max-w-80 rounded-lg font-display text-7xl"
-        />
-      )}
+      <MountedPortrait src={pi.photo} name={pi.name} alt={`Dr. ${pi.name}`} />
 
       <div className="flex flex-col">
         <p className={label}>Principal Investigator</p>
@@ -66,15 +35,9 @@ const PIProfile = ({ pi, className }: PIProfileProps) => (
           <p className="mt-6 max-w-prose text-pretty leading-relaxed md:text-lg">{pi.bio}</p>
         )}
 
-        {pi.awards.length > 0 && (
-          <ul className="mt-8 max-w-prose divide-y divide-border border-y border-border text-sm">
-            {pi.awards.map((award) => (
-              <li key={award} className="py-2.5">
-                {award}
-              </li>
-            ))}
-          </ul>
-        )}
+        {/* Recognition as its own ruled list — name, body, year, paper — not
+            a run of joined sentences that read the same as the bio above. */}
+        <AwardList awards={pi.awards} className="mt-8 max-w-prose" />
 
         <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3">
           <TextLink href={pi.profileHref}>Full profile</TextLink>

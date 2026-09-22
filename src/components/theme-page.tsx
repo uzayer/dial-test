@@ -87,7 +87,6 @@ export function ThemePage({ slug, description, stakes, relatedSlugs }: ThemePage
         ink={themeInkVar(theme.slug)}
         glyph={<ThemeGlyph slug={theme.slug} className="size-28 md:size-40" />}
         title={theme.title}
-        fullTitleSquiggle
         description={description}
         facts={[
           { value: String(stats.projects), label: "Projects" },
@@ -101,7 +100,7 @@ export function ThemePage({ slug, description, stakes, relatedSlugs }: ThemePage
 
       {/* §3 Projects */}
       {projects.length > 0 && (
-        <section className={cn("container", sectionSpacing, "pt-0 md:pt-0")}>
+        <section className={cn("container", sectionSpacing)}>
           <SectionHeader title="Projects" className="mb-6" />
           <ProjectIndex projects={projects.map(toProjectEntry)} />
         </section>
@@ -109,7 +108,7 @@ export function ThemePage({ slug, description, stakes, relatedSlugs }: ThemePage
 
       {/* §4 Publications */}
       {themePublications.length > 0 && (
-        <section className={cn("container", sectionSpacing, "pt-0 md:pt-0")}>
+        <section className={cn("container", sectionSpacing)}>
           <SectionHeader title="Publications" className="mb-6" />
           <FlatPublicationList
             yearGroups={toPublicationYears(themePublications)}

@@ -1,7 +1,6 @@
 import { ClosingNote } from "@/components/closing-note";
 import {
   InkBand,
-  NameLine,
   NumberedSteps,
   PullQuote,
   SectionHeader,
@@ -12,7 +11,9 @@ import { PageHeader } from "@/components/page-header";
 import { PhotoSlot } from "@/components/photo-slot";
 import { ScrollStroke } from "@/components/scroll-stroke";
 import { ScrollRuler } from "@/components/scroll-ruler";
-import { labInfo, labStats, venuesByPublicationCount } from "@/data";
+import { VenueLedger } from "@/components/venue-ledger";
+import { topVenueEntries } from "@/data/views";
+import { labInfo, labStats } from "@/data";
 import { displaySectionTitle, label } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
@@ -97,17 +98,16 @@ export default function AboutPage() {
         title="HCI research from the margins, built with the people it serves."
         description="DIAL studies access, inclusion, safety, wellbeing, and development in real-world Bangladeshi contexts where constraints shape the work."
         facts={facts}
-      >
-        <NameLine
-          label="Published at"
-          names={venuesByPublicationCount()
-            .slice(0, 6)
-            .map((v) => v.shortName ?? v.name)}
-          className="mt-8"
-        />
-      </PageHeader>
+      />
 
+      {/* The venues, at the size their names carry in the field. Out of the
+          header rather than under its figures: the header's margin belongs to
+          the composition, and a ledger this wide would run into it. */}
       <section className={cn("container", sectionSpacing, "pt-0 md:pt-0")}>
+        <VenueLedger venues={topVenueEntries()} label="Where the work is published" />
+      </section>
+
+      <section className={cn("container", sectionSpacing)}>
         <div
           data-reveal
           className="relative grid gap-10 pt-6 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-24"
@@ -160,14 +160,25 @@ export default function AboutPage() {
 
       <section className={cn("container", sectionSpacing)}>
         <SectionHeader label="Values" title="What the lab holds to" className="mb-2" />
-        <dl className="grid gap-x-12 md:grid-cols-2">
-          {values.map((value) => (
-            <div key={value.title} className="border-b border-border py-6">
-              <dt className="font-display text-2xl leading-snug">{value.title}</dt>
-              <dd className="mt-2 text-pretty text-muted-foreground">{value.body}</dd>
-            </div>
+        {/* A ledger, not a grid of four look-alike blocks: number, statement,
+            reasoning, each in its own column, so the four statements can be
+            read straight down before any of the sentences are. */}
+        <ol className="divide-y divide-border border-b border-border">
+          {values.map((value, i) => (
+            <li
+              key={value.title}
+              className="grid grid-cols-[2.5rem_1fr] gap-x-4 gap-y-2 py-6 md:grid-cols-[3rem_minmax(0,20rem)_1fr] md:items-baseline md:gap-x-10"
+            >
+              <span className="font-mono text-xs tabular-nums text-ink">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3 className="font-display text-2xl leading-snug text-balance">{value.title}</h3>
+              <p className="col-start-2 text-pretty text-muted-foreground md:col-start-auto">
+                {value.body}
+              </p>
+            </li>
           ))}
-        </dl>
+        </ol>
       </section>
 
       <section className={cn("container", sectionSpacing)}>
@@ -176,16 +187,20 @@ export default function AboutPage() {
           title="From field insight to usable systems"
           className="mb-10"
         />
-        <NumberedSteps steps={methods} />
         {/* The method described above has a lineage, and saying so is not a
             digression: "we design with the people who will use it" reads as a
             slogan until it is placed in a tradition that has been argued over
-            for fifty years. */}
-        <FieldNote source="UTOPIA project, 1981–1986" className="mt-10">
-          Designing with the people who will use the thing began with Scandinavian trade unions.
-          Typographers worked alongside researchers on the systems that were about to change their
-          trade — not as subjects, as co-designers.
-        </FieldNote>
+            for fifty years. So the note sits in the margin beside the steps it
+            annotates, the way a reader pencils one in — not as a stray block
+            after them. On a phone there is no margin, and it follows. */}
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_15rem] lg:gap-12">
+          <NumberedSteps steps={methods} />
+          <FieldNote source="UTOPIA project, 1981–1986" className="lg:mt-5">
+            Designing with the people who will use the thing began with Scandinavian trade unions.
+            Typographers worked alongside researchers on the systems that were about to change their
+            trade — not as subjects, as co-designers.
+          </FieldNote>
+        </div>
       </section>
 
       <section className={cn("container", sectionSpacing, "relative")}>

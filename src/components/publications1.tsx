@@ -31,7 +31,7 @@ import {
   viewOptions,
 } from "@/components/publication-filters";
 import { copyToClipboard, generateBibTeX } from "@/lib/citation";
-import { AsteriskMark, SquiggleText } from "@/components/marks";
+import { RosetteMark } from "@/components/marks";
 import { PersonFaces, type Person } from "@/components/person-chip";
 import { displaySectionTitle } from "@/lib/typography";
 import { cn } from "@/lib/utils";
@@ -192,7 +192,11 @@ function CiteDialog({ pub, year }: { pub: Publication; year: number }) {
 
 function PubActions({ pub, year }: { pub: Publication; year: number }) {
   return (
-    <div className="relative z-10 flex flex-wrap gap-2">
+    // Right-aligned at every width, and pulled out by the ghost buttons' own
+    // padding so the last label sits flush with the row's right edge. On a
+    // phone they used to wrap under the tags at the left, where they read as
+    // one more tag instead of as the row's controls.
+    <div className="relative z-10 -mr-2.5 ml-auto flex flex-wrap justify-end gap-1">
       {pub.pdfLink && (
         <Button variant="ghost" size="sm" asChild>
           <a href={pub.pdfLink} target="_blank" rel="noopener noreferrer">
@@ -222,8 +226,77 @@ function PubActions({ pub, year }: { pub: Publication; year: number }) {
   );
 }
 
+/**
+ * Marks every occurrence of the active search term in a title, so a hit is
+ * visible in place. Colour only — no change of weight or size, which would
+ * reflow the title as the query is typed.
+ */
+function MarkedTitle({ text, term }: { text: string; term?: string }) {
+  const needle = term?.trim().toLowerCase();
+  if (!needle) return <>{text}</>;
+  const parts: React.ReactNode[] = [];
+  const haystack = text.toLowerCase();
+  let at = 0;
+  for (let found = haystack.indexOf(needle); found !== -1; found = haystack.indexOf(needle, at)) {
+    if (found > at) parts.push(text.slice(at, found));
+    parts.push(
+      <mark key={found} className="rounded-[2px] bg-brand/20 text-inherit">
+        {text.slice(found, found + needle.length)}
+      </mark>,
+    );
+    at = found + needle.length;
+  }
+  parts.push(text.slice(at));
+  return <>{parts}</>;
+}
+
+/**
+ * Short venues (CHI, TOCHI, ACM JCSS) are set in mono, like a stamp; anything
+ * longer ("JMIR Preprints", or a venue with no short form, spelt out) is set
+ * in the sans, where it wraps like words instead of like a code. The case is
+ * the venue's own — forcing capitals turned HCIxB into HCIXB.
+ */
+const isShortVenue = (venue: string) => venue.length <= 10;
+
+/**
+ * The venue, as the reader scans for it. `abbr` carries the written-out name
+ * into the accessibility tree and onto hover; the dotted rule is the long-
+ * standing sign that a word can be expanded.
+ */
+function VenueName({ pub, className }: { pub: Publication; className?: string }) {
+  if (!pub.venue) return null;
+  const type = cn(
+    isShortVenue(pub.venue)
+      ? "font-mono text-[0.8rem] font-medium tracking-[0.06em]"
+      : "text-sm font-medium",
+    "text-foreground",
+    className,
+  );
+  return pub.venueFull ? (
+    <abbr
+      title={pub.venueFull}
+      className={cn(
+        type,
+        "no-underline decoration-border decoration-dotted underline-offset-4 hover:underline",
+      )}
+    >
+      {pub.venue}
+    </abbr>
+  ) : (
+    <span className={type}>{pub.venue}</span>
+  );
+}
+
 // One publication, as listed everywhere. This is the unit that maps to a
 // Payload Publication, so it exists exactly once.
+//
+// Where it appeared and what kind of paper it is — TOCHI, a journal; ICTD, a
+// conference — is what a visitor from the field scans a bibliography for, and
+// it used to share one grey line with "Open access" and "Collaboration". So
+// the venue now has a place of its own: a ledger column in the row's left
+// margin wherever the row has the width (sized by the row's container, not the
+// window, so a list in a narrow column falls back cleanly), and a kicker above
+// the title where it does not. Down a long list the venues read as one column.
 function PublicationRow({
   pub,
   year,
@@ -238,89 +311,102 @@ function PublicationRow({
   /** Active search term, marked inside the title so a hit is visible in place. */
   query?: string;
 }) {
+  const typeLabel = pub.type ? (TYPE_LABELS[pub.type] ?? pub.type) : null;
+  const title = (
+    <span className="block max-w-4xl font-display text-xl leading-snug text-pretty md:text-2xl">
+      <MarkedTitle text={pub.title} term={query} />
+    </span>
+  );
+
   return (
-    // Same hover as the theme and project rows: the paper darkens a step and
-    // the title is underlined line by line. The row bleeds past the page's
-    // left and right edges by its own padding, so the text stays on the grid.
-    <div className="group relative -mx-4 rounded-lg px-4 py-6 transition-colors duration-150 ease-snappy hover:bg-muted/50">
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col gap-2">
-          <p>
+    <div className="@container">
+      {/* Hover draws an ink rule down the left margin, beside the whole
+          entry, the way a reader brackets the reference they mean. A title
+          runs to three lines; a squiggle under every line of every title was
+          more ink than the words, and the paper no longer darkens behind a
+          row (see "Hover vocabulary" in globals.css). */}
+      <div className="group relative py-6 @2xl:grid @2xl:grid-cols-[7rem_minmax(0,1fr)] @2xl:gap-x-8">
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-y-6 -left-3 w-0.5 origin-top scale-y-0 rounded-full bg-ink transition-transform duration-150 ease-snappy group-focus-within:scale-y-100 group-hover:scale-y-100 group-hover:duration-200 motion-reduce:transition-none md:-left-5"
+        />
+
+        {/* The ledger: venue over type, in the margin. */}
+        <div className="hidden flex-col gap-1 pt-1.5 @2xl:flex">
+          <VenueName pub={pub} className="leading-tight break-words" />
+          {typeLabel && <span className="text-xs text-muted-foreground">{typeLabel}</span>}
+        </div>
+
+        <div className="flex min-w-0 flex-col gap-3">
+          {/* The same two facts as a kicker, where there is no margin. */}
+          {(pub.venue || typeLabel) && (
+            <p className="flex flex-wrap items-baseline gap-x-2 text-xs @2xl:hidden">
+              <VenueName pub={pub} className="text-xs" />
+              {pub.venue && typeLabel && (
+                <span aria-hidden className="text-muted-foreground/60">
+                  ·
+                </span>
+              )}
+              {typeLabel && <span className="text-muted-foreground">{typeLabel}</span>}
+            </p>
+          )}
+
+          <div className="flex flex-col gap-2">
             {/* The title is the row's link, stretched over the whole row by a
-                pseudo-element so the paper darkens and the words underline as
-                one gesture. The action buttons sit above it on z-10, so a click
-                on PDF or Cite is still a click on PDF or Cite. */}
+                pseudo-element so the entry is one target. The action buttons
+                sit above it on z-10, so a click on PDF or Cite is still a
+                click on PDF or Cite. */}
             {pub.href ? (
-              <Link href={pub.href} className="before:absolute before:inset-0 before:rounded-lg">
-                <SquiggleText
-                  highlight={query}
-                  className="max-w-4xl font-display text-xl leading-snug text-pretty md:text-2xl"
-                >
-                  {pub.title}
-                </SquiggleText>
+              <Link
+                href={pub.href}
+                className="outline-none before:absolute before:inset-0 before:rounded-lg focus-visible:before:ring-3 focus-visible:before:ring-ring/50"
+              >
+                {title}
               </Link>
             ) : (
-              <SquiggleText
-                highlight={query}
-                className="max-w-4xl font-display text-xl leading-snug text-pretty md:text-2xl"
-              >
-                {pub.title}
-              </SquiggleText>
+              title
             )}
-          </p>
-          {/* A div, not a p: the portraits carry their own frame element, which
-              is not valid inside a paragraph and breaks hydration there. */}
-          <div className="text-sm text-muted-foreground">
-            {/* Faces lead the author line where the Lab has people on the paper:
-                a publication list is otherwise a wall of names, and these are
-                the names a visitor is looking for. Set inside the paragraph, so
-                a long author list wraps under them instead of pushing every
-                name onto a line of its own. */}
-            {pub.authorFaces && pub.authorFaces.length > 0 && (
-              <PersonFaces people={pub.authorFaces} size="sm" className="mr-2 align-middle" />
-            )}
-            <AuthorList authors={pub.authors} highlight={highlightAuthors} />
-            {showYear && <span className="before:mx-2 before:content-['·']">{year}</span>}
+            {/* A div, not a p: the portraits carry their own frame element, which
+                is not valid inside a paragraph and breaks hydration there. */}
+            <div className="text-sm text-muted-foreground">
+              {/* Faces lead the author line where the Lab has people on the paper:
+                  a publication list is otherwise a wall of names, and these are
+                  the names a visitor is looking for. Set inside the paragraph, so
+                  a long author list wraps under them instead of pushing every
+                  name onto a line of its own. */}
+              {pub.authorFaces && pub.authorFaces.length > 0 && (
+                <PersonFaces people={pub.authorFaces} size="sm" className="mr-2 align-middle" />
+              )}
+              <AuthorList authors={pub.authors} highlight={highlightAuthors} />
+              {showYear && <span className="before:mx-2 before:content-['·']">{year}</span>}
+            </div>
           </div>
-        </div>
-        <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-            {pub.venue &&
-              (pub.venueFull ? (
-                // `abbr` is the element for exactly this and puts the expansion
-                // in the accessibility tree, which a `title` on a span does not.
-                // The dotted rule is the long-standing signal that a word can be
-                // expanded; without it the tooltip is undiscoverable.
-                <abbr
-                  title={pub.venueFull}
-                  className="font-medium text-foreground decoration-border decoration-dotted underline-offset-4 hover:decoration-current"
-                >
-                  {pub.venue}
-                </abbr>
-              ) : (
-                <span className="font-medium text-foreground">{pub.venue}</span>
-              ))}
-            {pub.type && <span>{TYPE_LABELS[pub.type] ?? pub.type}</span>}
-            {pub.award && (
-              <span className="inline-flex items-center gap-1.5 rounded-[0.8rem] border border-ink/35 bg-ink/8 px-2.5 py-0.5 text-ink">
-                <AsteriskMark className="size-3" />
-                {pub.award}
-              </span>
-            )}
-            {pub.isOpenAccess && (
-              <span title="Open Access" className="inline-flex items-center gap-1">
-                <LockOpen className="size-3.5" aria-hidden />
-                Open access
-              </span>
-            )}
-            {pub.isCollaboration && (
-              <span title="External Collaboration" className="inline-flex items-center gap-1">
-                <Users className="size-3.5" aria-hidden />
-                Collaboration
-              </span>
-            )}
+
+          {/* Secondary facts on the left, the row's controls on the right. An
+              award is the one secondary fact that stays loud. */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+              {pub.award && (
+                <span className="inline-flex items-center gap-1.5 rounded-[0.8rem] border border-ink/35 bg-ink/8 py-0.5 pr-2.5 pl-1.5 text-ink">
+                  <RosetteMark className="size-4" />
+                  {pub.award}
+                </span>
+              )}
+              {pub.isOpenAccess && (
+                <span title="Open Access" className="inline-flex items-center gap-1">
+                  <LockOpen className="size-3.5" aria-hidden />
+                  Open access
+                </span>
+              )}
+              {pub.isCollaboration && (
+                <span title="External Collaboration" className="inline-flex items-center gap-1">
+                  <Users className="size-3.5" aria-hidden />
+                  Collaboration
+                </span>
+              )}
+            </div>
+            <PubActions pub={pub} year={year} />
           </div>
-          <PubActions pub={pub} year={year} />
         </div>
       </div>
     </div>
@@ -527,13 +613,19 @@ function StickyBar({
 }) {
   const reduceMotion = useReducedMotion();
   return (
-    <header className="sticky top-0 z-10 flex h-20 items-end justify-between gap-4 border-b border-foreground/20 bg-background pb-4">
+    <header className="sticky top-0 z-10 flex h-20 items-end justify-between gap-4 border-b border-foreground/20 bg-background pb-2">
       {/* Two flex items, not one truncating line: the name is the part that
           can run long (a spelt-out journal title), so it is the part that gets
-          clipped. The count is three characters and always worth keeping. */}
+          clipped. The count is three characters and always worth keeping.
+
+          Set exactly as the group header below it (sans, text-xl, "/ count"),
+          not a size up in the display serif: the two are the same heading —
+          this one restates whichever group is scrolling under it — and at two
+          sizes the year jumped as the real header slid beneath its copy. The
+          slash keeps the count reading as a count, not as part of the name. */}
       <span
         aria-hidden
-        className="flex min-w-0 items-baseline gap-2 font-display text-2xl text-foreground/45 md:text-3xl"
+        className="flex min-w-0 items-baseline gap-1 text-xl font-medium tracking-tight text-foreground/50"
       >
         {group && (
           <>
@@ -542,11 +634,11 @@ function StickyBar({
               initial={reduceMotion ? { opacity: 0 } : { x: -5, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="min-w-0 truncate text-foreground"
+              className="mr-1 min-w-0 truncate text-foreground"
             >
               {group.label}
             </motion.span>
-            <span className="shrink-0">{groupCountLabel(group)}</span>
+            <span className="shrink-0">/ {groupCountLabel(group)}</span>
           </>
         )}
       </span>
@@ -630,7 +722,7 @@ const PublicationsSection = ({
 
   return (
     <>
-      <section className="pt-8 lg:pt-16">
+      <section className="pt-12 md:pt-16">
         <div className="container flex items-center justify-between">
           {heading ? <h2 className={displaySectionTitle}>{heading}</h2> : <span />}
           {viewAllHref && (
@@ -673,7 +765,7 @@ const PublicationsSection = ({
           </div>
         </section>
       ) : (
-        <div className="container pt-8 pb-16 lg:pb-32">
+        <div className="container pt-8 pb-12 md:pb-16">
           <div className="max-w-4xl">
             <StickyBar
               group={activeGroup}

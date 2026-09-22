@@ -94,7 +94,7 @@ export interface RelatedTheme {
 
 export function ThemeRelatedAreas({ themes }: { themes: RelatedTheme[] }) {
   return (
-    <section className={cn("container", sectionSpacing, "pb-24 md:pb-24")}>
+    <section className={cn("container", sectionSpacing)}>
       <SectionHeader title="Related themes" className="mb-6" />
       <ThemeIndex
         themes={themes.map((t) => ({ slug: t.slug, title: t.name, description: t.description }))}

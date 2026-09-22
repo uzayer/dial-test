@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, ChevronRight } from "lucide-react";
 
 import { TextLink } from "@/components/editorial";
-import { CropMarks, MarginNote, Squiggle } from "@/components/marks";
+import { CropMarks, MarginNote, SquiggleText } from "@/components/marks";
 import { NEWS_ART, NEWS_INK_VAR, TYPE_LABELS, formatFull, type NewsEntry } from "@/lib/news";
 import { PhotoSlot } from "@/components/photo-slot";
 import { enterStep } from "@/lib/motion";
@@ -70,7 +70,6 @@ export function NewsPost({ entry, newer, older }: NewsPostData) {
         <div className="enter relative mt-4 w-full" style={enterStep(1)}>
           {/* A step below a directory title: these are sentences, not words. */}
           <h1 className={cn(pageTitle, "max-w-4xl md:text-6xl")}>{entry.title}</h1>
-          <Squiggle className="ink-mark mt-2 max-w-none" />
         </div>
 
         <div className="enter mt-10 grid gap-10 lg:grid-cols-[1fr_20rem]" style={enterStep(2)}>
@@ -110,13 +109,15 @@ export function NewsPost({ entry, newer, older }: NewsPostData) {
         {older ? (
           <Link
             href={`/news/${older.slug}`}
-            className="group flex flex-col gap-2 rounded-md border border-border p-6 transition-colors duration-150 ease-snappy hover:bg-muted/50"
+            className="group flex flex-col gap-2 rounded-md border border-border p-6"
           >
             <span className={cn(label, "flex items-center gap-2")}>
               <ArrowLeft className="size-3.5" />
               Earlier
             </span>
-            <span className="font-display text-xl leading-snug text-balance">{older.title}</span>
+            <SquiggleText className="font-display text-xl leading-snug text-balance">
+              {older.title}
+            </SquiggleText>
           </Link>
         ) : (
           <span />
@@ -124,18 +125,20 @@ export function NewsPost({ entry, newer, older }: NewsPostData) {
         {newer && (
           <Link
             href={`/news/${newer.slug}`}
-            className="group flex flex-col items-end gap-2 rounded-md border border-border p-6 text-right transition-colors duration-150 ease-snappy hover:bg-muted/50 md:col-start-2"
+            className="group flex flex-col items-end gap-2 rounded-md border border-border p-6 text-right md:col-start-2"
           >
             <span className={cn(label, "flex items-center gap-2")}>
               Later
               <ArrowRight className="size-3.5" />
             </span>
-            <span className="font-display text-xl leading-snug text-balance">{newer.title}</span>
+            <SquiggleText className="font-display text-xl leading-snug text-balance">
+              {newer.title}
+            </SquiggleText>
           </Link>
         )}
       </nav>
 
-      <div className="container pb-24">
+      <div className="container pb-12 md:pb-16">
         <TextLink href="/news">Back to the whole archive</TextLink>
       </div>
     </article>

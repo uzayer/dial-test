@@ -257,6 +257,10 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Marks that deliberately hang past the sheet (crop marks, bleeding
+       compositions) must never turn into a sideways scroll on a phone. `clip`,
+       not `hidden`: it makes no scroll container, so sticky elements stick. */
+    overflow-x: clip;
   }
   html {
     @apply font-sans;
@@ -538,16 +542,25 @@ body:is(.dark)::after {
   animation: ink-squiggle-draw 900ms var(--ease-in-out-strong) 420ms both;
 }
 /* The hover state: the stroke is drawn on as the pointer arrives, and
-   un-drawn when it leaves. Keyboard focus gets the same mark. */
+   un-drawn when it leaves. Keyboard focus gets the same mark.
+
+   Hover is gated to devices that actually hover. A phone fires :hover on a
+   long press, and iOS Safari drops the wave mask on an inline fragment inside
+   a pressed (scaled) link, so the stroke's backing strip painted as a solid
+   bar through the words. A phone has no hover to answer anyway. */
 .ink-squiggle-hover {
   clip-path: inset(0 100% 0 0);
   transition: clip-path 450ms var(--ease-snappy);
 }
-.group:hover .ink-squiggle-hover,
 .group:focus-visible .ink-squiggle-hover,
-a:hover > .ink-squiggle-hover,
 a:focus-visible > .ink-squiggle-hover {
   clip-path: inset(0 0 0 0);
+}
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .ink-squiggle-hover,
+  a:hover > .ink-squiggle-hover {
+    clip-path: inset(0 0 0 0);
+  }
 }
 
 /* Per-line hover underline, for text that can wrap. The block squiggle above
@@ -594,11 +607,17 @@ a:focus-visible > .ink-squiggle-hover {
   mask-size: 2.75rem 0.625rem;
   transition: --squiggle-wipe 450ms var(--ease-snappy);
 }
-.group:hover .ink-squiggle-text,
 .group:focus-visible .ink-squiggle-text,
-a:hover .ink-squiggle-text,
 a:focus-visible .ink-squiggle-text {
   --squiggle-wipe: 100%;
+}
+/* Pointer devices only; see `.ink-squiggle-hover` for why a phone is excluded.
+   At 0% the strip is fully transparent, so an unmasked fragment shows nothing. */
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .ink-squiggle-text,
+  a:hover .ink-squiggle-text {
+    --squiggle-wipe: 100%;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .ink-squiggle-text {
@@ -606,11 +625,41 @@ a:focus-visible .ink-squiggle-text {
   }
 }
 
+/* ── Hover vocabulary ─────────────────────────────────────────────────────────
+   A hovered link answers with at most two things: its words (the squiggle, or
+   on long titles a margin rule) and its mark (the lift below, or an arrow's
+   turn). The paper behind it never darkens — three responses at once read as
+   the page flinching, not answering. Pressing is separate: `:active` may still
+   give under the finger, because that is feedback, not decoration.
+
+   The mark lift: a printed mark (a project's letter, a Theme's glyph, a
+   person's initial) rises, tips and swells a little, like a sticker lifted at
+   one corner. Out at 250ms, back at 150ms. */
+.mark-lift {
+  transition: transform 150ms var(--ease-snappy);
+}
+.group:focus-visible .mark-lift {
+  transform: translateY(-2px) rotate(-4deg) scale(1.06);
+  transition-duration: 250ms;
+}
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .mark-lift {
+    transform: translateY(-2px) rotate(-4deg) scale(1.06);
+    transition-duration: 250ms;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mark-lift,
+  .group:hover .mark-lift,
+  .group:focus-visible .mark-lift {
+    transform: none;
+  }
+}
+
 /* A right-pointing arrow turns north-east when its link is hovered, so the
    mark shows the direction of travel rather than just nudging along. It pivots
    on its own centre — travelling up and to the right as well turned a quiet
-   turn into a jump. Paired with the squiggle, it is the site's whole hover
-   vocabulary. */
+   turn into a jump. */
 .arrow-ne {
   transform-origin: center;
   transition: rotate 260ms var(--ease-snappy);

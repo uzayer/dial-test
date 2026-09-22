@@ -1,7 +1,7 @@
 import { AlumniGrid } from "@/components/alumni-grid";
 import { ScrollRuler } from "@/components/scroll-ruler";
 import { ClosingNote } from "@/components/closing-note";
-import { SectionHeader, sectionSpacingTight } from "@/components/editorial";
+import { SectionHeader, sectionSpacing } from "@/components/editorial";
 import { FaqSection } from "@/components/faq-section";
 import { PageHeader } from "@/components/page-header";
 import { PeopleRoster } from "@/components/people-roster";
@@ -39,9 +39,9 @@ export default function PeoplePage() {
 
       {pi && <PIProfile pi={pi} />}
 
-      <section className={cn("container", sectionSpacingTight)}>
-        <SectionHeader title="The team" className="mb-8" />
+      <section className={cn("container", sectionSpacing)}>
         <PeopleRoster
+          title="The team"
           groups={[
             { title: "Faculty & research staff", members: groups.facultyStaff },
             { title: "Graduate research assistants", members: groups.graduateRAs },
@@ -56,7 +56,7 @@ export default function PeoplePage() {
       </section>
 
       {alumni.length > 0 && (
-        <section className={cn("container", sectionSpacingTight)}>
+        <section className={cn("container", sectionSpacing)}>
           <SectionHeader
             label="Alumni"
             title="Where our people go"
@@ -68,7 +68,7 @@ export default function PeoplePage() {
       )}
 
       {/* On the tighter rhythm the rest of this page runs on. */}
-      <FaqSection items={peopleFaqs} title="About the roster" className={sectionSpacingTight} />
+      <FaqSection items={peopleFaqs} title="About the roster" className={sectionSpacing} />
 
       <ScrollRuler />
 

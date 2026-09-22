@@ -2,12 +2,14 @@
 
 import { ArrowLeft, ArrowRight, Menu, Moon, Sun, UserPlus, X } from "lucide-react";
 import Link from "next/link";
-import { useState, useSyncExternalStore, type ReactElement } from "react";
+import { usePathname } from "next/navigation";
+import { useRef, useState, useSyncExternalStore, type ReactElement } from "react";
 
 import {
-  AsteriskMark,
   CropMarks,
+  FactMark,
   RegistrationMark,
+  RosetteMark,
   SquiggleUnderline,
   Tape,
   TickMark,
@@ -47,7 +49,15 @@ export interface NavData {
   }[];
   projectCount: number;
   /** Real papers, newest first — what only the menu can show. */
-  recentPublications: { id: string; title: string; venue: string; year: number; href: string }[];
+  recentPublications: {
+    id: string;
+    title: string;
+    venue: string;
+    year: number;
+    href: string;
+    /** The paper's award, when it won one: the menu stamps it. */
+    award?: string | null;
+  }[];
   publicationCount: number;
   /** e.g. "2014–2025". */
   publicationYears: string;
@@ -70,6 +80,10 @@ interface MenuProps {
 // ── Menu furniture ─────────────────────────────────────────────────────────
 // The panels are printed sheets, not cards: a ruled label over each column and
 // a paper promo block with crop marks, the same vocabulary the pages use.
+//
+// Hover follows the site's rule (globals.css, "Hover vocabulary"): a row's
+// words take the squiggle and its mark lifts — never the paper behind it too.
+// A row with a mark therefore has no arrow on desktop; the mark is its answer.
 
 const PanelLabel = ({
   children,
@@ -91,7 +105,7 @@ const PanelLabel = ({
 const PanelMore = ({ href, children }: { href: string; children: React.ReactNode }) => (
   <NavigationMenuLink
     href={href}
-    className="group flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+    className="group flex shrink-0 items-center gap-1.5 p-0 text-xs text-muted-foreground hover:text-foreground"
   >
     <span className="relative">
       {children}
@@ -102,109 +116,172 @@ const PanelMore = ({ href, children }: { href: string; children: React.ReactNode
 );
 
 /**
- * The promo block at the head of a panel. It is paper with a printed
- * composition in it rather than a photograph: nothing here claims to be a
- * picture of DIAL's work until DIAL supplies one.
+ * The lead tile of a panel: the section's own page, and the thing most people
+ * who opened the panel came to click. It is paper with a printed composition
+ * in it rather than a photograph — nothing here claims to be a picture of
+ * DIAL's work until DIAL supplies one.
  *
- * `emphasis` decides which of the two lines is set in the display serif. The
- * default ("statement") leads with an editorial line and files it under a
- * tracked-caps section name. "destination" swaps them, so the big line is the
- * name of the page you land on — which is what a tile whose whole job is to be
- * the section's primary destination should say loudest.
+ * The big line is the name of the page you land on, and the tile ends in the
+ * panel's one filled button, so it reads as the way in rather than as a
+ * decorative card beside the links. The text column stops short of the
+ * composition: at a phone's width the lede used to run under the drawing.
  */
 const PromoCard = ({
   href,
   art,
-  eyebrow,
   title,
+  kicker,
   body,
-  emphasis = "statement",
+  cta,
   className,
 }: {
   href: string;
   art: React.ComponentProps<typeof RisoArt>["variant"];
-  eyebrow?: string;
+  /** The destination's name, set in the display serif. */
+  title: string;
+  /** A tracked-caps line under it: a count, a place. */
+  kicker?: string;
+  body: string;
+  cta: string;
+  className?: string;
+}) => (
+  <Link
+    href={href}
+    className={cn(
+      "group relative flex h-full flex-col justify-between overflow-hidden rounded-md border border-border bg-muted/40 p-6",
+      className,
+    )}
+  >
+    <CropMarks className="text-ink/50" />
+    <span aria-hidden className="halftone absolute inset-0 opacity-[0.07]" />
+    <RisoArt
+      variant={art}
+      className="pointer-events-none absolute -right-12 -bottom-12 size-40 opacity-70 sm:size-48"
+    />
+    <div className="relative pr-24 sm:pr-28">
+      <span className="font-display relative inline-block text-2xl leading-tight">
+        {title}
+        <SquiggleUnderline />
+      </span>
+      {kicker && (
+        <span className="mt-2 block text-[0.7rem] font-medium tracking-[0.16em] text-muted-foreground uppercase">
+          {kicker}
+        </span>
+      )}
+      <p className="mt-3 max-w-[22rem] text-xs text-pretty text-muted-foreground">{body}</p>
+    </div>
+    <span className="relative mt-8 inline-flex w-fit items-center gap-1.5 rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background transition-transform duration-150 ease-snappy group-active:scale-[0.97]">
+      {cta}
+      <ArrowRight className="arrow-ne size-3.5" />
+    </span>
+  </Link>
+);
+
+/**
+ * A small destination tile: a drawn mark, a display-serif name, a line, and a
+ * text call to action. The mark sits in a fixed square, so tiles whose marks
+ * are different shapes (a target, a person, the DIAL letterform) still start
+ * their text on one left edge.
+ */
+const DestinationTile = ({
+  href,
+  mark,
+  title,
+  body,
+  cta,
+  className,
+}: {
+  href: string;
+  mark: React.ReactNode;
   title: string;
   body: string;
-  emphasis?: "statement" | "destination";
+  cta: string;
   className?: string;
-}) => {
-  const swap = emphasis === "destination";
-  const capsLine =
-    "block text-[0.7rem] font-medium tracking-[0.16em] text-muted-foreground uppercase";
-  const displayLine = "font-display relative inline-block text-xl leading-tight";
-  return (
-    <Link
-      href={href}
-      className={cn(
-        "group relative flex h-full flex-col justify-between overflow-hidden rounded-md border border-border bg-muted/40 p-6",
-        className,
-      )}
-    >
-      <CropMarks className="text-ink/50" />
-      <span aria-hidden className="halftone absolute inset-0 opacity-[0.07]" />
-      <RisoArt
-        variant={art}
-        className="pointer-events-none absolute -right-10 -bottom-10 size-48 opacity-70"
-      />
-      <div className="relative">
-        {eyebrow &&
-          (swap ? (
-            <span className={cn(displayLine, "mb-2")}>
-              {eyebrow}
-              <SquiggleUnderline />
-            </span>
-          ) : (
-            <span className={cn(capsLine, "mb-3")}>{eyebrow}</span>
-          ))}
-        {swap ? (
-          <span className={capsLine}>{title}</span>
-        ) : (
-          <span className={displayLine}>
-            {title}
-            <SquiggleUnderline />
-          </span>
-        )}
-        <p className="mt-2 max-w-[22rem] text-xs text-pretty text-muted-foreground">{body}</p>
+}) => (
+  <NavigationMenuLink
+    href={href}
+    className={cn(
+      "group relative flex w-full flex-row items-start gap-4 overflow-hidden rounded-md border border-border p-5 md:p-6",
+      className,
+    )}
+  >
+    <span aria-hidden className="halftone absolute inset-0 opacity-[0.07]" />
+    <span className="mark-lift relative grid size-7 shrink-0 place-items-center text-ink">
+      {mark}
+    </span>
+    <div className="relative min-w-0">
+      <div className="font-display relative inline-block text-base leading-tight">
+        {title}
+        <SquiggleUnderline />
       </div>
-      <span className="relative mt-8 inline-flex items-center gap-1.5 text-xs font-medium">
-        Open
+      <p className="mt-1 text-xs text-pretty text-muted-foreground">{body}</p>
+      <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium">
+        {cta}
         <ArrowRight className="arrow-ne size-4" />
       </span>
-    </Link>
-  );
-};
+    </div>
+  </NavigationMenuLink>
+);
 
-/** A row in a panel: mark, title + note, arrow. The panels' one list shape. */
+/**
+ * A row in a panel: mark, title + note. The panels' one list shape. With a
+ * mark, the mark lifts on hover and there is no arrow on desktop; on a phone,
+ * which has no hover to discover a link by, every row ends in an arrow.
+ */
 const PanelRow = ({
   href,
   mark,
   title,
   note,
-  arrow = true,
+  trailing,
 }: {
   href: string;
   mark?: React.ReactNode;
   title: string;
-  note?: string;
-  arrow?: boolean;
+  note?: React.ReactNode;
+  /** Something printed after the title — an award rosette. */
+  trailing?: React.ReactNode;
 }) => (
   <NavigationMenuLink
     href={href}
-    className="group flex flex-row items-baseline gap-3 border-b border-border/60 py-3 text-left last:border-0"
+    className="group flex flex-row items-baseline gap-3 border-b border-border/60 px-0 py-3 text-left last:border-0"
   >
-    {mark && <span className="shrink-0 translate-y-0.5">{mark}</span>}
-    <span className="flex-1">
+    {mark && <span className="mark-lift shrink-0 translate-y-0.5">{mark}</span>}
+    <span className="min-w-0 flex-1">
       <span className="relative inline-block text-sm font-medium text-foreground/85 group-hover:text-foreground">
         {title}
         <SquiggleUnderline />
       </span>
+      {trailing}
       {note && (
         <span className="mt-0.5 block text-xs text-pretty text-muted-foreground">{note}</span>
       )}
     </span>
-    {arrow && <ArrowRight className="arrow-ne size-4 shrink-0 self-center text-muted-foreground" />}
+    <ArrowRight
+      className={cn(
+        "arrow-ne size-4 shrink-0 self-center text-muted-foreground",
+        mark && "lg:hidden",
+      )}
+    />
   </NavigationMenuLink>
+);
+
+/** A project's initial, printed: the same block the Projects index uses. */
+const ProjectInitial = ({ title }: { title: string }) => (
+  <span
+    aria-hidden
+    className="font-display relative grid size-8 place-items-center overflow-hidden rounded-[0.5rem] bg-muted text-base leading-none text-foreground/70"
+  >
+    <span aria-hidden className="halftone absolute inset-0 opacity-25" />
+    <span className="relative">{[...title][0]}</span>
+  </span>
+);
+
+/** An award's rosette, stamped in a ring: the Publications panel's recognition. */
+const AwardStamp = () => (
+  <span className="grid size-8 place-items-center rounded-full border border-ink/35 bg-ink/8">
+    <RosetteMark className="size-5" />
+  </span>
 );
 
 // ── Menu components ────────────────────────────────────────────────────────
@@ -214,43 +291,46 @@ const PanelRow = ({
  * naming the same thing — a Theme is what the lab studies, a Project is an
  * instance of studying it — and splitting them meant a visitor had to guess
  * which of two menus held the work.
+ *
+ * Both indexes get a tile: /research is the panel's primary destination (the
+ * big tile with the filled button), /projects the second, so the projects
+ * directory is no longer a small "All 7" link in a column label.
  */
 const ResearchMenu = ({ nav }: MenuProps) => (
   <div className="grid gap-8 sm:grid-cols-2">
     <PromoCard
       href="/research"
       art="orbit"
-      emphasis="destination"
-      eyebrow="Research at DIAL"
-      title="HCI research from Bangladesh"
-      body="Participatory design with communities that mainstream technology largely ignores: nine themes, and the projects under them."
+      title="Research overview"
+      kicker={`${nav.researchThemes.length} themes · ${nav.projectCount} projects`}
+      body="What DIAL studies and how: participatory design with communities that mainstream technology largely ignores."
+      cta="See the research"
     />
 
-    <div>
-      <PanelLabel action={<PanelMore href="/projects">All {nav.projectCount}</PanelMore>}>
-        Projects
-      </PanelLabel>
-      <div className="grid gap-1">
-        {nav.projectCategories
-          .flatMap((category) => category.projects)
-          .slice(0, 5)
-          .map((project) => (
-            <PanelRow
-              key={project.id}
-              href={project.href}
-              title={project.title}
-              note={project.description}
-              mark={
-                <span
-                  aria-hidden
-                  className="sticker font-display relative grid size-8 place-items-center overflow-hidden rounded-[0.5rem] bg-muted text-base leading-none text-foreground/70 group-hover:-rotate-[1.75deg]"
-                >
-                  <span aria-hidden className="halftone absolute inset-0 opacity-25" />
-                  <span className="relative">{[...project.title][0]}</span>
-                </span>
-              }
-            />
-          ))}
+    <div className="flex flex-col gap-5">
+      <DestinationTile
+        href="/projects"
+        mark={<FactMark label="Projects" className="size-7" />}
+        title={`All ${nav.projectCount} projects`}
+        body="Ongoing and completed work, filterable by theme and status."
+        cta="Browse projects"
+      />
+      <div>
+        <PanelLabel>Featured projects</PanelLabel>
+        <div className="grid gap-1">
+          {nav.projectCategories
+            .flatMap((category) => category.projects)
+            .slice(0, 3)
+            .map((project) => (
+              <PanelRow
+                key={project.id}
+                href={project.href}
+                title={project.title}
+                note={project.description}
+                mark={<ProjectInitial title={project.title} />}
+              />
+            ))}
+        </div>
       </div>
     </div>
 
@@ -263,13 +343,15 @@ const ResearchMenu = ({ nav }: MenuProps) => (
           <NavigationMenuLink
             key={theme.id}
             href={`/research/${theme.slug}`}
-            className="group flex items-start gap-4 border-b border-border/60 py-4 text-left"
+            className="group flex items-start gap-4 border-b border-border/60 px-0 py-4 text-left"
           >
             <span className="font-mono text-[0.65rem] text-muted-foreground tabular-nums">
               {String(i + 1).padStart(2, "0")}
             </span>
-            <ThemeGlyph slug={theme.slug} className="size-8 shrink-0" />
-            <span className="flex-1">
+            <span className="mark-lift shrink-0">
+              <ThemeGlyph slug={theme.slug} className="size-8" />
+            </span>
+            <span className="min-w-0 flex-1">
               <strong
                 className={cn("font-display relative text-base font-normal", themeInk(theme.slug))}
               >
@@ -280,6 +362,9 @@ const ResearchMenu = ({ nav }: MenuProps) => (
                 {theme.description}
               </span>
             </span>
+            {/* A phone has no hover to reveal that a row is a link, so there
+                every row carries the arrow a link wears elsewhere. */}
+            <ArrowRight className="size-4 shrink-0 self-center text-muted-foreground lg:hidden" />
           </NavigationMenuLink>
         ))}
       </div>
@@ -290,21 +375,22 @@ const ResearchMenu = ({ nav }: MenuProps) => (
 /**
  * Publications has exactly two destinations — the list and the honours — so
  * the panel spends its space on the one thing the list page cannot offer from
- * the navbar: the newest papers, by name, each a direct jump.
+ * the navbar: the newest papers, by name, each a direct jump. Recognition is
+ * drawn, not just listed: a rosette stamps each awarded paper.
  */
 const PublicationsMenu = ({ nav }: MenuProps) => (
   <div className="grid gap-8 lg:grid-cols-[20rem_1fr_18rem]">
     <PromoCard
       href="/publications"
       art="strata"
-      emphasis="destination"
-      eyebrow="All publications"
-      title={
+      title="All publications"
+      kicker={
         nav.publicationYears
           ? `${nav.publicationCount} papers · ${nav.publicationYears}`
           : `${nav.publicationCount} papers`
       }
       body="The complete bibliography, with filters for year, venue, theme, open access, and collaborations."
+      cta="Open the list"
     />
 
     <div>
@@ -317,7 +403,17 @@ const PublicationsMenu = ({ nav }: MenuProps) => (
             key={pub.id}
             href={pub.href}
             title={pub.title}
-            note={[pub.venue, pub.year].filter(Boolean).join(" · ")}
+            note={
+              <>
+                {[pub.venue, pub.year].filter(Boolean).join(" · ")}
+                {pub.award && (
+                  <span className="ml-2 inline-flex items-center gap-1 text-ink">
+                    <RosetteMark className="size-3.5" />
+                    {pub.award}
+                  </span>
+                )}
+              </>
+            }
           />
         ))}
       </div>
@@ -334,8 +430,7 @@ const PublicationsMenu = ({ nav }: MenuProps) => (
             href={award.href}
             title={award.title}
             note={award.body}
-            arrow={false}
-            mark={<AsteriskMark className="size-3.5 text-ink" />}
+            mark={<AwardStamp />}
           />
         ))}
       </div>
@@ -450,116 +545,68 @@ const PeopleMenu = ({ nav }: MenuProps) => (
           </ul>
         </div>
 
-        <NavigationMenuLink
+        <DestinationTile
           href="/join-us"
-          className="group relative flex h-fit flex-row items-start gap-4 overflow-hidden rounded-md border border-border p-5"
-        >
-          <span aria-hidden className="halftone absolute inset-0 opacity-[0.07]" />
-          <UserPlus className="relative size-6 shrink-0 text-ink" />
-          <div className="relative">
-            <div className="font-display relative inline-block text-base leading-tight">
-              Join the Lab
-              <SquiggleUnderline />
-            </div>
-            <p className="mt-1 text-xs text-pretty text-muted-foreground">
-              We read every email from graduate and undergraduate students.
-            </p>
-            <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium">
-              How to apply
-              <ArrowRight className="arrow-ne size-4" />
-            </span>
-          </div>
-        </NavigationMenuLink>
+          mark={<UserPlus className="size-6" />}
+          title="Join the Lab"
+          body="We read every email from graduate and undergraduate students."
+          cta="How to apply"
+          className="h-fit"
+        />
       </div>
     </div>
   </div>
 );
 
+/**
+ * The Lab: About leads, because it is the page a first-time visitor is looking
+ * for when they open a menu called "Lab" — it used to sit second, at a third
+ * of the width News got.
+ */
 const LabMenu = () => (
   <div className="grid gap-y-6 md:grid-cols-2 md:gap-x-6 lg:grid-cols-4">
     <PromoCard
-      href="/news"
-      art="signal"
-      emphasis="destination"
-      eyebrow="News & Lab Activity"
-      title="What the Lab has been doing"
-      body="Conference trips, invited talks, community events and fieldwork, as they happen."
+      href="/about"
+      art="bloom"
+      title="About the Lab"
+      kicker="Design Inclusion and Access Lab"
+      body="Who DIAL is, what it holds to, and how it works: an HCI lab at North South University, Dhaka."
+      cta="Read about DIAL"
       className="md:col-span-2"
     />
 
     <PromoCard
-      href="/about"
-      art="bloom"
-      emphasis="destination"
-      eyebrow="About the Lab"
-      title="The Design Inclusion and Access Lab"
-      body="An HCI lab at North South University, Dhaka."
+      href="/news"
+      art="signal"
+      title="News"
+      kicker="What the lab has been doing"
+      body="Conference trips, invited talks, community events and fieldwork, as they happen."
+      cta="Latest news"
       className="md:col-span-1"
     />
 
     <div className="grid gap-4 md:col-span-1">
-      <NavigationMenuLink
+      <DestinationTile
         href="/contact"
-        className="group relative flex w-full flex-row items-start gap-4 overflow-hidden rounded-md border border-border p-6"
-      >
-        <span aria-hidden className="halftone absolute inset-0 opacity-[0.07]" />
-        <RegistrationMark className="relative size-7 shrink-0 text-ink" />
-        <div className="relative">
-          <div className="font-display relative inline-block text-base leading-tight">
-            Contact
-            <SquiggleUnderline />
-          </div>
-          <p className="mt-1 text-xs text-pretty text-muted-foreground">
-            Where the lab is, and how to reach it.
-          </p>
-          <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium">
-            Get in touch
-            <ArrowRight className="arrow-ne size-4" />
-          </span>
-        </div>
-      </NavigationMenuLink>
-
-      <NavigationMenuLink
+        mark={<RegistrationMark className="size-7" />}
+        title="Contact"
+        body="Where the lab is, and how to reach it."
+        cta="Get in touch"
+      />
+      <DestinationTile
         href="/join-us"
-        className="group relative flex w-full flex-row items-start gap-4 overflow-hidden rounded-md border border-border p-6"
-      >
-        <span aria-hidden className="halftone absolute inset-0 opacity-[0.07]" />
-        <UserPlus className="relative size-7 shrink-0 text-ink" />
-        <div className="relative">
-          <div className="font-display relative inline-block text-base leading-tight">
-            Join the Lab
-            <SquiggleUnderline />
-          </div>
-          <p className="mt-1 text-xs text-pretty text-muted-foreground">
-            We take graduate and undergraduate students year-round.
-          </p>
-          <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium">
-            How to apply
-            <ArrowRight className="arrow-ne size-4" />
-          </span>
-        </div>
-      </NavigationMenuLink>
-
-      <NavigationMenuLink
+        mark={<UserPlus className="size-6" />}
+        title="Join the Lab"
+        body="We take graduate and undergraduate students year-round."
+        cta="How to apply"
+      />
+      <DestinationTile
         href="/design-system"
-        className="group relative flex w-full flex-row items-start gap-4 overflow-hidden rounded-md border border-border p-6"
-      >
-        <span aria-hidden className="halftone absolute inset-0 opacity-[0.07]" />
-        <DialMark title="" className="relative w-7 shrink-0 text-ink" />
-        <div className="relative">
-          <div className="font-display relative inline-block text-base leading-tight">
-            Brand guidelines
-            <SquiggleUnderline />
-          </div>
-          <p className="mt-1 text-xs text-pretty text-muted-foreground">
-            The logo, inks, type and marks the site is printed in.
-          </p>
-          <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium">
-            See the system
-            <ArrowRight className="arrow-ne size-4" />
-          </span>
-        </div>
-      </NavigationMenuLink>
+        mark={<DialMark title="" className="w-6" />}
+        title="Design system and guidelines"
+        body="The logo, inks, type and marks the site is printed in."
+        cta="See the guidelines"
+      />
     </div>
   </div>
 );
@@ -569,15 +616,33 @@ const LabMenu = () => (
 // Four items, not five: "Research", "Projects" and "Publications" were three
 // words for the work, and a visitor had to guess which menu held what. Projects
 // now live under Research, which is the thing they are instances of.
+//
+// Lab sits second rather than last. Last, it was the item nobody reached, and
+// it holds About — the page a first-time visitor is most likely looking for.
 const navigationMenuItems = [
   { key: "research", label: "Research", component: ResearchMenu },
-  { key: "publications", label: "Publications", component: PublicationsMenu },
-  { key: "people", label: "People", component: PeopleMenu },
   // LabMenu is static; it ignores the nav prop the other menus take.
   { key: "lab", label: "Lab", component: LabMenu as (props: MenuProps) => ReactElement },
+  { key: "publications", label: "Publications", component: PublicationsMenu },
+  { key: "people", label: "People", component: PeopleMenu },
 ] as const;
 
 type NavigationMenuKey = (typeof navigationMenuItems)[number]["key"];
+
+/**
+ * How long a pointer must rest on a trigger before its panel opens. Low enough
+ * to read as instant (under the ~100ms a delay becomes noticeable), high enough
+ * that sweeping across the bar to reach Contact does not flash three panels.
+ */
+const OPEN_DELAY_MS = 75;
+
+/**
+ * A click this soon after a hover opened the panel is the same intent arriving
+ * twice, not a request to close it. Radix treats every trigger click as a
+ * toggle, so without this a visitor who hovers and then clicks — which is most
+ * of them — shut the menu they had just been shown.
+ */
+const CLICK_AFTER_HOVER_MS = 400;
 
 // ── Theme ──────────────────────────────────────────────────────────────────
 
@@ -599,6 +664,25 @@ interface Navbar4Props {
 const Navbar4 = ({ nav, className }: Navbar4Props) => {
   const [open, setOpen] = useState(false);
   const [submenu, setSubmenu] = useState<NavigationMenuKey | null>(null);
+  // The desktop panel, controlled so a hover-then-click keeps it open and so a
+  // link chosen inside it closes it. "" is closed, as Radix has it.
+  const [panel, setPanel] = useState("");
+  const openedAt = useRef(0);
+  const pathname = usePathname();
+
+  // Arriving on a new page closes whatever panel led there, so the page you
+  // chose is what you see, not the menu still hanging over it. Links close the
+  // panel on click as well (below); this covers back and forward.
+  const [shownPath, setShownPath] = useState(pathname);
+  if (shownPath !== pathname) {
+    setShownPath(pathname);
+    setPanel("");
+  }
+
+  const changePanel = (next: string) => {
+    if (next) openedAt.current = performance.now();
+    setPanel(next);
+  };
   // The <head> script in layout.tsx applies the stored theme before paint;
   // this just mirrors the <html> class.
   const isDark = useSyncExternalStore(subscribeToThemeClass, readIsDark, () => false);
@@ -615,7 +699,12 @@ const Navbar4 = ({ nav, className }: Navbar4Props) => {
       className={cn("inset-x-0 top-0 z-20 bg-background text-foreground", className)}
     >
       <div className="container">
-        <NavigationMenu className="min-w-full [&>div:last-child]:left-auto">
+        <NavigationMenu
+          value={panel}
+          onValueChange={changePanel}
+          delayDuration={OPEN_DELAY_MS}
+          className="min-w-full [&>div:last-child]:left-auto"
+        >
           <div className="flex w-full justify-between gap-2 py-4">
             {/* Logo. The wordmark used to carry "NSU HCI" as part of the
                 drawing, which made the DIAL letters themselves small; the
@@ -633,11 +722,30 @@ const Navbar4 = ({ nav, className }: Navbar4Props) => {
             <div className="flex items-center gap-2 xl:gap-8">
               <NavigationMenuList className="hidden gap-0 lg:flex">
                 {navigationMenuItems.map((item) => (
-                  <NavigationMenuItem key={item.key}>
-                    <NavigationMenuTrigger className="px-3 text-sm xl:text-base">
+                  <NavigationMenuItem key={item.key} value={item.key}>
+                    <NavigationMenuTrigger
+                      className="px-3 text-sm xl:text-base"
+                      onClick={(event) => {
+                        // Hovered open a moment ago: this click is the same
+                        // "show me", so keep it open instead of toggling shut.
+                        const justOpened =
+                          panel === item.key &&
+                          performance.now() - openedAt.current < CLICK_AFTER_HOVER_MS;
+                        if (justOpened) event.preventDefault();
+                      }}
+                    >
                       {item.label}
                     </NavigationMenuTrigger>
-                    <NavigationMenuContent className="min-w-[calc(100vw-4rem)] p-12 2xl:min-w-[calc(1400px-4rem)]">
+                    <NavigationMenuContent
+                      className="min-w-[calc(100vw-4rem)] p-12 2xl:min-w-[calc(1400px-4rem)]"
+                      onClick={(event) => {
+                        // Any link chosen in the panel closes it at once, the
+                        // tiles included (they are plain links, which Radix's
+                        // own link-select does not see).
+                        if (event.target instanceof Element && event.target.closest("a"))
+                          setPanel("");
+                      }}
+                    >
                       <item.component nav={nav} />
                     </NavigationMenuContent>
                   </NavigationMenuItem>

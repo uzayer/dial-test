@@ -11,7 +11,7 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { TextLink } from "@/components/editorial";
-import { CropMarks, Squiggle } from "@/components/marks";
+import { CropMarks } from "@/components/marks";
 import { enterStep } from "@/lib/motion";
 import { label, lede, pageTitle } from "@/lib/typography";
 import { cn } from "@/lib/utils";
@@ -122,7 +122,6 @@ const Contact1 = ({ email, address, scholarUrl, className, onSubmit }: Contact1P
       </p>
       <div className="enter relative mt-4 w-fit" style={enterStep(1)}>
         <h1 className={pageTitle}>Get in touch</h1>
-        <Squiggle className="ink-mark mt-1 max-w-md" />
       </div>
 
       <div className="relative mt-10 grid gap-12 pt-6 lg:grid-cols-[1fr_minmax(0,30rem)] lg:gap-24">

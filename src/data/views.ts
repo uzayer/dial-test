@@ -5,6 +5,7 @@
  * source, not the component. Server-side only; pages pass the results down.
  */
 import type { Alumni } from "@/components/alumni-grid";
+import type { AwardListItem } from "@/components/award-list";
 import type { Award as AwardRow, AwardCategory } from "@/components/awards-filter-table";
 import type { ResearchProject } from "@/components/feature295";
 import type { MemberProfileData, Social } from "@/components/member-profile";
@@ -20,6 +21,7 @@ import type { PublicationPostData } from "@/components/publication-post";
 import type { Publication as PublicationView, PublicationYear } from "@/components/publications1";
 import type { SpotlightProject } from "@/components/research-sections";
 import type { TeamMember as TeamGridMember } from "@/components/team5-9";
+import type { VenueLedgerEntry } from "@/components/venue-ledger";
 import type { CollaboratorGroup, RelatedTheme } from "@/components/theme-page-sections";
 
 import {
@@ -62,6 +64,7 @@ import {
   teamIdForName,
   venueFullName,
   venueLabel,
+  venueRecords,
 } from "./index";
 import type { Award, Grant, News, Project, Publication, ResearchTheme, Team } from "./types";
 import { generateBibTeX } from "@/lib/citation";
@@ -314,6 +317,27 @@ function teamRoleLabel(member: Team): string {
   return member.title.split(/[;,]/)[0];
 }
 
+/**
+ * The heading a project's team is filed under. Coarser than a person's title on
+ * purpose: the aside is scanned by role, and eleven slightly different titles
+ * make eleven headings of one. In the order the aside prints them.
+ */
+const TEAM_GROUPS = [
+  "Principal Investigator",
+  "Faculty",
+  "Researchers",
+  "Collaborators",
+  "Alumni",
+] as const;
+
+function teamGroup(member: Team): (typeof TEAM_GROUPS)[number] {
+  if (member.role === "director") return "Principal Investigator";
+  if (member.role === "faculty") return "Faculty";
+  if (isAlumni(member)) return "Alumni";
+  if (isCollaborator(member)) return "Collaborators";
+  return "Researchers";
+}
+
 export function toProjectPost(project: Project): ProjectData {
   const team = resolveIds(project.teamMembers, getTeamMember).filter(
     (m) => m.displayInWebsite !== false,
@@ -332,15 +356,18 @@ export function toProjectPost(project: Project): ProjectData {
     startDate: project.startDate ?? undefined,
     endDate: project.endDate ?? undefined,
     status: project.status ?? null,
-    teamMembers: team.map((m) => ({
-      id: m.id,
-      name: m.name,
-      role: teamRoleLabel(m),
-      avatarUrl: m.photo ?? undefined,
-      slug: m.slug,
-      // Every Team Member the site may show has a profile page.
-      href: `/people/${m.slug}`,
-    })),
+    teamMembers: [...team]
+      .sort((a, b) => TEAM_GROUPS.indexOf(teamGroup(a)) - TEAM_GROUPS.indexOf(teamGroup(b)))
+      .map((m) => ({
+        id: m.id,
+        name: m.name,
+        role: teamRoleLabel(m),
+        group: teamGroup(m),
+        avatarUrl: m.photo ?? undefined,
+        slug: m.slug,
+        // Every Team Member the site may show has a profile page.
+        href: `/people/${m.slug}`,
+      })),
     themes: resolveIds(project.themes, getResearchTheme).map((t) => ({
       id: t.id,
       slug: t.slug,
@@ -484,7 +511,7 @@ export function toMemberProfile(member: Team): MemberProfileData {
     socials: (member.socials ?? []).flatMap((s) =>
       SOCIAL_PLATFORM[s.platform] ? [{ platform: SOCIAL_PLATFORM[s.platform], url: s.url }] : [],
     ),
-    awards: awardsForTeamMember(member.id).map((a) => ({ title: `${awardName(a)} · ${a.year}` })),
+    awards: awardsForTeamMember(member.id).map(toAwardListItem),
   };
 }
 
@@ -500,6 +527,26 @@ export function toMemberGrant(g: Grant, teamId: string) {
   };
 }
 
+/**
+ * An Award as a person's page lists it, in parts rather than one joined line,
+ * so the list can set name, body, year and paper each in its own place. The
+ * paper links to its page when it is in the record.
+ */
+function toAwardListItem(award: Award): AwardListItem {
+  const pub = awardPublication(award);
+  const paperTitle = pub?.title ?? awardedPaperTitle(award);
+  return {
+    name: awardName(award),
+    organization:
+      award.organizationLabel ??
+      (award.organization ? getOrganization(award.organization)?.name : null) ??
+      null,
+    year: award.year,
+    category: award.category ?? null,
+    paper: paperTitle ? { title: paperTitle, href: pub ? `/publications/${pub.id}` : null } : null,
+  };
+}
+
 export function toPIProfile(): PIProfileData | null {
   const pi = director();
   if (!pi) return null;
@@ -510,9 +557,7 @@ export function toPIProfile(): PIProfileData | null {
     bio: pi.bio ?? null,
     awards: awardsForTeamMember(pi.id)
       .filter((a) => a.featured)
-      .map((a) =>
-        [awardName(a), [a.organizationLabel, a.year].filter(Boolean).join(" ")].join(" · "),
-      ),
+      .map(toAwardListItem),
     scholarUrl: socialUrl(pi, "google-scholar") ?? null,
     email: pi.email ?? null,
     profileHref: `/people/${pi.slug}`,
@@ -665,13 +710,17 @@ export function getNavData(): NavData {
 
     // Real papers, not query-param links back to the same page: the menu can
     // show what the list contains, which the list's own filter bar cannot.
-    recentPublications: pubs.slice(0, 5).map((pub) => ({
-      id: pub.id,
-      title: pub.title,
-      venue: venueLabel(pub) ?? "",
-      year: pub.year,
-      href: `/publications/${pub.id}`,
-    })),
+    recentPublications: pubs.slice(0, 5).map((pub) => {
+      const [award] = awardsForPublication(pub);
+      return {
+        id: pub.id,
+        title: pub.title,
+        venue: venueLabel(pub) ?? "",
+        year: pub.year,
+        href: `/publications/${pub.id}`,
+        award: award ? awardName(award) : null,
+      };
+    }),
     publicationCount: pubs.length,
     publicationYears: years.length ? `${Math.min(...years)}–${Math.max(...years)}` : "",
     publicationRecognition: featuredLab.slice(0, 4).map((a) => ({
@@ -705,4 +754,25 @@ export function getNavData(): NavData {
       .map((m) => ({ name: m.name, placement: m.currentPosition ?? "" })),
     alumniCount: stats.alumni,
   };
+}
+
+// ─── Venues ─────────────────────────────────────────────────────────────────
+
+/**
+ * The Lab's top venues as ledger entries, most-published first: the prestige
+ * signal on /about and /research.
+ */
+export function topVenueEntries(limit = 6): VenueLedgerEntry[] {
+  return venueRecords(limit).map(({ venue, publicationCount, years, awards }) => ({
+    shortName: venue.shortName ?? venue.name,
+    name: venue.name,
+    type: venue.type,
+    publicationCount,
+    years: years
+      ? years.min === years.max
+        ? String(years.min)
+        : `${years.min}–${years.max}`
+      : null,
+    awards: awards.map((a) => `${awardName(a)}, ${a.year}`),
+  }));
 }

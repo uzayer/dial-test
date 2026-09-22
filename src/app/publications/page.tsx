@@ -1,4 +1,7 @@
 import { Suspense } from "react";
+import { ArrowUpRight } from "lucide-react";
+
+import { PersonFace } from "@/components/person-chip";
 import { ScrollRuler } from "@/components/scroll-ruler";
 import { FaqSection } from "@/components/faq-section";
 import { PageHeader } from "@/components/page-header";
@@ -6,6 +9,7 @@ import { PublicationsSectionWithUrl } from "@/components/publications1";
 import { publicationsByYear, team } from "@/data";
 import { publicationFaqs } from "@/data/faqs";
 import { highlightAuthors, toPublicationYears } from "@/data/views";
+import { label } from "@/lib/typography";
 
 // Scholar profiles the NSU publications page links to, in its order
 // (nsu-hci-current-website/publications.md — "Google Scholar").
@@ -32,7 +36,9 @@ export default function PublicationsPage() {
   const scholarLinks = SCHOLAR_ORDER.flatMap((id) => {
     const member = team.find((m) => m.id === id);
     const url = member?.socials?.find((s) => s.platform === "google-scholar")?.url;
-    return member && url ? [{ name: member.name, url }] : [];
+    return member && url
+      ? [{ name: member.name, slug: member.slug, photo: member.photo, url }]
+      : [];
   });
   return (
     <>
@@ -46,24 +52,34 @@ export default function PublicationsPage() {
           { value: `${firstYear}–${lastYear}`, label: "Years" },
         ]}
       >
-        <p className="mt-8 text-sm text-muted-foreground">
-          On Google Scholar:{" "}
-          {scholarLinks.map((link, i) => (
-            <span key={link.url}>
-              {i > 0 && ", "}
-              <a
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-current"
-              >
-                {link.name}
-              </a>
-            </span>
-          ))}
-        </p>
+        {/* The Lab's own people, as people: a face (or their printed initial)
+            and a name per profile, each leaving the site for Scholar. A run of
+            comma-separated underlined names read as one more line of the lede;
+            as chips they read as a set of doors, and the outward arrow says
+            where each one goes. */}
+        {scholarLinks.length > 0 && (
+          <div className="mt-8">
+            <p className={label}>On Google Scholar</p>
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {scholarLinks.map((link) => (
+                <li key={link.url}>
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-1.5 rounded-full bg-secondary py-0.5 pr-2.5 pl-0.5 text-sm text-secondary-foreground transition-[color,scale] duration-150 ease-snappy hover:text-brand active:scale-[0.97]"
+                  >
+                    <PersonFace name={link.name} seed={link.slug} photo={link.photo} size="sm" />
+                    {link.name}
+                    <ArrowUpRight className="size-3.5 text-muted-foreground transition-transform duration-200 ease-snappy group-hover:-translate-y-px group-hover:translate-x-px group-hover:text-current" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </PageHeader>
-      <FaqSection items={publicationFaqs} title="Working with this list" />
+      <FaqSection items={publicationFaqs} title="Working with this list" className="pt-0 md:pt-0" />
 
       <ScrollRuler />
 

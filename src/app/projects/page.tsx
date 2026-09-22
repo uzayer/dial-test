@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { ClosingNote } from "@/components/closing-note";
+import { sectionSpacing } from "@/components/editorial";
 import { FaqSection } from "@/components/faq-section";
 import { PageHeader } from "@/components/page-header";
 import { ProjectDirectory, ProjectIndex } from "@/components/project-index";
@@ -7,6 +8,7 @@ import { ScrollRuler } from "@/components/scroll-ruler";
 import { projects } from "@/data";
 import { projectFaqs } from "@/data/faqs";
 import { toProjectEntry } from "@/data/views";
+import { cn } from "@/lib/utils";
 
 export const metadata = {
   title: "Projects",
@@ -37,7 +39,7 @@ export default function ProjectsPage() {
 
       <ScrollRuler />
 
-      <section className="container">
+      <section className={cn("container", sectionSpacing, "pt-0 md:pt-0")}>
         <Suspense fallback={<ProjectIndex projects={entries} themeFilter />}>
           <ProjectDirectory projects={entries} themeFilter />
         </Suspense>

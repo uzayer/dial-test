@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
-import { CropMarks, Squiggle } from "@/components/marks";
+import { CropMarks } from "@/components/marks";
 import { PersonChip } from "@/components/person-chip";
 import { PhotoSlot } from "@/components/photo-slot";
 import { FlatPublicationList, type PublicationYear } from "@/components/publications1";
@@ -19,6 +19,11 @@ type TeamMember = {
   id: string;
   name: string;
   role: string;
+  /**
+   * The heading the person is filed under in the team aside ("Researchers",
+   * "Alumni"). Members arrive already in the order the headings print.
+   */
+  group?: string;
   avatarUrl?: string;
   /** Stable identifier, so a person keeps one ink across the site. */
   slug?: string;
@@ -91,6 +96,16 @@ function timeline(
 }
 
 const slugify = (heading: string) => heading.toLowerCase().replace(/\s+/g, "-");
+
+/** Members under their group heading, in the order they arrive. */
+function teamGroups(members: TeamMember[]): [string, TeamMember[]][] {
+  const groups = new Map<string, TeamMember[]>();
+  for (const member of members) {
+    const key = member.group ?? member.role;
+    groups.set(key, [...(groups.get(key) ?? []), member]);
+  }
+  return [...groups.entries()];
+}
 
 function Fact({ term, children }: { term: string; children: React.ReactNode }) {
   return (
@@ -208,7 +223,6 @@ export function ProjectPost({ project }: { project: ProjectData }) {
         </p>
         <div className="enter relative mt-4 w-fit" style={enterStep(1)}>
           <h1 className={pageTitle}>{project.localName ?? project.title}</h1>
-          <Squiggle className="ink-mark mt-1 max-w-md" />
         </div>
         {project.localName && (
           <p
@@ -240,14 +254,19 @@ export function ProjectPost({ project }: { project: ProjectData }) {
             {span && <Fact term="Timeline">{span}</Fact>}
             {soleLead && (
               <Fact term="Led by">
-                <PersonChip
-                  name={soleLead.name}
-                  seed={soleLead.slug}
-                  photo={soleLead.avatarUrl}
-                  href={soleLead.href}
-                  meta={soleLead.role}
-                  size="sm"
-                />
+                {/* The role beside the pill, not in it — the same split as the
+                    team aside, so a person is one object and their role reads
+                    as a fact about them. */}
+                <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <PersonChip
+                    name={soleLead.name}
+                    seed={soleLead.slug}
+                    photo={soleLead.avatarUrl}
+                    href={soleLead.href}
+                    size="sm"
+                  />
+                  <span className="text-muted-foreground">{soleLead.role}</span>
+                </span>
               </Fact>
             )}
             {project.themes.length > 0 && (
@@ -311,7 +330,7 @@ export function ProjectPost({ project }: { project: ProjectData }) {
       {(sections.length > 0 ||
         project.publications.length > 0 ||
         project.teamMembers.length > 0) && (
-        <div className="container grid gap-16 pb-24 lg:grid-cols-[1fr_22rem]">
+        <div className="container grid gap-16 pb-12 md:pb-16 lg:grid-cols-[1fr_22rem]">
           <div className="max-w-prose">
             {sections.map((section) => (
               <section key={section.heading} className="border-t border-border pt-6 pb-10">
@@ -340,22 +359,33 @@ export function ProjectPost({ project }: { project: ProjectData }) {
           {project.teamMembers.length > 1 && (
             <aside className="h-fit lg:sticky lg:top-24">
               <h2 className={cn(label, "border-t border-border pt-6")}>Project team</h2>
-              {/* A margin reference to people, not a roster: each person is one
-                  chip, with the role beside it. The roster page keeps the
-                  fuller treatment. */}
-              <ul className="mt-5 flex flex-col gap-3">
-                {project.teamMembers.map((member) => (
-                  <li key={member.id}>
-                    <PersonChip
-                      name={member.name}
-                      seed={member.slug}
-                      photo={member.avatarUrl}
-                      href={member.href}
-                      meta={member.role}
-                    />
-                  </li>
+              {/* Filed by role: each role is a small heading and the people in
+                  it are plain chips under it. The role used to ride inside each
+                  pill after the name, so scanning for "who are the alumni"
+                  meant reading every name first; now the roles are a column of
+                  their own and the pill is only the person. */}
+              <div className="mt-5 flex flex-col gap-6">
+                {teamGroups(project.teamMembers).map(([group, members]) => (
+                  <section key={group}>
+                    <h3 className="font-mono text-[0.7rem] tracking-[0.12em] text-muted-foreground uppercase">
+                      {group}
+                      <span className="ml-2 tabular-nums opacity-60">{members.length}</span>
+                    </h3>
+                    <ul className="mt-2.5 flex flex-col items-start gap-2">
+                      {members.map((member) => (
+                        <li key={member.id} className="max-w-full">
+                          <PersonChip
+                            name={member.name}
+                            seed={member.slug}
+                            photo={member.avatarUrl}
+                            href={member.href}
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
                 ))}
-              </ul>
+              </div>
             </aside>
           )}
         </div>

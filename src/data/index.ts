@@ -397,3 +397,32 @@ export function themeStats(themeId: string) {
     grants: grantsByTheme(themeId).length,
   };
 }
+
+// ─── Venues ─────────────────────────────────────────────────────────────────
+
+/**
+ * A Venue as the Lab's record there: how many papers, over which years, and
+ * the Lab's awards for papers it published there. Awards reach a Venue through
+ * their Publication (`awardPublication`), so an award whose paper is not in
+ * the record — or that is not for a paper at all — is not counted.
+ */
+export function venueRecords(limit?: number) {
+  const records = venuesByPublicationCount().map((venue) => {
+    const papers = publications.filter((p) => p.venue === venue.id);
+    return {
+      venue,
+      publicationCount: papers.length,
+      years: yearRange(papers.map((p) => p.year)),
+      awards: labAwards().filter((a) => awardPublication(a)?.venue === venue.id),
+    };
+  });
+  return limit ? records.slice(0, limit) : records;
+}
+
+// ─── Research Themes ────────────────────────────────────────────────────────
+
+/** The Projects a Theme's row can name as evidence: featured first, then the rest. */
+export const themeExampleProjects = (themeId: string, limit = 2): Project[] =>
+  [...projectsByTheme(themeId)]
+    .sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)))
+    .slice(0, limit);

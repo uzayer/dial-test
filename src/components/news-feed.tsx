@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
-import { SectionHeader } from "@/components/editorial";
+import { SectionHeader, sectionSpacing } from "@/components/editorial";
 import { SegmentedControl } from "@/components/segmented-control";
 import { OptionalImage } from "@/components/optional-image";
 import {
@@ -88,7 +88,7 @@ export function NewsFeed({ entries }: { entries: NewsEntry[] }) {
     <>
       {/* §1 Upcoming */}
       {upcoming.length > 0 && (
-        <section className="container pb-16">
+        <section className={cn("container", sectionSpacing, "pt-0 md:pt-0")}>
           <SectionHeader label="Upcoming" title="Coming up" className="mb-6" />
           <ul className="grid gap-x-8 md:grid-cols-2">
             {upcoming.map((entry) => (
@@ -105,7 +105,7 @@ export function NewsFeed({ entries }: { entries: NewsEntry[] }) {
       )}
 
       {/* §2 Archive */}
-      <section className="container pb-24">
+      <section className={cn("container", sectionSpacing, upcoming.length === 0 && "pt-0 md:pt-0")}>
         <div className="flex flex-col gap-4 border-t border-border pt-6 md:flex-row md:items-end md:justify-between">
           <h2 className={displaySectionTitle}>Archive</h2>
           <SegmentedControl
@@ -137,11 +137,21 @@ export function NewsFeed({ entries }: { entries: NewsEntry[] }) {
                     )}
                     style={listStagger(i)}
                   >
-                    <div className="text-sm text-muted-foreground">
-                      <time dateTime={entry.date}>
+                    {/* The row's index line. On a phone it runs across the top of
+                        the entry — date on the left, kind on the right — so the
+                        kinds form one column down the right edge and can be
+                        scanned without reading the titles. From lg it is the
+                        margin column beside the entry, as before. */}
+                    <div className="flex items-center justify-between gap-4 text-sm text-muted-foreground lg:block">
+                      <time dateTime={entry.date} className="tabular-nums">
                         {formatInYear(entry.date, entry.datePrecision)}
                       </time>
-                      <span className={cn("mt-1 flex items-center gap-1.5", TYPE_INK[entry.type])}>
+                      <span
+                        className={cn(
+                          "inline-flex shrink-0 items-center gap-1.5 rounded-full border border-current/30 px-2 py-0.5 font-mono text-[0.65rem] tracking-[0.14em] uppercase lg:mt-2",
+                          TYPE_INK[entry.type],
+                        )}
+                      >
                         <span className="size-1.5 rounded-full bg-current" />
                         {TYPE_LABELS[entry.type]}
                       </span>

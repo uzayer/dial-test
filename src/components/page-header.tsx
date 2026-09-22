@@ -1,4 +1,4 @@
-import { CropMarks, FactMark, Squiggle } from "@/components/marks";
+import { CropMarks, FactMark } from "@/components/marks";
 import { RisoArt, type RisoVariant } from "@/components/riso";
 import { enterStep } from "@/lib/motion";
 import { label, lede, pageTitle } from "@/lib/typography";
@@ -38,8 +38,6 @@ interface PageHeaderProps {
   ink?: string;
   /** A large drawn mark set against the title — a Research Theme's glyph. */
   glyph?: React.ReactNode;
-  /** Let the title's drawn underline span the heading's full width, not just `max-w-md`. */
-  fullTitleSquiggle?: boolean;
   className?: string;
 }
 
@@ -58,7 +56,6 @@ const PageHeader = ({
   bleed = true,
   ink,
   glyph,
-  fullTitleSquiggle = false,
   className,
 }: PageHeaderProps) => {
   // Each piece takes the next step of the 60ms stagger.
@@ -84,17 +81,21 @@ const PageHeader = ({
         // overhang above the sheet so the top cut falls off-screen, and the
         // composition is anchored to the bottom edge, where the cut reads as
         // the trim it is.
+        // Sized to the margin, not to the sheet. At 30–34rem it ran from the
+        // lede to the window's edge, crowded the scrollbar, and outweighed the
+        // title it sits beside; at 22–26rem it is a plate in the margin that
+        // still bleeds past the crop mark.
         <div
           aria-hidden
-          className="pointer-events-none absolute -top-32 bottom-0 -right-5 -z-10 w-[26rem] overflow-clip max-lg:hidden xl:w-[32rem]"
+          className="pointer-events-none absolute -top-32 bottom-0 -right-5 -z-10 w-[20rem] overflow-clip max-lg:hidden xl:w-[24rem]"
         >
           <RisoArt
             variant={art}
             className={cn(
               "absolute opacity-90",
               bleed
-                ? "-right-32 bottom-0 size-[30rem] xl:-right-36 xl:size-[34rem]"
-                : "right-0 bottom-8 size-64 xl:size-72",
+                ? "-right-16 bottom-4 size-[22rem] xl:-right-20 xl:size-[26rem]"
+                : "right-0 bottom-8 size-56 xl:size-64",
             )}
           />
         </div>
@@ -116,8 +117,11 @@ const PageHeader = ({
         {...step(1)}
         className={cn("relative w-fit", (eyebrow || glyph) && "mt-4", step(1).className)}
       >
+        {/* No drawn underline under a page title. The squiggle is the site's
+            hover state — it means "this goes somewhere" — so a permanent one
+            under a heading said the opposite of what it says everywhere else,
+            and it could never match a title that wraps. */}
         <h1 className={pageTitle}>{title}</h1>
-        <Squiggle className={cn("ink-mark mt-1", fullTitleSquiggle ? "max-w-none" : "max-w-md")} />
       </div>
 
       {(description || facts?.length) && (

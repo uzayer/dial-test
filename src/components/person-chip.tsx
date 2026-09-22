@@ -17,7 +17,9 @@ import { cn } from "@/lib/utils";
  * Themed rather than transplanted: the fill is the paper's own warm grey, a
  * portrait falls back to the person's printed initial in their ink (the same
  * ink `InitialTile` gives them, from the same seed), and a linked chip answers
- * the pointer in brand green the way every other link on the site does.
+ * the pointer the way the site's hover rule allows (globals.css, "Hover
+ * vocabulary"): the name turns brand green and the face lifts. The pill itself
+ * no longer washes green as well — that was a third response to one pointer.
  */
 
 export interface Person {
@@ -53,8 +55,18 @@ export function PersonFace({
   seed,
   photo,
   size = "md",
+  lift = false,
   className,
-}: Person & { size?: Size; className?: string }) {
+}: Person & {
+  size?: Size;
+  /**
+   * Lift with the nearest hovered `group`. Only a chip asks for it: a face in
+   * a publication row's author stack would otherwise lift whenever the row is
+   * hovered, as a response to a link that is not the face's own.
+   */
+  lift?: boolean;
+  className?: string;
+}) {
   const s = SIZES[size];
   const { ink, tint } = personInk(seed ?? name);
 
@@ -62,8 +74,8 @@ export function PersonFace({
     <span
       aria-hidden
       className={cn(
-        "sticker relative grid shrink-0 place-items-center overflow-hidden rounded-full font-display ring-2 ring-background",
-        "group-hover:-rotate-[1.75deg]",
+        "relative grid shrink-0 place-items-center overflow-hidden rounded-full font-display ring-2 ring-background",
+        lift && "mark-lift",
         s.portrait,
         s.letter,
         ink,
@@ -82,7 +94,12 @@ export function PersonFace({
     <OptionalImage
       src={photo}
       alt=""
-      frameClassName={cn("shrink-0 rounded-full ring-2 ring-background", s.portrait, className)}
+      frameClassName={cn(
+        "shrink-0 rounded-full ring-2 ring-background",
+        lift && "mark-lift",
+        s.portrait,
+        className,
+      )}
       className="h-full w-full object-cover object-top"
       fallback={letter}
     />
@@ -150,7 +167,7 @@ export function PersonChip({
 
   const body = (
     <>
-      <PersonFace name={name} seed={seed} photo={photo} size={size} />
+      <PersonFace name={name} seed={seed} photo={photo} size={size} lift={Boolean(href)} />
       <span className="truncate font-sans leading-none">{name}</span>
       {meta && (
         <span className="truncate font-sans text-xs font-normal text-muted-foreground">
@@ -165,7 +182,7 @@ export function PersonChip({
 
   const base = cn(
     "group inline-flex w-fit max-w-full items-center rounded-full bg-secondary text-secondary-foreground",
-    "transition-colors duration-200 ease-snappy",
+    "transition-[color,scale] duration-150 ease-snappy",
     s.pill,
     className,
   );
@@ -175,7 +192,9 @@ export function PersonChip({
   }
 
   return (
-    <Link href={href} className={cn(base, "hover:bg-brand/10 hover:text-brand")}>
+    // Pressed, it gives under the finger: feedback, not decoration, so it is
+    // not counted against the two hover responses.
+    <Link href={href} className={cn(base, "hover:text-brand active:scale-[0.97]")}>
       {body}
     </Link>
   );

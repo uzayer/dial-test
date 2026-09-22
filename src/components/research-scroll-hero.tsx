@@ -2,6 +2,7 @@
 
 import {
   motion,
+  type MotionStyle,
   useMotionTemplate,
   useMotionValueEvent,
   useReducedMotion,
@@ -95,6 +96,11 @@ const ResearchScrollHero = ({ className, children }: ResearchScrollHeroProps) =>
   // The stage dims as the sheet comes over it, which is what makes a panel the
   // same colour as the page read as a separate layer.
   const stageScrim = useTransform(riseProgress, [0.2, 1], [0, 0.08]);
+  // The sheet's lift — the shadow it throws up onto the stage — is only true
+  // while it is rising over something. Once it has settled it is the page, and
+  // a shadow still hanging off its bottom edge printed a grey band between it
+  // and the next section, so the paper changed colour at the seam.
+  const lift = useTransform(riseProgress, [0.85, 1], [1, 0]);
 
   // Full transform strings rather than Motion's `scale` shorthand, which is not
   // hardware-accelerated and drops frames while the page is loading.
@@ -134,7 +140,12 @@ const ResearchScrollHero = ({ className, children }: ResearchScrollHeroProps) =>
     <div
       data-hero-root
       className={cn(
-        "relative flex w-full flex-col items-center overflow-x-clip bg-background text-foreground",
+        // Clipped on both axes. The stage's veils are a viewport tall and hang
+        // below the hero once it has scrolled past; unclipped, they laid a
+        // 90%-paper wash over the top of the next section on the right, which
+        // read as the page changing colour (#F9F7F2 to #FBF7F2) at the seam.
+        // `clip`, not `hidden`, so the sticky stage still sticks.
+        "relative flex w-full flex-col items-center overflow-clip bg-background text-foreground",
         className,
       )}
       style={{ paddingTop: restAt }}
@@ -205,18 +216,24 @@ const ResearchScrollHero = ({ className, children }: ResearchScrollHeroProps) =>
       <motion.section
         ref={panelRef}
         data-ink-hold
-        style={reduceMotion ? undefined : { transform: panelTransform }}
+        // Motion animates a custom property from a motion value, but its style
+        // type does not list them; the shadow class reads `--lift`.
+        style={
+          (reduceMotion
+            ? { "--lift": 0 }
+            : { transform: panelTransform, "--lift": lift }) as unknown as MotionStyle
+        }
         className={cn(
-          // The band has to be a full viewport tall for its rise to finish, so
-          // its contents are centred in it rather than parked at the top with
-          // the remainder left as dead space under them. pt clears the fixed
-          // nav plus breathing room, so the second hero does not arrive tight
-          // under it, and is a floor on the centring rather than a gap.
-          "relative z-20 mt-[20vh] flex min-h-screen w-full flex-col justify-center overflow-hidden rounded-t-4xl border-t border-border bg-background pt-28 pb-8 text-foreground md:pt-32 md:pb-10",
+          // As tall as its contents, not a full viewport: the page that follows
+          // is the same paper, so it rises with the sheet and the rise still
+          // finishes. Forcing a screen's height centred the header in it and
+          // left most of a screen of empty paper under the partner strip. pt
+          // clears the fixed nav, so the sheet does not arrive tight under it.
+          "relative z-20 mt-[20vh] flex w-full flex-col overflow-hidden rounded-t-4xl border-t border-border bg-background pt-28 pb-4 text-foreground md:pt-32 md:pb-6",
           // Only the top is rounded: the bottom runs straight into the page,
           // and rounded corners there showed the dimmed stage in the notches.
           // Lifts off the page: a shadow thrown upward onto the stage.
-          "shadow-[0_-32px_64px_-24px_oklch(0.19_0.012_60/0.22)] dark:shadow-[0_-32px_64px_-24px_oklch(0_0_0/0.6)]",
+          "shadow-[0_-32px_64px_-24px_oklch(0.19_0.012_60/calc(0.22*var(--lift,1)))] dark:shadow-[0_-32px_64px_-24px_oklch(0_0_0/calc(0.6*var(--lift,1)))]",
         )}
       >
         {children}

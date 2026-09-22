@@ -54,7 +54,7 @@ export function InitialTile({
     <span
       aria-hidden
       className={cn(
-        "sticker relative grid size-10 shrink-0 place-items-center overflow-hidden rounded-[0.6rem] font-display text-lg",
+        "relative grid size-10 shrink-0 place-items-center overflow-hidden rounded-[0.6rem] font-display text-lg",
         ink,
         tint,
         className,

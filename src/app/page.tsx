@@ -5,22 +5,29 @@ import {
   SectionHeader,
   TextLink,
   ThemeSpotlight,
-  sectionSpacingTight,
+  sectionSpacing,
 } from "@/components/editorial";
-import { CircleMark, MarginNote } from "@/components/marks";
+import Link from "next/link";
+
+import { FieldNote } from "@/components/field-note";
+import { CircleMark, MarginNote, SquiggleUnderline, Tape } from "@/components/marks";
 import { PageHeader } from "@/components/page-header";
 import { PartnerStrip } from "@/components/partner-strip";
+import { ProjectIndex } from "@/components/project-index";
 import { FlatPublicationList } from "@/components/publications1";
 import { ResearchScrollHero } from "@/components/research-scroll-hero";
+import { RisoArt } from "@/components/riso";
 import {
+  featuredProjects,
   featuredPublications,
   homePartnerOrganizations,
+  labInfo,
   labStats,
   publicationsByYear,
   researchThemes,
   themeStats,
 } from "@/data";
-import { highlightAuthors, toPublicationYears } from "@/data/views";
+import { highlightAuthors, toProjectEntry, toPublicationYears } from "@/data/views";
 import { displaySectionTitle, label } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
@@ -38,6 +45,17 @@ const AUDIENCES = [
     text: "Universities, NGOs, funders, and community groups.",
   },
 ];
+
+/**
+ * A filled action and a text link, side by side from `sm`. On a phone they
+ * stack, and stacked a bare text link sat under the pill's edge while the
+ * pill's words began a padding further in, so neither edge lined up. There the
+ * link is drawn as an outline pill of the same height and padding: two
+ * buttons on one left edge, their words on one left edge too.
+ */
+const heroActions = "mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-8";
+const secondaryAction =
+  "text-muted-foreground hover:text-foreground max-sm:rounded-full max-sm:border max-sm:border-border max-sm:px-5 max-sm:py-2.5 max-sm:text-foreground";
 
 export default function Home() {
   const stats = labStats();
@@ -104,9 +122,9 @@ export default function Home() {
           animateIn={false}
           className="py-0 md:py-0"
         >
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8">
+          <div className={heroActions}>
             <PrimaryLink href="/research">Explore the research</PrimaryLink>
-            <TextLink href="/join-us" className="text-muted-foreground hover:text-foreground">
+            <TextLink href="/join-us" className={secondaryAction}>
               Join the lab
             </TextLink>
           </div>
@@ -118,17 +136,27 @@ export default function Home() {
         </PageHeader>
       </ResearchScrollHero>
 
-      <section className={cn("container", sectionSpacingTight)}>
+      {/* About DIAL, as a notebook page rather than two columns of type: the
+          heading with a sourced note pencilled under it, the prose, and a
+          plate taped into the margin that is itself the way to /about — the
+          spot a photograph of the lab goes when DIAL supplies one. */}
+      <section className={cn("container", sectionSpacing)}>
         <div
           data-reveal
-          className="relative grid gap-10 pt-6 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-24"
+          className="relative grid gap-10 pt-6 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)_16rem] lg:gap-16"
         >
           <span aria-hidden className="reveal-rule absolute inset-x-0 top-0 h-px bg-border" />
-          <div className="reveal-item">
-            <p className={cn(label, "mb-3")}>About DIAL</p>
-            <h2 className={cn(displaySectionTitle, "text-balance")}>
-              Locally appropriate, low-cost, explainable.
-            </h2>
+          <div className="reveal-item flex flex-col gap-8">
+            <div>
+              <p className={cn(label, "mb-3")}>About DIAL</p>
+              <h2 className={cn(displaySectionTitle, "text-balance")}>
+                Locally appropriate, low-cost, explainable.
+              </h2>
+            </div>
+            <FieldNote source={`NSUHCI, ${labInfo.hciResearchSince}`} className="max-lg:hidden">
+              Before it had a name, DIAL was a few people at NSU starting HCI research with Google,
+              in {labInfo.hciResearchSince}.
+            </FieldNote>
           </div>
           <div className="reveal-item max-w-prose space-y-5 text-pretty leading-relaxed text-muted-foreground md:text-lg">
             <p>
@@ -146,10 +174,32 @@ export default function Home() {
               About the lab
             </TextLink>
           </div>
+          <Link
+            href="/about"
+            aria-label="About the lab"
+            className="reveal-item group relative block w-full max-w-72 self-start rounded-md border border-border bg-muted/40 p-4 transition-transform duration-150 ease-snappy active:scale-[0.98]"
+          >
+            <span
+              aria-hidden
+              className="halftone absolute inset-0 rounded-[inherit] opacity-[0.07]"
+            />
+            <span className="mark-lift relative block">
+              <span className="relative grid aspect-4/5 place-items-center overflow-hidden rounded-sm bg-background shadow-[0_1px_0_0_var(--paper-line),0_12px_28px_-18px_rgba(0,0,0,0.45)]">
+                <RisoArt variant="bloom" className="size-[78%]" />
+              </span>
+              <Tape />
+            </span>
+            <span className="relative mt-4 block font-hand text-xl leading-tight text-ink">
+              <span className="relative">
+                the lab, {labInfo.foundedYear}–now
+                <SquiggleUnderline />
+              </span>
+            </span>
+          </Link>
         </div>
       </section>
 
-      <section className={cn("container", sectionSpacingTight, "relative")}>
+      <section className={cn("container", sectionSpacing, "relative")}>
         <SectionHeader
           label="Research"
           title="Where social need and technical systems meet"
@@ -160,7 +210,19 @@ export default function Home() {
         <ThemeSpotlight lead={leadThemes} rest={restThemes} />
       </section>
 
-      <section className={cn("container", sectionSpacingTight)}>
+      {/* The themes say what DIAL studies; the projects are what that looks
+          like on the ground, and the directory had no way in from Home. */}
+      <section className={cn("container", sectionSpacing)}>
+        <SectionHeader
+          label="Projects"
+          title="What the work looks like on the ground"
+          link={{ text: `All ${stats.projects} projects`, href: "/projects" }}
+          className="mb-6"
+        />
+        <ProjectIndex projects={featuredProjects().slice(0, 3).map(toProjectEntry)} />
+      </section>
+
+      <section className={cn("container", sectionSpacing)}>
         <SectionHeader
           label="Publications"
           title="Selected work"
@@ -181,7 +243,7 @@ export default function Home() {
         <PullQuote>Technology that is locally appropriate, low-cost, and explainable.</PullQuote>
       </InkBand>
 
-      <section className={cn("container", sectionSpacingTight)}>
+      <section className={cn("container", sectionSpacing)}>
         <SectionHeader
           label="Work with us"
           title="Research with purpose. Join the lab."
@@ -201,9 +263,9 @@ export default function Home() {
             </div>
           ))}
         </dl>
-        <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8">
+        <div className={cn(heroActions, "mt-10")}>
           <PrimaryLink href="/join-us">Join the lab</PrimaryLink>
-          <TextLink href="/contact" className="text-muted-foreground hover:text-foreground">
+          <TextLink href="/contact" className={secondaryAction}>
             Start a collaboration
           </TextLink>
         </div>

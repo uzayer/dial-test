@@ -11,10 +11,12 @@ import {
   HalftoneWash,
   MarginNote,
   RegistrationMark,
+  RosetteMark,
   Squiggle,
   SquiggleText,
   TickMark,
 } from "@/components/marks";
+import { Annotated, DoDont, EaseDemo } from "@/components/brand-specimen";
 import {
   InkBand,
   NumberedSteps,
@@ -22,7 +24,7 @@ import {
   PullQuote,
   SectionHeader,
   TextLink,
-  sectionSpacingTight,
+  sectionSpacing,
 } from "@/components/editorial";
 import { DialLockup, DialMark, DialWordmark } from "@/components/dial-logo";
 import { FieldNote } from "@/components/field-note";
@@ -30,20 +32,22 @@ import { InitialTile } from "@/components/initial-tile";
 import { PageHeader } from "@/components/page-header";
 import { PersonChip } from "@/components/person-chip";
 import { PhotoSlot } from "@/components/photo-slot";
+import { ProjectRow } from "@/components/project-index";
 import { RisoArt, type RisoVariant } from "@/components/riso";
 import { ThemeGlyph, themeInkVar } from "@/components/theme-marks";
 import { TokenValue } from "@/components/token-value";
-import { labInfo, publications, researchThemes, team } from "@/data";
+import { featuredProjects, labInfo, publications, researchThemes, team } from "@/data";
+import { toProjectEntry } from "@/data/views";
 import { displaySectionTitle, label, lede, pageTitle } from "@/lib/typography";
 import { cn } from "@/lib/utils";
 
 export const metadata = {
-  title: "Brand guidelines",
+  title: "Design system and guidelines",
   description: "DIAL's logo, inks, type, hand-drawn marks and the rules for using them.",
 };
 
 /**
- * DIAL's brand guidelines, as a page of the site rather than a document about
+ * DIAL's design system and guidelines, as a page of the site rather than a document about
  * it. Every specimen here is the real component or the real token, so the page
  * cannot describe a system the site no longer uses. The rules are lifted from
  * the components' own doc comments, which is where they were first decided.
@@ -59,7 +63,8 @@ const CONTENTS = [
   { id: "compositions", title: "Compositions" },
   { id: "paper", title: "Paper" },
   { id: "components", title: "Components" },
-  { id: "motion", title: "Motion" },
+  { id: "in-context", title: "In context" },
+  { id: "motion", title: "Motion & hover" },
   { id: "rules", title: "House rules" },
 ];
 
@@ -71,6 +76,8 @@ interface Swatch {
   /** A literal class, so Tailwind sees it. */
   fill: string;
   role: string;
+  /** The tempting misuse, shown with the note. */
+  dont?: string;
 }
 
 const PAPER: Swatch[] = [
@@ -105,6 +112,7 @@ const PAPER: Swatch[] = [
     token: "--foreground",
     fill: "bg-foreground",
     role: "Type, and the one filled action.",
+    dont: "A second filled button on the same page.",
   },
 ];
 
@@ -114,30 +122,35 @@ const PRESS: Swatch[] = [
     token: "--brand",
     fill: "bg-brand",
     role: "Meaning only: ongoing status, the active filter, a link answering the pointer. Never decoration.",
+    dont: "A green heading, button or illustration because the page felt plain.",
   },
   {
     name: "Second ink",
     token: "--ink",
     fill: "bg-ink",
     role: "Warm red-orange. Every hand-drawn mark, and recognition.",
+    dont: "Body text or an error state: it is the pen, not a warning.",
   },
   {
     name: "Blue",
     token: "--ink-blue",
     fill: "bg-ink-blue",
     role: "Theme plates and printed compositions.",
+    dont: "Status or links. A Theme's ink is its identity, so it never means anything else.",
   },
   {
     name: "Yellow",
     token: "--ink-yellow",
     fill: "bg-ink-yellow",
     role: "Theme plates and printed compositions.",
+    dont: "Status or links. A Theme's ink is its identity, so it never means anything else.",
   },
   {
     name: "Violet",
     token: "--ink-violet",
     fill: "bg-ink-violet",
     role: "Theme plates and printed compositions.",
+    dont: "Status or links. A Theme's ink is its identity, so it never means anything else.",
   },
 ];
 
@@ -184,15 +197,32 @@ const LOGOS: { name: string; code: string; use: string; specimen: React.ReactNod
 
 // ─── Marks ───────────────────────────────────────────────────────────────────
 
-const MARKS: { name: string; use: string; specimen: React.ReactNode }[] = [
+const MARKS: {
+  name: string;
+  code: string;
+  use: string;
+  dont?: string;
+  specimen: React.ReactNode;
+}[] = [
   {
     name: "Squiggle",
-    use: "Under a page title, and drawn in on hover under links. One wave, tiled — never stretched.",
+    code: "<SquiggleUnderline /> · <SquiggleText />",
+    use: 'Drawn in on hover under a link\'s words — it means "this goes somewhere", so it never sits under a heading. One wave, tiled, never stretched.',
+    dont: 'Under a page title. It could never match a title that wraps, and it says "link".',
     specimen: <Squiggle className="w-40" />,
   },
   {
+    name: "RosetteMark",
+    code: "<RosetteMark />",
+    use: "An Award itself: the award lists, the navbar's awarded work, a prize on a publication row.",
+    dont: "Beside anything that is not an award. The asterisk is the footnote; this is the prize.",
+    specimen: <RosetteMark className="size-12" />,
+  },
+  {
     name: "CircleMark",
+    code: "<CircleMark />",
     use: "A loop around the one word a headline turns on. Once per page, at most.",
+    dont: "Around a word in body text, or twice on one page.",
     specimen: (
       <span className="relative inline-block font-display text-3xl">
         misses.
@@ -202,36 +232,44 @@ const MARKS: { name: string; use: string; specimen: React.ReactNode }[] = [
   },
   {
     name: "ArrowMark",
+    code: "<ArrowMark />",
     use: "Points from a margin note back at its subject.",
     specimen: <ArrowMark className="h-12 w-24" />,
   },
   {
     name: "AsteriskMark",
-    use: "Recognition, next to an Award; the pin on a FieldNote.",
+    code: "<AsteriskMark />",
+    use: "A footnote beside something: the pin on a FieldNote, a note on a figure.",
+    dont: "For an award — that is the rosette's job now.",
     specimen: <AsteriskMark className="size-8" />,
   },
   {
     name: "TickMark",
+    code: "<TickMark />",
     use: "A short rule with a hand's wobble, before a section label.",
     specimen: <TickMark className="h-3 w-14" />,
   },
   {
     name: "RegistrationMark",
+    code: "<RegistrationMark />",
     use: "The press's alignment target. Signs off the footer.",
     specimen: <RegistrationMark className="size-10" />,
   },
   {
     name: "DashedPath",
+    code: "<DashedPath />",
     use: "A dotted thread from one numbered step to the next.",
     specimen: <DashedPath className="w-40" />,
   },
   {
     name: "EmptySketch",
+    code: "<EmptySketch />",
     use: "A swept-out page, where a filter has emptied a list.",
     specimen: <EmptySketch />,
   },
   {
     name: "CropMarks",
+    code: "<CropMarks />",
     use: "Top corners of a page header: this is a printed sheet, trimmed here.",
     specimen: (
       <span className="relative block h-12 w-32 border-t border-dashed border-border">
@@ -241,6 +279,7 @@ const MARKS: { name: string; use: string; specimen: React.ReactNode }[] = [
   },
   {
     name: "FactMark",
+    code: '<FactMark label="…" />',
     use: "A small drawing beside a header figure, keyed by its label.",
     specimen: (
       <span className="flex gap-4">
@@ -252,20 +291,55 @@ const MARKS: { name: string; use: string; specimen: React.ReactNode }[] = [
   },
 ];
 
-const COMPOSITIONS: { variant: RisoVariant; caption: string }[] = [
+const COMPOSITIONS: { variant: RisoVariant; caption: string; use: string; isNew?: boolean }[] = [
   {
     variant: "orbit",
     caption: "Concentric rings crossed by an off-register disc: reach and overlap.",
+    use: "Research, About: the lab's reach.",
   },
-  { variant: "strata", caption: "Stacked contour lines, like a hand-drawn elevation map." },
+  {
+    variant: "strata",
+    caption: "Stacked contour lines, like a hand-drawn elevation map.",
+    use: "Publications: the record, layer on layer.",
+  },
   {
     variant: "signal",
     caption: "Arcs radiating from a low point: a signal leaving somewhere small.",
+    use: "News, Awards, Join: word going out.",
   },
-  { variant: "field", caption: "A dotted plot with one marked reading: data, drawn by hand." },
+  {
+    variant: "field",
+    caption: "A dotted plot with one marked reading: data, drawn by hand.",
+    use: "Projects: the work, measured in the field.",
+  },
   {
     variant: "bloom",
     caption: "Overlapping petals of ink: two colours meeting where they overlap.",
+    use: "People, and the site-wide card: the lab itself.",
+  },
+  {
+    variant: "thread",
+    caption: "Circles strung on a dotted thread, one ringed twice.",
+    use: "Collaboration: partners, co-authors, Contact.",
+    isNew: true,
+  },
+  {
+    variant: "grid",
+    caption: "A notebook's squared grid with one cell inked in.",
+    use: "Empty and not-found states: a page with its one mark missing.",
+    isNew: true,
+  },
+  {
+    variant: "echo",
+    caption: "Arcs set down one after another, each a little off the last.",
+    use: "Time: the news archive, the years, a timeline.",
+    isNew: true,
+  },
+  {
+    variant: "seed",
+    caption: "A small seed with uneven strokes radiating from it.",
+    use: "Beginnings: joining the lab, a first project.",
+    isNew: true,
   },
 ];
 
@@ -279,22 +353,35 @@ const EASINGS = [
     token: "ease-snappy",
     value: "cubic-bezier(0.23, 1, 0.32, 1)",
     use: "Anything that answers the user: hover, press, a filter.",
+    duration: 450,
   },
   {
     token: "ease-in-out-strong",
     value: "cubic-bezier(0.77, 0, 0.175, 1)",
     use: "Deliberate on-screen movement: a rule or a stroke drawing itself.",
+    duration: 700,
   },
-  { token: "ease-drawer", value: "cubic-bezier(0.32, 0.72, 0, 1)", use: "The mobile menu sheet." },
+  {
+    token: "ease-drawer",
+    value: "cubic-bezier(0.32, 0.72, 0, 1)",
+    use: "The mobile menu sheet.",
+    duration: 300,
+  },
 ];
 
 const TIMINGS = [
+  { value: "0ms", use: "The desktop megamenu opens and closes — no animation at all" },
+  { value: "75ms", use: "Hover intent before a megamenu panel opens" },
+  { value: "250ms", use: "A mark lifts on hover (it settles back in 150ms)" },
+  { value: "260ms", use: "Arrow turns to face north-east" },
+  { value: "450ms", use: "Hover squiggle wipes under a link" },
   { value: "500ms", use: "Header pieces rise in, 60ms apart" },
   { value: "700ms", use: "Section rules draw across" },
   { value: "900ms", use: "Hand-drawn strokes draw in" },
-  { value: "450ms", use: "Hover squiggle wipes under a link" },
-  { value: "260ms", use: "Arrow turns to face north-east" },
 ];
+
+// A real project row, for the mark lift in context.
+const sampleProject = featuredProjects()[0];
 
 // ─── Page ────────────────────────────────────────────────────────────────────
 
@@ -306,7 +393,7 @@ export default function DesignSystemPage() {
         art="strata"
         title={
           <>
-            DIAL brand{" "}
+            DIAL design system and{" "}
             <span className="relative inline-block">
               guidelines
               <CircleMark />
@@ -340,7 +427,7 @@ export default function DesignSystemPage() {
       </PageHeader>
 
       {/* §1 Logo */}
-      <section id="logo" className={cn("container scroll-mt-24", sectionSpacingTight)}>
+      <section id="logo" className={cn("container scroll-mt-24", sectionSpacing)}>
         <SectionHeader
           label="01 · Logo"
           title="One mark, four ways to set it."
@@ -400,7 +487,7 @@ export default function DesignSystemPage() {
       </section>
 
       {/* §2 Principles */}
-      <section id="principles" className={cn("container scroll-mt-24", sectionSpacingTight)}>
+      <section id="principles" className={cn("container scroll-mt-24", sectionSpacing)}>
         <SectionHeader
           label="02 · Principles"
           title="A field notebook, run through a riso press."
@@ -426,15 +513,15 @@ export default function DesignSystemPage() {
       </section>
 
       {/* §3 Inks */}
-      <section id="inks" className={cn("container scroll-mt-24", sectionSpacingTight)}>
+      <section id="inks" className={cn("container scroll-mt-24", sectionSpacing)}>
         <SectionHeader
           label="03 · Inks"
           title="Paper, then five inks on the press."
-          description="All colour is OKLCH, defined once in globals.css and read here live — toggle the theme and every value below changes with it. Never a raw hex in a component."
+          description="All colour is OKLCH, defined once in globals.css and read here live — toggle the theme and every value below changes with it. Never a raw hex in a component. Hover or focus a swatch for its value and its one job."
         />
 
         <h3 className={cn(label, "mt-12")}>The paper</h3>
-        <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-7">
+        <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-6 lg:grid-cols-4">
           {PAPER.map((s) => (
             <SwatchCard key={s.token} swatch={s} />
           ))}
@@ -469,7 +556,7 @@ export default function DesignSystemPage() {
       </section>
 
       {/* §4 Theme plates */}
-      <section id="themes" className={cn("container scroll-mt-24", sectionSpacingTight)}>
+      <section id="themes" className={cn("container scroll-mt-24", sectionSpacing)}>
         <SectionHeader
           label="04 · Theme plates"
           title="One glyph and one ink per Research Theme."
@@ -504,7 +591,7 @@ export default function DesignSystemPage() {
       </section>
 
       {/* §5 Type */}
-      <section id="type" className={cn("container scroll-mt-24", sectionSpacingTight)}>
+      <section id="type" className={cn("container scroll-mt-24", sectionSpacing)}>
         <SectionHeader
           label="05 · Type"
           title="A soft serif for titles, a plain sans for reading, a hand for the margin."
@@ -568,22 +655,25 @@ export default function DesignSystemPage() {
       </section>
 
       {/* §6 Marks */}
-      <section id="marks" className={cn("container scroll-mt-24", sectionSpacingTight)}>
+      <section id="marks" className={cn("container scroll-mt-24", sectionSpacing)}>
         <SectionHeader
           label="06 · Marks"
           title="Drawn in the second ink, and drawn in as you arrive."
           description="Each stroke draws itself the first time its section scrolls into view, and simply sits drawn when motion is reduced."
         />
-        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <ul className="mt-12 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
           {MARKS.map((mark) => (
-            <li
-              key={mark.name}
-              data-reveal
-              className="flex flex-col rounded-lg border border-border bg-card p-5"
-            >
-              <div className="grid h-24 place-items-center">{mark.specimen}</div>
-              <p className="mt-4 font-mono text-xs text-foreground">{mark.name}</p>
-              <p className="mt-1 text-sm text-pretty text-muted-foreground">{mark.use}</p>
+            <li key={mark.name} data-reveal>
+              <Annotated
+                id={`mark-${mark.name}`}
+                name={mark.name}
+                token={mark.code}
+                rule={mark.use}
+                dont={mark.dont}
+                stageClassName="grid min-h-40 place-items-center p-5 [@media(hover:hover)_and_(pointer:fine)]:h-44"
+              >
+                {mark.specimen}
+              </Annotated>
             </li>
           ))}
         </ul>
@@ -615,29 +705,41 @@ export default function DesignSystemPage() {
       </section>
 
       {/* §7 Compositions */}
-      <section id="compositions" className={cn("container scroll-mt-24", sectionSpacingTight)}>
+      <section id="compositions" className={cn("container scroll-mt-24", sectionSpacing)}>
         <SectionHeader
           label="07 · Compositions"
           title="Abstract on purpose."
-          description="Large riso prints for headers and empty photo slots. DIAL works with real communities, and an illustrated scene of people would be inventing imagery of them — shapes carry the texture without claiming to depict anyone. Each is a fixed drawing, so a page looks the same on every visit."
+          description="Large riso prints for headers, empty photo slots and share cards. DIAL works with real communities, and an illustrated scene of people would be inventing imagery of them — shapes carry the texture without claiming to depict anyone. Each is a fixed drawing, so a page looks the same on every visit, and each has a job: pick the print by what the page is about, not by which looks nicest."
         />
-        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          {COMPOSITIONS.map(({ variant, caption }) => (
-            <li key={variant} className="flex flex-col gap-3">
-              <span className="relative grid aspect-square place-items-center overflow-hidden rounded-md border border-border bg-muted/40">
-                <CropMarks className="top-5 mx-5 text-ink/45" />
-                <span aria-hidden className="halftone absolute inset-0 opacity-[0.08]" />
-                <RisoArt variant={variant} className="size-[78%]" />
-              </span>
-              <p className="font-mono text-xs text-foreground">{variant}</p>
-              <p className="text-sm text-pretty text-muted-foreground">{caption}</p>
+        <ul className="mt-12 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+          {COMPOSITIONS.map(({ variant, caption, use, isNew }) => (
+            <li key={variant}>
+              <Annotated
+                id={`riso-${variant}`}
+                name={variant}
+                token={`<RisoArt variant="${variant}" />`}
+                rule={`${caption} ${use}`}
+                stageClassName="bg-muted/40"
+              >
+                <span className="relative grid aspect-square place-items-center">
+                  <CropMarks className="top-5 mx-5 text-ink/45" />
+                  <span aria-hidden className="halftone absolute inset-0 opacity-[0.08]" />
+                  <RisoArt variant={variant} className="size-[74%]" />
+                  {isNew && (
+                    <span className="absolute top-3 right-12 font-hand text-lg leading-none text-ink">
+                      new
+                    </span>
+                  )}
+                </span>
+              </Annotated>
+              <p className="mt-1 text-sm text-pretty text-muted-foreground">{use}</p>
             </li>
           ))}
         </ul>
       </section>
 
       {/* §8 Paper */}
-      <section id="paper" className={cn("container scroll-mt-24", sectionSpacingTight)}>
+      <section id="paper" className={cn("container scroll-mt-24", sectionSpacing)}>
         <SectionHeader
           label="08 · Paper"
           title="Stuck on, stamped, taped down."
@@ -708,7 +810,7 @@ export default function DesignSystemPage() {
       </section>
 
       {/* §9 Components */}
-      <section id="components" className={cn("container scroll-mt-24", sectionSpacingTight)}>
+      <section id="components" className={cn("container scroll-mt-24", sectionSpacing)}>
         <SectionHeader label="09 · Components" title="A small vocabulary, used everywhere." />
         <div className="mt-12 grid gap-x-12 gap-y-14 md:grid-cols-2">
           <ComponentSpecimen
@@ -775,25 +877,155 @@ export default function DesignSystemPage() {
         </div>
       </section>
 
-      {/* §10 Motion */}
-      <section id="motion" className={cn("container scroll-mt-24", sectionSpacingTight)}>
+      {/* §10 In context */}
+      <section id="in-context" className={cn("container scroll-mt-24", sectionSpacing)}>
         <SectionHeader
-          label="10 · Motion"
+          label="10 · In context"
+          title="The same pieces, where they actually live."
+          description="A mark on its own card says little about when to reach for it. Here each one sits in the kind of passage it was made for, followed by the rules that are easiest to break — the wrong version usually looks fine until it is next to the right one."
+        />
+
+        <div className="mt-12 grid gap-x-12 gap-y-14 md:grid-cols-2">
+          <ComponentSpecimen
+            name="A link in running text"
+            note="The squiggle draws under a link's words as the pointer arrives, and the arrow turns to face where it goes. Hover the sentence's link."
+          >
+            <p className="max-w-prose text-pretty text-muted-foreground md:text-lg">
+              DIAL publishes at CHI, TOCHI and ICTD, and the{" "}
+              <TextLink href="/publications" className="text-base">
+                full bibliography
+              </TextLink>{" "}
+              is filterable by year, venue and theme.
+            </p>
+          </ComponentSpecimen>
+
+          <ComponentSpecimen
+            name="An award, stamped"
+            note="The rosette marks the prize itself. It sits in the margin of the row like a stamp, in the second ink, and the award's name and year sit beside it in type — the mark repeats what the words say."
+          >
+            <div className="flex items-start gap-4 border-y border-border py-4">
+              <span className="grid size-10 shrink-0 place-items-center rounded-full border border-ink/35 bg-ink/8">
+                <RosetteMark className="size-6" />
+              </span>
+              <div>
+                <p className="font-display text-xl leading-snug">Best Paper Award</p>
+                <p className="mt-1 text-sm text-muted-foreground">ACM CHI · 2019</p>
+              </div>
+            </div>
+          </ComponentSpecimen>
+
+          <ComponentSpecimen
+            name="The mark lift, on a real row"
+            className="md:col-span-2"
+            note="A row's printed mark (a project's letter, a Theme's glyph, a person's initial) rises and tips 4° when the row is hovered, while its title takes the squiggle. Two answers, and the paper behind them stays still."
+          >
+            {sampleProject && (
+              <ol className="border-t border-border">
+                <li>
+                  <ProjectRow project={toProjectEntry(sampleProject)} index={1} />
+                </li>
+              </ol>
+            )}
+          </ComponentSpecimen>
+
+          <ComponentSpecimen
+            name="A FieldNote beside its paragraph"
+            note="The note sits in the margin next to the claim it backs, readable at every width and always sourced. It adds what the paragraph cannot say without breaking stride."
+          >
+            <div className="grid gap-6 sm:grid-cols-[1fr_12rem]">
+              <p className="text-pretty text-muted-foreground">
+                We use participatory design and long-term fieldwork to understand problems from the
+                inside, then build and evaluate technology with the people who will use it.
+              </p>
+              <FieldNote source="UTOPIA project, 1981–1986">
+                Designing with the people who will use the thing began with Scandinavian trade
+                unions.
+              </FieldNote>
+            </div>
+          </ComponentSpecimen>
+        </div>
+
+        <div className="mt-16 flex flex-col gap-12">
+          <DoDont
+            rule="No squiggle under a heading."
+            why="The squiggle means “this goes somewhere”. Under a title that goes nowhere it says the opposite of what it says everywhere else, and a stroke of fixed length can never match a title that wraps."
+            dont={
+              <span className="relative w-fit">
+                <span className="font-display text-3xl">Research at the margins</span>
+                <Squiggle className="mt-1" />
+              </span>
+            }
+            doThis={
+              <span className="flex flex-col items-start gap-3">
+                <span className="font-display text-3xl">Research at the margins</span>
+                <TextLink href="/research">All nine themes</TextLink>
+              </span>
+            }
+          />
+          <DoDont
+            rule="One answer per signal on hover, and the paper never darkens."
+            why="A hovered row may answer with its words (the squiggle) and its mark (the lift or an arrow's turn). A tilt, a darkened background and an underline all at once reads as the page flinching, not answering."
+            dont={
+              <span className="flex w-full items-center gap-4 rounded-lg bg-muted px-4 py-3">
+                <span className="grid size-10 -rotate-4 scale-106 place-items-center rounded-[0.6rem] bg-ink/12 font-display text-xl text-ink">
+                  P
+                </span>
+                <span className="relative font-display text-xl">
+                  Protibadi
+                  <Squiggle className="absolute -bottom-1.5 left-0" />
+                </span>
+              </span>
+            }
+            doThis={
+              <span className="flex w-full items-center gap-4 px-4 py-3">
+                <span className="grid size-10 -translate-y-0.5 -rotate-4 scale-106 place-items-center rounded-[0.6rem] bg-ink/12 font-display text-xl text-ink">
+                  P
+                </span>
+                <span className="relative font-display text-xl">
+                  Protibadi
+                  <Squiggle className="absolute -bottom-1.5 left-0" />
+                </span>
+              </span>
+            }
+          />
+          <DoDont
+            rule="One ink band per page."
+            why="The band works because everything around it is hairlines and open paper. A second one turns the exception into the rhythm, and neither reads as the page's loudest moment."
+            dont={<MiniPage bands={2} />}
+            doThis={<MiniPage bands={1} />}
+          />
+          <DoDont
+            rule="A rosette for an award, an asterisk for a footnote."
+            why="The asterisk used to stand in for recognition. It now pins a FieldNote and marks a footnote; the prize itself gets the rosette."
+            dont={
+              <span className="inline-flex items-center gap-1.5 text-sm text-ink">
+                <AsteriskMark className="size-3.5" />
+                Best Paper Award
+              </span>
+            }
+            doThis={
+              <span className="inline-flex items-center gap-1.5 text-sm text-ink">
+                <RosetteMark className="size-4" />
+                Best Paper Award
+              </span>
+            }
+          />
+        </div>
+      </section>
+
+      {/* §11 Motion & hover */}
+      <section id="motion" className={cn("container scroll-mt-24", sectionSpacing)}>
+        <SectionHeader
+          label="11 · Motion & hover"
           title="One-shot, and never in the way."
-          description="Headers arrive, rules and strokes draw themselves once, links answer the pointer. Nothing loops, nothing blocks interaction. Reduced motion keeps the fades and drops the travel."
+          description="Headers arrive, rules and strokes draw themselves once, links answer the pointer. Nothing loops, nothing blocks interaction. Reduced motion keeps the fades and drops the travel. The more often a thing is used, the less it moves: the menu, opened on every visit, does not animate at all."
         />
         <div className="mt-12 grid gap-12 md:grid-cols-2">
           <div>
             <h3 className={label}>Curves</h3>
             <ul className="mt-4 divide-y divide-border border-y border-border">
               {EASINGS.map((e) => (
-                <li key={e.token} className="py-4">
-                  <p className="flex flex-wrap items-baseline justify-between gap-2">
-                    <span className="font-mono text-sm">{e.token}</span>
-                    <span className="font-mono text-xs text-muted-foreground">{e.value}</span>
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">{e.use}</p>
-                </li>
+                <EaseDemo key={e.token} {...e} />
               ))}
             </ul>
           </div>
@@ -802,10 +1034,72 @@ export default function DesignSystemPage() {
             <ul className="mt-4 divide-y divide-border border-y border-border">
               {TIMINGS.map((t) => (
                 <li key={t.use} className="flex items-baseline gap-6 py-4">
-                  <span className="w-16 shrink-0 font-display text-2xl tabular-nums">
+                  <span className="w-24 shrink-0 font-display text-2xl tabular-nums">
                     {t.value}
                   </span>
                   <span className="text-sm text-muted-foreground">{t.use}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* The hover vocabulary and the menu: decided in the route review, and
+            the two rules most often broken by a component that "needs a hover". */}
+        <div className="mt-16 grid gap-12 border-t border-border pt-10 md:grid-cols-2">
+          <div>
+            <h3 className="font-display text-2xl">The hover vocabulary</h3>
+            <p className="mt-2 max-w-prose text-pretty text-muted-foreground">
+              A hovered link answers with at most two things: its words, and its mark. The paper
+              behind it never darkens. Pressing is separate — a link may still give under the
+              finger, because that is feedback, not decoration. Hover is gated to devices that can
+              hover, so a phone never shows a stroke it cannot take back.
+            </p>
+            <dl className="mt-6 divide-y divide-border border-y border-border text-sm">
+              {[
+                [
+                  "Words",
+                  "The squiggle under a link's words — a row title, a text link (SquiggleUnderline, SquiggleText). On long titles, a rule in the margin instead.",
+                ],
+                [
+                  "Mark",
+                  ".mark-lift on a printed mark — up 2px, −4°, ×1.06, 250ms out, 150ms back — or an arrow turning north-east.",
+                ],
+                ["Press", "active:scale-[0.97] on buttons and pills; never a change of colour."],
+                ["Never", "A darkened or tinted background on hover, or three answers at once."],
+              ].map(([term, body]) => (
+                <div key={term} className="grid grid-cols-[5rem_1fr] gap-4 py-3">
+                  <dt className="font-mono text-xs text-foreground">{term}</dt>
+                  <dd className="text-pretty text-muted-foreground">{body}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+          <div>
+            <h3 className="font-display text-2xl">The megamenu</h3>
+            <p className="mt-2 max-w-prose text-pretty text-muted-foreground">
+              Opened on nearly every visit, so it does not animate: no zoom, no slide between
+              panels, no fade out. It simply appears, the way a command palette does.
+            </p>
+            <ul className="mt-6 divide-y divide-border border-y border-border text-sm">
+              {[
+                [
+                  "75ms",
+                  "Hover intent before a panel opens: under the ~100ms where a delay becomes noticeable, over the time it takes to sweep across the bar to Contact.",
+                ],
+                [
+                  "400ms",
+                  "A click this soon after a hover opened the panel keeps it open. It is the same “show me” arriving twice, not a request to close.",
+                ],
+                [
+                  "Arrive",
+                  "Choosing any link or tile in a panel closes it, so the page you chose is what you see.",
+                ],
+                ["Phone", "Every row ends in an arrow: there is no hover to discover a link by."],
+              ].map(([term, body]) => (
+                <li key={term} className="grid grid-cols-[5rem_1fr] gap-4 py-3">
+                  <span className="font-mono text-xs text-foreground">{term}</span>
+                  <span className="text-pretty text-muted-foreground">{body}</span>
                 </li>
               ))}
             </ul>
@@ -818,7 +1112,7 @@ export default function DesignSystemPage() {
         <InkBand>
           <p className={cn(label, "flex items-center gap-2")}>
             <TickMark />
-            11 · House rules
+            12 · House rules
           </p>
           <h2 className={cn(displaySectionTitle, "mt-3 max-w-2xl text-balance")}>
             The short list to check a new page against.
@@ -849,6 +1143,15 @@ export default function DesignSystemPage() {
                 "At rest, everything is square.",
                 "Stamps and stickers may tilt when the pointer arrives. The resting page never looks misaligned.",
               ],
+              [
+                "Two answers to a hover, at most.",
+                "The words and the mark. Never the background, and never all three.",
+              ],
+              ["No squiggle under a heading.", "The squiggle means a link. A title is not one."],
+              [
+                "One name: Design system and guidelines.",
+                "In the menu, the footer, the page and the URL, /design-system. Not \u201cbrand guidelines\u201d in one place and \u201cdesign system\u201d in another.",
+              ],
             ].map(([title, body], i) => (
               <li key={title} className="flex gap-4 border-t border-foreground/15 pt-5">
                 <span className="font-hand text-2xl leading-none text-ink">{i + 1}</span>
@@ -868,34 +1171,40 @@ export default function DesignSystemPage() {
 
 // ─── Specimen pieces ─────────────────────────────────────────────────────────
 
+/**
+ * An ink, with its note: the variable, its live value, its one job and its
+ * tempting misuse. The note rides over the swatch on hover or focus, so the
+ * row of colours reads as colours first.
+ */
 function SwatchCard({ swatch, tall }: { swatch: Swatch; tall?: boolean }) {
   return (
-    <li className="flex flex-col gap-3">
-      <span
-        className={cn(
-          "relative block overflow-hidden rounded-md border border-border",
-          tall ? "h-32" : "h-20",
-          swatch.fill,
-        )}
+    <li>
+      <Annotated
+        id={`ink-${swatch.token}`}
+        name={swatch.name}
+        token={swatch.token}
+        value={<TokenValue name={swatch.token} />}
+        rule={swatch.role}
+        dont={swatch.dont}
+        stageClassName="border-0"
       >
-        {/* A band of the same ink at halftone, the way it prints at low coverage. */}
-        {tall && (
-          <span
-            aria-hidden
-            className="halftone absolute inset-x-0 bottom-0 h-1/3 bg-background"
-            style={{ color: `var(${swatch.token})` }}
-          />
-        )}
-      </span>
-      <div>
-        <p className="text-sm font-medium">{swatch.name}</p>
-        <p className="font-mono text-[11px] text-muted-foreground">{swatch.token}</p>
-        <TokenValue
-          name={swatch.token}
-          className="block font-mono text-[11px] text-muted-foreground/80"
-        />
-        <p className="mt-2 text-xs text-pretty text-muted-foreground">{swatch.role}</p>
-      </div>
+        <span
+          className={cn(
+            "relative block overflow-hidden rounded-lg border border-border",
+            tall ? "h-44" : "h-36",
+            swatch.fill,
+          )}
+        >
+          {/* A band of the same ink at halftone, the way it prints at low coverage. */}
+          {tall && (
+            <span
+              aria-hidden
+              className="halftone absolute inset-x-0 bottom-0 h-1/3 bg-background"
+              style={{ color: `var(${swatch.token})` }}
+            />
+          )}
+        </span>
+      </Annotated>
     </li>
   );
 }
@@ -945,17 +1254,39 @@ function ComponentSpecimen({
   name,
   note,
   children,
+  className,
 }: {
   name: string;
   note: string;
   children: React.ReactNode;
+  className?: string;
 }) {
   return (
-    <div className="border-t border-border pt-5">
+    <div className={cn("border-t border-border pt-5", className)}>
       <p className="font-mono text-xs text-foreground">{name}</p>
       <p className="mt-1 max-w-prose text-sm text-pretty text-muted-foreground">{note}</p>
       <div className="mt-6">{children}</div>
     </div>
+  );
+}
+
+/** A page in miniature: hairlines, with one or two ink bands across it. */
+function MiniPage({ bands }: { bands: 1 | 2 }) {
+  const band = <span className="ink-wash block h-5 w-[calc(100%+2rem)] -mx-4" />;
+  return (
+    <span
+      aria-hidden
+      className="flex w-40 flex-col gap-2 rounded-sm border border-border bg-background px-4 py-3"
+    >
+      <span className="h-2 w-2/3 rounded-full bg-foreground/70" />
+      <span className="h-px w-full bg-border" />
+      <span className="h-1.5 w-full rounded-full bg-muted-foreground/30" />
+      {band}
+      <span className="h-1.5 w-5/6 rounded-full bg-muted-foreground/30" />
+      <span className="h-px w-full bg-border" />
+      {bands === 2 ? band : <span className="h-1.5 w-3/4 rounded-full bg-muted-foreground/30" />}
+      <span className="h-1.5 w-2/3 rounded-full bg-muted-foreground/30" />
+    </span>
   );
 }
 

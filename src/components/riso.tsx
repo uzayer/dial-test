@@ -13,7 +13,16 @@ import { cn } from "@/lib/utils";
  * the same on every visit.
  */
 
-type Variant = "orbit" | "strata" | "signal" | "field" | "bloom";
+type Variant =
+  | "orbit"
+  | "strata"
+  | "signal"
+  | "field"
+  | "bloom"
+  | "thread"
+  | "grid"
+  | "echo"
+  | "seed";
 
 const stroke = {
   fill: "none",
@@ -130,6 +139,106 @@ const Bloom = ({ id }: { id: string }) => (
   </>
 );
 
+/**
+ * Circles strung on a dotted thread, one ringed twice: people and places
+ * joined by the work. For collaboration — partners, co-authors, contact.
+ */
+const Thread = ({ id }: { id: string }) => (
+  <>
+    <g className="text-ink-violet">
+      <Halftone id={`${id}-dots`} size={7} />
+      <circle cx="148" cy="136" r="38" fill={`url(#${id}-dots)`} opacity={0.6} />
+    </g>
+    <g className="text-ink-yellow">
+      <circle cx="58" cy="62" r="22" fill="currentColor" opacity={0.35} />
+    </g>
+    <g {...stroke} className="text-ink" stroke="currentColor" strokeWidth={2}>
+      <path d="M58 62c26 4 30 38 58 44s30-18 32 30" strokeDasharray="1 7" className="text-ink" />
+      <path d="M40 160c20-10 34-8 48 6" strokeDasharray="1 7" opacity={0.7} />
+      <circle cx="58" cy="62" r="14" />
+      <circle cx="116" cy="106" r="9" />
+      <circle cx="148" cy="136" r="16" />
+      <circle cx="148" cy="136" r="24" opacity={0.5} />
+      <circle cx="40" cy="160" r="7" className="text-brand" />
+    </g>
+  </>
+);
+
+/**
+ * A notebook's squared grid with one cell inked in: a single finding in a
+ * field of observations. For the empty and the not-found — a page with its
+ * one mark missing.
+ */
+const Grid = ({ id }: { id: string }) => (
+  <>
+    <g className="text-ink-blue">
+      <Halftone id={`${id}-dots`} size={6} />
+      <rect x="96" y="96" width="32" height="32" fill={`url(#${id}-dots)`} opacity={0.85} />
+    </g>
+    <g className="text-ink-yellow">
+      <rect x="104" y="88" width="32" height="32" fill="currentColor" opacity={0.3} />
+    </g>
+    <g {...stroke} className="text-ink" stroke="currentColor" strokeWidth={1.4} opacity={0.55}>
+      {[32, 64, 96, 128, 160].map((v) => (
+        <path key={`h${v}`} d={`M28 ${v + 2}c40-1 100 1 152-1`} />
+      ))}
+      {[32, 64, 96, 128, 160].map((v) => (
+        <path key={`v${v}`} d={`M${v} 28c1 40-1 100 1 152`} />
+      ))}
+    </g>
+    <g {...stroke} className="text-ink" stroke="currentColor" strokeWidth={2.2}>
+      <path d="M100 100l24 24M124 100l-24 24" className="text-brand" />
+      <path d="M150 58c8-6 18-4 20 6" />
+    </g>
+  </>
+);
+
+/**
+ * Arcs set down one after another, each a little off the last, like a wave
+ * repeated by hand. For time and repetition: news, the archive, the years.
+ */
+const Echo = ({ id }: { id: string }) => (
+  <>
+    <g className="text-brand">
+      <Halftone id={`${id}-dots`} size={8} />
+      <path d="M24 176a80 80 0 0 1 160 0z" fill={`url(#${id}-dots)`} opacity={0.5} />
+    </g>
+    <g className="text-ink-yellow">
+      <circle cx="152" cy="44" r="18" fill="currentColor" opacity={0.4} />
+    </g>
+    <g {...stroke} className="text-ink" stroke="currentColor" strokeWidth={2}>
+      <path d="M36 172a68 68 0 0 1 136 0" />
+      <path d="M52 170a54 54 0 0 1 104-2" opacity={0.8} />
+      <path d="M68 172a38 38 0 0 1 72 0" opacity={0.65} className="text-ink-violet" />
+      <path d="M84 170a22 22 0 0 1 42-2" opacity={0.5} />
+      <path d="M16 176h178" opacity={0.5} />
+    </g>
+  </>
+);
+
+/**
+ * A small seed with short strokes radiating from it, drawn unevenly: something
+ * beginning. For invitations — joining the lab, a first project.
+ */
+const Seed = ({ id }: { id: string }) => (
+  <>
+    <g className="text-ink-yellow">
+      <Halftone id={`${id}-dots`} size={7} />
+      <circle cx="104" cy="112" r="64" fill={`url(#${id}-dots)`} opacity={0.6} />
+    </g>
+    <g className="text-brand">
+      <ellipse cx="104" cy="112" rx="16" ry="24" fill="currentColor" opacity={0.4} />
+    </g>
+    <g {...stroke} className="text-ink" stroke="currentColor" strokeWidth={2}>
+      <ellipse cx="104" cy="112" rx="16" ry="24" />
+      <path d="M104 88c-2-8 1-14 8-18" className="text-brand" />
+      <path d="M104 60v-16M136 72l10-12M72 72l-10-12M148 112h16M44 112h16" />
+      <path d="M136 152l10 12M72 152l-10 12" opacity={0.6} />
+      <path d="M104 164v18" opacity={0.6} className="text-ink-violet" />
+    </g>
+  </>
+);
+
 /** The drawings themselves, for renderers that cannot use `RisoArt` (the OG images). */
 export const RISO_COMPOSITIONS: Record<Variant, (props: { id: string }) => React.ReactElement> = {
   orbit: Orbit,
@@ -137,6 +246,10 @@ export const RISO_COMPOSITIONS: Record<Variant, (props: { id: string }) => React
   signal: Signal,
   field: Field,
   bloom: Bloom,
+  thread: Thread,
+  grid: Grid,
+  echo: Echo,
+  seed: Seed,
 };
 
 export function RisoArt({

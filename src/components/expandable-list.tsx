@@ -58,7 +58,7 @@ export function ExpandableList({
               type="button"
               aria-expanded={open}
               onClick={() => setActive(open ? null : i)}
-              className="flex w-full items-center gap-4 px-5 py-4 text-left transition-colors duration-150 ease-snappy hover:bg-muted/40"
+              className="flex w-full items-center gap-4 px-5 py-4 text-left transition-colors duration-150 ease-snappy"
             >
               <span className="font-hand text-xl text-ink tabular-nums">{i + 1}</span>
               <span className="flex-1 font-display text-xl leading-snug">{item.title}</span>

@@ -33,7 +33,9 @@ export const Tape = () => (
 );
 
 /**
- * Wavy underline; runs the full width of its container.
+ * Wavy underline; runs the full width of its container. It is the site's
+ * link-hover mark — it means "this goes somewhere" — so it is never drawn
+ * permanently under a heading.
  *
  * Not one path stretched to fit but a single wave tiled at a fixed size (see
  * `.ink-squiggle`), so the wavelength is the same under two words as under a
@@ -244,7 +246,10 @@ export const MarginNote = ({
   );
 };
 
-/** Hand-drawn asterisk: marks recognition, next to an Award. */
+/**
+ * Hand-drawn asterisk: a footnote beside something, e.g. a field note's
+ * bullet. An Award itself takes the `RosetteMark`.
+ */
 export const AsteriskMark = ({ className }: { className?: string }) => (
   <svg aria-hidden viewBox="0 0 24 24" className={cn("size-3.5 text-ink", className)}>
     <g
@@ -256,6 +261,22 @@ export const AsteriskMark = ({ className }: { className?: string }) => (
       <path d="M12 3.5v17" />
       <path d="M4.6 7.2l14.8 9.6" />
       <path d="M19.4 7.2L4.6 16.8" />
+    </g>
+  </svg>
+);
+
+/**
+ * A drawn rosette — a disc with two ribbons — for an Award itself: the award
+ * lists, the navbar's awarded work, a prize on a publication row. Where the
+ * asterisk is a footnote beside something, this is the thing being given.
+ */
+export const RosetteMark = ({ className }: { className?: string }) => (
+  <svg aria-hidden viewBox="0 0 32 32" className={cn("size-5 text-ink", className)}>
+    <g {...strokeProps} strokeWidth={1.8}>
+      <path d="M16 3.5a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15z" />
+      <path d="M16 7.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7z" opacity={0.6} />
+      <path d="M11 17.5l-3 10.5 7.5-3.8 1.2.1" />
+      <path d="M21 17.5l3 10.5-7.3-3.7" />
     </g>
   </svg>
 );
@@ -273,18 +294,25 @@ export const TickMark = ({ className }: { className?: string }) => (
   </svg>
 );
 
-/** Printer's crop marks, for the top corners of a page header. */
+/**
+ * Printer's crop marks, for the top corners of a page header.
+ *
+ * They sit just outside the sheet, in the container's gutter. On a phone the
+ * container is the full width of the screen, so "outside" is off the screen:
+ * there they tuck inside the gutter instead, or the right mark pushed every
+ * page sideways into a horizontal scroll.
+ */
 export const CropMarks = ({ className }: { className?: string }) => (
   <div
     aria-hidden
     className={cn("pointer-events-none absolute inset-x-0 top-0 text-ink/45", className)}
   >
-    <svg viewBox="0 0 20 20" className="absolute -top-2 -left-5 size-4">
+    <svg viewBox="0 0 20 20" className="absolute -top-2 left-1 size-4 sm:-left-5">
       <g {...strokeProps} strokeWidth={1.5}>
         <path d="M0 14h14M14 20V6" />
       </g>
     </svg>
-    <svg viewBox="0 0 20 20" className="absolute -top-2 -right-5 size-4">
+    <svg viewBox="0 0 20 20" className="absolute -top-2 right-1 size-4 sm:-right-5">
       <g {...strokeProps} strokeWidth={1.5}>
         <path d="M20 14H6M6 20V6" />
       </g>

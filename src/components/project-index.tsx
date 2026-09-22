@@ -231,16 +231,11 @@ const ProjectMark = ({ project, className }: { project: ProjectEntry; className?
     )}
   >
     <span aria-hidden className="halftone absolute inset-0 opacity-25" />
-    {/* The letter tilts when its row is hovered: a small, playful answer to
-        the pointer. Out at 250ms, back at 150ms; hover variants only apply on
-        devices that can hover, and reduced motion keeps it still. */}
-    <span
-      className={cn(
-        "font-display leading-none select-none",
-        "transition-transform duration-150 ease-snappy",
-        "motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:-rotate-4 motion-safe:group-hover:scale-106 motion-safe:group-hover:duration-250",
-      )}
-    >
+    {/* The letter lifts when its row is hovered: a small, playful answer to
+        the pointer, and the model for every printed mark on the site (the
+        `.mark-lift` utility). Pointer devices only; reduced motion keeps it
+        still. */}
+    <span className="mark-lift font-display leading-none select-none">
       {firstLetter(project.localName ?? project.title)}
     </span>
   </div>
@@ -278,8 +273,10 @@ const ProjectRow = ({ project, index }: { project: ProjectEntry; index: number }
       href={`/projects/${project.slug}`}
       className={cn(
         "group -mx-4 grid grid-cols-[3.5rem_1fr_auto] items-start gap-x-4 gap-y-3 rounded-lg px-4 py-8",
-        "md:grid-cols-[2rem_7rem_1fr_15rem_1.25rem] md:gap-x-8 md:py-10",
-        "transition-colors duration-150 ease-snappy hover:bg-muted/50 active:bg-muted",
+        "md:grid-cols-[2rem_7rem_1fr_15rem] md:gap-x-8 md:py-10",
+        // No hover wash: the letter and the title's squiggle are the row's
+        // answer. Pressing still gives, which is feedback rather than hover.
+        "transition-[scale,background-color] duration-150 ease-snappy active:scale-[0.99] active:bg-muted/60",
       )}
     >
       <span className="hidden pt-1 font-mono text-xs tabular-nums text-muted-foreground md:block">
@@ -300,7 +297,10 @@ const ProjectRow = ({ project, index }: { project: ProjectEntry; index: number }
         </p>
       </div>
 
-      <ArrowRight className="mt-1.5 size-4 text-muted-foreground arrow-ne group-hover:text-foreground md:hidden" />
+      {/* The arrow is for a phone, which has no hover to reveal a link by. On
+          a pointer device the letter's lift is the row's answer; a turning
+          arrow beside it made three responses to one hover. */}
+      <ArrowRight className="mt-1.5 size-4 text-muted-foreground md:hidden" />
 
       {/* Metadata: its own column on desktop, a wrapped line under the abstract on mobile. */}
       <dl className="col-span-3 col-start-1 flex flex-wrap gap-x-4 gap-y-1 text-sm md:col-span-1 md:col-start-auto md:flex-col md:gap-y-1.5 md:pt-1.5">
@@ -334,7 +334,7 @@ const ProjectRow = ({ project, index }: { project: ProjectEntry; index: number }
           <div>
             <dt className="sr-only">Award</dt>
             <dd>
-              <span className="sticker-alt inline-flex items-center gap-1.5 rounded-[0.8rem] border border-ink/35 bg-ink/8 px-2.5 py-1 text-xs text-ink group-hover:rotate-[1.5deg]">
+              <span className="inline-flex items-center gap-1.5 rounded-[0.8rem] border border-ink/35 bg-ink/8 px-2.5 py-1 text-xs text-ink">
                 <AsteriskMark className="size-3" />
                 {project.award.title}
               </span>
@@ -342,8 +342,6 @@ const ProjectRow = ({ project, index }: { project: ProjectEntry; index: number }
           </div>
         )}
       </dl>
-
-      <ArrowRight className="mt-3 hidden size-4 text-muted-foreground arrow-ne group-hover:text-foreground md:block" />
     </Link>
   );
 };
